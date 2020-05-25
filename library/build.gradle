@@ -31,7 +31,7 @@ publish {
     userOrg = 'ryuunoakaihitomi'
     groupId = 'github.ryuunoakaihitomi.poweract'
     artifactId = 'poweract'
-    publishVersion = '1.0.0'
+    publishVersion = '1.0.1'
     desc = 'An Android library that can manipulate power-related actions with just few lines of code without root privilege.'
     website = 'https://github.com/ryuunoakaihitomi/PowerAct'
 }

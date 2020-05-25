@@ -13,6 +13,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.accessibility.AccessibilityManager;
 
+import java.util.Arrays;
 import java.util.Random;
 
 @SuppressWarnings("deprecation")
@@ -38,10 +39,11 @@ public class PaFragment extends Fragment {
     private ComponentName mAdminCom;
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         mDevicePolicyManager = (DevicePolicyManager) getActivity().getSystemService(Context.DEVICE_POLICY_SERVICE);
         mAdminCom = new ComponentName(getActivity(), AdminReceiver.class);
+        Log.d(TAG, "onCreate: initialized... " + Arrays.asList(mDevicePolicyManager, mAdminCom));
     }
 
     void requestAction(Callback callback, boolean isShowPowerDialog) {

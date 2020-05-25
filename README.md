@@ -9,18 +9,22 @@ An Android library that can manipulate power-related actions with just few lines
 ## Usage
 
 Download
+
+[ ![Download](https://api.bintray.com/packages/ryuunoakaihitomi/maven/poweract/images/download.svg?version=1.0.1) ](https://bintray.com/ryuunoakaihitomi/maven/poweract/1.0.1/link)
+
 ```gradle
 repositories {
     jcenter()
 }
 
 dependencies {
-    implementation 'github.ryuunoakaihitomi.poweract:poweract:1.0.0'
+    implementation 'github.ryuunoakaihitomi.poweract:poweract:1.0.1'
 }
     
 ```
 
-Use it **after `onStrat` Activity lifecycle.**
+Use
+
 ```java
 // Lock screen, Without callback.
 lockScreenBtn.setOnClickListener(v -> PowerAct.lockScreen(MainActivity.this));
