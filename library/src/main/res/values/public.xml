@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Let user know which service he/she/it wants to enable. -->
+    <public name="poweract_accessibility_service_label" type="string" />
+    <!-- https://developer.android.com/reference/android/R.styleable#AccessibilityService_description -->
+    <public name="poweract_accessibility_service_description" type="string" />
+    <!-- https://developer.android.com/reference/android/R.styleable#AccessibilityService_summary -->
+    <public name="poweract_accessibility_service_summary" type="string" />
+    <!-- Show a notification to keep the accessibility service alive in some custom environments. -->
+    <!-- (EMUI, MIUI, etc... https://dontkillmyapp.com/ ) -->
+    <!-- But user can hide the notification manually without decreasing the process priority. -->
+    <!-- You can direct the user to do so. -->
+    <public name="poweract_accessibility_service_show_foreground_notification" type="bool" />
+</resources>

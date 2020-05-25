@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Rewrite these fields in App. -->
+    <string name="poweract_accessibility_service_label">Label</string>
+    <string name="poweract_accessibility_service_description">Description</string>
+    <string name="poweract_accessibility_service_summary">Summary</string>
+</resources>

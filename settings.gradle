@@ -1,0 +1,3 @@
+rootProject.name='PowerAct'
+include ':app'
+include ':library'
