@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="UnusedResources">
     <!--  In order to configure some UI properties you must rewrite the res of the library.  -->
     <string name="poweract_accessibility_service_label">Power Action Service</string>
     <string name="poweract_accessibility_service_description">The service is used to perform some power action without reaching the actual power button on the side of the phone. It will never collect any user data.</string>
