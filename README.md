@@ -20,7 +20,7 @@ dependencies {
     
 ```
 
-Use it **before `onStrat` Activity lifecycle.**
+Use it **after `onStrat` Activity lifecycle.**
 ```java
 // Lock screen, Without callback.
 lockScreenBtn.setOnClickListener(v -> PowerAct.lockScreen(MainActivity.this));
