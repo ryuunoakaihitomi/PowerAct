@@ -18,6 +18,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Button lockScreenBtn = findViewById(R.id.lockScreenBtn);
         Button powerDialogBtn = findViewById(R.id.powerDialogBtn);
 
@@ -45,5 +46,6 @@ public class MainActivity extends Activity {
             Log.d(TAG, "onLongClick: pwrBtn");
             return false;
         });
+
     }
 }

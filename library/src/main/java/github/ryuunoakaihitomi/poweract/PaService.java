@@ -22,8 +22,6 @@ public class PaService extends AccessibilityService {
             LOCK_SCREEN_ACTION = BuildConfig.LIBRARY_PACKAGE_NAME + ".LOCK_SCREEN_ACTION",
             POWER_DIALOG_ACTION = BuildConfig.LIBRARY_PACKAGE_NAME + ".POWER_DIALOG_ACTION";
     private static final String TAG = "PaService";
-    private static final String FOREGROUND_NOTIFICATION_CHANNEL_TAG =
-            TextUtils.join(".", new String[]{BuildConfig.LIBRARY_PACKAGE_NAME, TAG});
 
     BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
 
@@ -84,14 +82,15 @@ public class PaService extends AccessibilityService {
         if (manager != null) {
             Notification.Builder builder;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                final String channelTag = TextUtils.join(".", new String[]{BuildConfig.LIBRARY_PACKAGE_NAME, TAG});
                 NotificationChannel channel =
-                        new NotificationChannel(FOREGROUND_NOTIFICATION_CHANNEL_TAG,
+                        new NotificationChannel(channelTag,
                                 getString(R.string.poweract_accessibility_service_label),
                                 NotificationManager.IMPORTANCE_MIN);
                 channel.enableLights(false);
                 channel.enableVibration(false);
                 channel.setShowBadge(false);
-                builder = new Notification.Builder(this, FOREGROUND_NOTIFICATION_CHANNEL_TAG);
+                builder = new Notification.Builder(this, channelTag);
                 manager.createNotificationChannel(channel);
             } else {
                 builder = new Notification.Builder(this);
