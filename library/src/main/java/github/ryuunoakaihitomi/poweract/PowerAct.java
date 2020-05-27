@@ -25,7 +25,7 @@ public class PowerAct {
     }
 
     /**
-     * -> {@link PowerAct#lockScreen(Activity, Callback)}
+     * Go to see {@link PowerAct#lockScreen(Activity, Callback)}.
      *
      * @param activity Be used to open specific permission request UI and perform power operations.
      *                 Should not be null.
@@ -53,7 +53,7 @@ public class PowerAct {
     }
 
     /**
-     * ->{@link PowerAct#showPowerDialog(Activity, Callback)}
+     * Go to see {@link PowerAct#showPowerDialog(Activity, Callback)}.
      *
      * @param activity Be used to open specific permission request user interfaces and perform power operations.
      *                 Should not be null.

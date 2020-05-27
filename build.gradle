@@ -22,6 +22,7 @@ allprojects {
         jcenter()
 
     }
+    //  Wait for fix: https://github.com/novoda/bintray-release/issues/310
     tasks.withType(Javadoc).all { enabled = false }
 }
 
