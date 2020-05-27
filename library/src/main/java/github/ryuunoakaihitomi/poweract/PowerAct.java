@@ -8,6 +8,9 @@ import android.app.admin.DevicePolicyManager;
 import android.os.Build;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 /**
  * Provide the main functions of the library.
  * <p>
@@ -27,7 +30,7 @@ public class PowerAct {
      * @param activity Be used to open specific permission request UI and perform power operations.
      *                 Should not be null.
      */
-    public static void lockScreen(Activity activity) {
+    public static void lockScreen(@NonNull Activity activity) {
         lockScreen(activity, null);
     }
 
@@ -45,7 +48,7 @@ public class PowerAct {
      * @see DevicePolicyManager#lockNow()
      * @see android.accessibilityservice.AccessibilityService#GLOBAL_ACTION_LOCK_SCREEN
      */
-    public static void lockScreen(Activity activity, Callback callback) {
+    public static void lockScreen(@NonNull Activity activity, @Nullable Callback callback) {
         requestAction(activity, callback, false);
     }
 
@@ -55,7 +58,7 @@ public class PowerAct {
      * @param activity Be used to open specific permission request user interfaces and perform power operations.
      *                 Should not be null.
      */
-    public static void showPowerDialog(Activity activity) {
+    public static void showPowerDialog(@NonNull Activity activity) {
         showPowerDialog(activity, null);
     }
 
@@ -69,7 +72,7 @@ public class PowerAct {
      *                 Can be null.
      * @see android.accessibilityservice.AccessibilityService#GLOBAL_ACTION_POWER_DIALOG
      */
-    public static void showPowerDialog(Activity activity, Callback callback) {
+    public static void showPowerDialog(@NonNull Activity activity, @Nullable Callback callback) {
         requestAction(activity, callback, true);
     }
 

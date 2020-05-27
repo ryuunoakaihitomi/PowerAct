@@ -49,7 +49,9 @@ Create `res/values/poweract_config.xml`
 
 ## Compatibility
 
-API level|LockScreen|Show System Dialog
+**In theory, library should not throw an exception at any time.**
+
+API level|Lock Screen|Show System Power Dialog
 -|-|-
 14 ~ 20 |√|×
 21 ~ 27 |√|√

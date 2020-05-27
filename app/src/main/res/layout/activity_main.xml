@@ -9,21 +9,23 @@
         android:id="@+id/lockScreenBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Lock"
+        android:text="Lock Screen"
         tools:ignore="HardcodedText" />
 
     <Button
         android:id="@+id/powerDialogBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="PowerDialogBtn"
+        android:text="System Power Dialog"
         tools:ignore="HardcodedText" />
 
     <github.ryuunoakaihitomi.poweract.PowerButton
         android:id="@+id/pwrBtn"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="PowerBtn"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="Power Button"
+        android:textAllCaps="true"
         tools:ignore="HardcodedText" />
 
 </LinearLayout>

@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.annotation.NonNull;
+
 /**
  * A {@link Button} acts like a real power button.
  * <p>
@@ -18,6 +20,7 @@ public class PowerButton extends Button implements View.OnClickListener, View.On
 
     private OnClickListener mOnClickListener;
     private OnLongClickListener mOnLongClickListener;
+    @SuppressWarnings("CanBeFinal")
     private boolean mPrepareToUse;
 
     public PowerButton(Context context, AttributeSet attrs) {
@@ -27,7 +30,8 @@ public class PowerButton extends Button implements View.OnClickListener, View.On
         mPrepareToUse = true;
     }
 
-    private static Activity contextToActivityNoThrow(Context context) {
+    private static @NonNull
+    Activity contextToActivityNoThrow(Context context) {
         try {
             return (Activity) context;
         } catch (ClassCastException ignored) {

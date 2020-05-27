@@ -8,17 +8,21 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 
 import java.util.Random;
+import java.util.UUID;
 
 @SuppressWarnings("deprecation")
 public class PaFragment extends Fragment {
 
     private static final String TAG = "PaFragment";
+
+    // For DevicePolicyManager
     private int mRequestCode;
+
+    private boolean mHasRequestedAccessibility, mIsShowPowerDialog, mFirstRun;
 
     private Callback mCallback = new Callback() {
 
@@ -35,47 +39,55 @@ public class PaFragment extends Fragment {
 
     private DevicePolicyManager mDevicePolicyManager;
     private ComponentName mAdminReceiverComponentName;
-
-    private void initialize() {
-        Activity activity = getActivity();
-        if (mDevicePolicyManager == null) {
-            mDevicePolicyManager = (DevicePolicyManager) activity.getSystemService(Context.DEVICE_POLICY_SERVICE);
-        }
-        if (mAdminReceiverComponentName == null) {
-            mAdminReceiverComponentName = new ComponentName(activity, AdminReceiver.class);
-        }
-    }
+    private Activity mAssociatedActivity;
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onAttach(Context context) {
+        super.onAttach(context);
         initialize();
+    }
+
+    private void initialize() {
+        mAssociatedActivity = getActivity();
+        if (mDevicePolicyManager == null) {
+            mDevicePolicyManager = (DevicePolicyManager) mAssociatedActivity.getSystemService(Context.DEVICE_POLICY_SERVICE);
+        }
+        if (mAdminReceiverComponentName == null) {
+            mAdminReceiverComponentName = new ComponentName(mAssociatedActivity, PaReceiver.class);
+        }
     }
 
     void requestAction(Callback callback, boolean isShowPowerDialog) {
+        mIsShowPowerDialog = isShowPowerDialog;
         Activity activity = getActivity();
-        initialize();
         if (callback != null) mCallback = callback;
+        if (activity == null) {
+            Log.e(TAG, "requestAction: Activity does not prepare!");
+            failed();
+            return;
+        }
+        initialize();
         boolean isAdminActive = mDevicePolicyManager.isAdminActive(mAdminReceiverComponentName);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P || isShowPowerDialog) {
-            if (isAdminActive && !isShowPowerDialog) {
-                // lockScreen & adminActive, auto remove admin.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P || mIsShowPowerDialog) {
+            if (isAdminActive && !mIsShowPowerDialog) {
+                // lockScreen & adminActive, remove admin automatically.
                 mDevicePolicyManager.removeActiveAdmin(mAdminReceiverComponentName);
             }
-            if (!Utils.isAccessibilityServiceEnabled(getActivity(), PaService.class)) {
+            if (!Utils.isAccessibilityServiceEnabled(activity, PaService.class)) {
                 try {
-                    Log.d(TAG, "requestAction: Accessibility is enabled");
-                    startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
+                    Log.d(TAG, "requestAction: Try to enable Accessibility Service...");
+                    Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+                    startActivity(intent);
+                    mHasRequestedAccessibility = true;
                 } catch (ActivityNotFoundException e) {
                     // ActivityNotFoundException: Settings.ACTION_ACCESSIBILITY_SETTINGS
                     failed();
+                } /* For some fking weird env. */ catch (SecurityException e) {
+                    Log.e(TAG, "requestAction: ", e);
+                    failed();
                 }
             } else {
-                // Send broadcast to show power dialog (21+) or to lock screen (28+).
-                Intent intent = new Intent(isShowPowerDialog ? PaService.POWER_DIALOG_ACTION : PaService.LOCK_SCREEN_ACTION);
-                intent.setPackage(activity.getPackageName());
-                activity.sendBroadcast(intent);
-                done();
+                requireAccessibilityAction();
             }
         } else {
             if (isAdminActive) {
@@ -84,7 +96,7 @@ public class PaFragment extends Fragment {
             } else {
                 Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
                 intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, mAdminReceiverComponentName);
-                mRequestCode = new Random().nextInt();
+                mRequestCode = Math.abs(new Random().nextInt());
                 try {
                     startActivityForResult(intent, mRequestCode);
                 } catch (ActivityNotFoundException e) {
@@ -96,7 +108,27 @@ public class PaFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume");
+        if (!mFirstRun) {
+            Log.d(TAG, "onResume: First run. There's not accessibility settings ui now");
+            mFirstRun = true;
+        } else if (mHasRequestedAccessibility) {
+            mHasRequestedAccessibility = false;
+            if (Utils.isAccessibilityServiceEnabled(mAssociatedActivity, PaService.class)) {
+                requireAccessibilityAction();
+            } else {
+                // Accessibility Service is still disabled.
+                failed();
+            }
+        }
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "onActivityResult");
         if (mRequestCode == requestCode) {
             if (resultCode == Activity.RESULT_OK) {
                 if (mDevicePolicyManager.isAdminActive(mAdminReceiverComponentName)) {
@@ -113,6 +145,18 @@ public class PaFragment extends Fragment {
         }
     }
 
+    private void requireAccessibilityAction() {
+        // Send broadcast to show power dialog (21+) or to lock screen (28+).
+        Intent intent = new Intent(mIsShowPowerDialog ? PaService.POWER_DIALOG_ACTION : PaService.LOCK_SCREEN_ACTION);
+        intent.setPackage(mAssociatedActivity.getPackageName());
+        String token = UUID.randomUUID().toString();
+        Log.d(TAG, "requireAction: Set token to " + token);
+        PaService.token = token;
+        intent.putExtra(PaService.EXTRA_TOKEN, token);
+        mAssociatedActivity.sendBroadcast(intent);
+        done();
+    }
+
     private void done() {
         Log.d(TAG, "done...");
         mCallback.done();
@@ -124,7 +168,6 @@ public class PaFragment extends Fragment {
         mCallback.failed();
         detach();
     }
-
 
     private void detach() {
         getFragmentManager().beginTransaction().remove(this).commitAllowingStateLoss();

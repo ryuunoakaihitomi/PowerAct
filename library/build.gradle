@@ -8,8 +8,6 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
 
         consumerProguardFiles 'consumer-rules.pro'
     }
@@ -23,12 +21,16 @@ android {
 
 }
 
+dependencies {
+    compileOnly 'androidx.annotation:annotation:1.1.0'
+}
 
+// gradlew clean build bintrayUpload -PbintrayUser=BINTRAY_USERNAME -PbintrayKey=BINTRAY_KEY -PdryRun=false
 publish {
     userOrg = 'ryuunoakaihitomi'
     groupId = 'github.ryuunoakaihitomi.poweract'
     artifactId = 'poweract'
-    publishVersion = '1.0.2'
+    publishVersion = '1.0.3'
     desc = 'An Android library that can manipulate power-related actions with just few lines of code without root privilege.'
     website = 'https://github.com/ryuunoakaihitomi/PowerAct'
 }

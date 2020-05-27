@@ -10,6 +10,7 @@ import github.ryuunoakaihitomi.poweract.Callback;
 import github.ryuunoakaihitomi.poweract.PowerAct;
 import github.ryuunoakaihitomi.poweract.PowerButton;
 
+
 public class MainActivity extends Activity {
 
     private static final String TAG = "MainActivity";
@@ -18,6 +19,8 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        getApplication().registerActivityLifecycleCallbacks(new DebugALC());
 
         Button lockScreenBtn = findViewById(R.id.lockScreenBtn);
         Button powerDialogBtn = findViewById(R.id.powerDialogBtn);

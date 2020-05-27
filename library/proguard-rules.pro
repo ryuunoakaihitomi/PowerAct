@@ -1,4 +1,4 @@
-# Remove Log
+# Remove Debug log
 -assumenosideeffects class android.util.Log {
     public static int v(...);
     public static int d(...);
