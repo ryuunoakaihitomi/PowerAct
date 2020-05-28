@@ -48,7 +48,7 @@ public class PowerButton extends Button implements View.OnClickListener, View.On
     /**
      * <b>Note:</b> To prevent {@link PowerAct#lockScreen(Activity)} from calling.
      * The return value of the {@link android.view.View.OnLongClickListener}
-     * is always <b>false</b>.
+     * is always <b>true</b> for consuming the long click.
      *
      * @param l {@link android.view.View.OnLongClickListener}
      * @see View#setOnClickListener(OnClickListener)
