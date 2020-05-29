@@ -15,7 +15,7 @@ android {
     buildTypes {
         release {
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles 'proguard-rules.pro'
         }
     }
 
@@ -30,7 +30,48 @@ publish {
     userOrg = 'ryuunoakaihitomi'
     groupId = 'github.ryuunoakaihitomi.poweract'
     artifactId = 'poweract'
-    publishVersion = '1.0.3'
+    publishVersion = '1.0.4'
     desc = 'An Android library that can manipulate power-related actions with just few lines of code without root privilege.'
     website = 'https://github.com/ryuunoakaihitomi/PowerAct'
+}
+
+// ------- Generate javadoc manually.
+// Upload Files -> Target Path: /github/ryuunoakaihitomi/poweract/poweract/<ver>
+// Enable javadoc task in project's build.gradle before run task.
+
+task javadoc(type: Javadoc) {
+
+    delete(destinationDir)
+
+    options {
+        memberLevel = JavadocMemberLevel.PUBLIC
+        locale 'en_US'
+        encoding 'UTF-8'
+        charSet 'UTF-8'
+        links "http://docs.oracle.com/javase/7/docs/api"
+        linksOffline "http://d.android.com/reference", "${android.sdkDirectory}/docs/reference"
+    }
+    options.showFromPublic()
+
+    // https://github.com/gradle/gradle/issues/2354#issuecomment-364857181
+    options.addBooleanOption('notree', true)
+    options.addBooleanOption('noindex', true)
+    options.addBooleanOption('nohelp', true)
+    options.addBooleanOption('nonavbar', true)
+
+    source = android.sourceSets.main.java.sourceFiles
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+
+    exclude '**/Pa*'
+}
+
+task javadocJar(type: Jar, dependsOn: 'javadoc') {
+    from javadoc
+    archiveClassifier.set('javadoc')
+}
+
+afterEvaluate {
+    javadoc.classpath += files(android.libraryVariants.collect { variant2 ->
+        variant2.getJavaCompileProvider().get().classpath.files
+    })
 }

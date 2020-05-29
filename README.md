@@ -26,10 +26,14 @@ dependencies {
 Use
 
 ```java
-// Lock screen, Without callback.
-lockScreenBtn.setOnClickListener(v -> PowerAct.lockScreen(MainActivity.this));
-// Show system power dialog, with callback.
-powerDialogBtn.setOnClickListener(v -> PowerAct.showPowerDialog(MainActivity.this, callback));
+lockScreenBtn.setOnClickListener(v -> {
+    // Lock screen, with callback.
+    PowerAct.lockScreen(activity);
+});
+powerDialogBtn.setOnClickListener(v -> {
+    // Show system power dialog, without callback.
+    PowerAct.showPowerDialog(activity, callback);
+});
 // An additional widget.
 PowerButton powerButton = findViewById(R.id.pwrBtn);
 ```

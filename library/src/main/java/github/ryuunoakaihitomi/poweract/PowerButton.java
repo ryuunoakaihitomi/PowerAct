@@ -13,8 +13,9 @@ import androidx.annotation.NonNull;
  * A {@link Button} acts like a real power button.
  * <p>
  * Click to lock screen, and long click to show system power dialog.
+ * In order to prevent the behavior from being destroyed, the class cannot be inherited.
  */
-public class PowerButton extends Button implements View.OnClickListener, View.OnLongClickListener {
+public final class PowerButton extends Button implements View.OnClickListener, View.OnLongClickListener {
 
     private static final String TAG = "PowerButton";
 
