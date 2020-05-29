@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">PowerAct Demo</string>
+    <string name="accessibility_service_description">To demonstrate that the app can have its own accessibility service, no practical use.</string>
+    <string name="device_admin_receiver_description">To demonstrate that the app can have its own device admin receiver, no practical use.</string>
 </resources>
