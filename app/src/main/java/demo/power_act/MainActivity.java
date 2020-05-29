@@ -41,11 +41,11 @@ public class MainActivity extends Activity {
         Activity activity = this;
 
         lockScreenBtn.setOnClickListener(v -> {
-            // Lock screen, with callback.
+            // Lock screen, without callback.
             PowerAct.lockScreen(activity);
         });
         powerDialogBtn.setOnClickListener(v -> {
-            // Show system power dialog, without callback.
+            // Show system power dialog, with callback.
             PowerAct.showPowerDialog(activity, callback);
         });
         // An additional widget.
