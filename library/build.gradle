@@ -19,6 +19,10 @@ android {
         }
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -30,13 +34,13 @@ publish {
     userOrg = 'ryuunoakaihitomi'
     groupId = 'github.ryuunoakaihitomi.poweract'
     artifactId = 'poweract'
-    publishVersion = '1.0.4'
-    desc = 'An Android library that can manipulate power-related actions with just few lines of code without root privilege.'
+    publishVersion = '1.0.5'
+    desc = 'An Android library that can manipulate power-related actions with just few lines of code.'
     website = 'https://github.com/ryuunoakaihitomi/PowerAct'
 }
 
 // ------- Generate javadoc manually.
-// Upload Files -> Target Path: /github/ryuunoakaihitomi/poweract/poweract/<ver>
+// Upload Files: Rename: poweract-<ver>-javadoc.jar -> Target Path: /github/ryuunoakaihitomi/poweract/poweract/<ver>
 // Enable javadoc task in project's build.gradle before run task.
 
 task javadoc(type: Javadoc) {
@@ -71,7 +75,7 @@ task javadocJar(type: Jar, dependsOn: 'javadoc') {
 }
 
 afterEvaluate {
-    javadoc.classpath += files(android.libraryVariants.collect { variant2 ->
-        variant2.getJavaCompileProvider().get().classpath.files
+    javadoc.classpath += files(android.libraryVariants.collect { variant ->
+        variant.getJavaCompileProvider().get().classpath.files
     })
 }

@@ -47,7 +47,7 @@ public class PaService extends AccessibilityService {
                     perform(AccessibilityService.GLOBAL_ACTION_LOCK_SCREEN);
                 }
             } else {
-                Log.w(TAG, "onReceive: Unknown intent action. ");
+                Log.w(TAG, "onReceive: Unknown intent action.");
             }
         }
     };
@@ -114,6 +114,9 @@ public class PaService extends AccessibilityService {
                 channel.enableLights(false);
                 channel.enableVibration(false);
                 channel.setShowBadge(false);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    channel.setAllowBubbles(false);
+                }
                 builder = new Notification.Builder(this, channelTag);
                 manager.createNotificationChannel(channel);
             } else {
@@ -126,8 +129,11 @@ public class PaService extends AccessibilityService {
                 builder.setContentIntent(pendingIntent);
             }
             builder.setSmallIcon(android.R.drawable.ic_lock_power_off)
-                    .setPriority(Notification.PRIORITY_MIN) // Still has effect in 26+.
+                    /* Try our best to make the notification look less conspicuous. */
+                    .setPriority(Notification.PRIORITY_MIN)     // Still has effect in 26+.
                     .setVisibility(Notification.VISIBILITY_SECRET)
+                    .setShowWhen(false)
+                    .setLocalOnly(true)
                     .setOngoing(true)
                     .build();
             Notification foregroundNotification = builder.build();

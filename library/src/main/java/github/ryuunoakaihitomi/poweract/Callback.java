@@ -6,13 +6,18 @@ package github.ryuunoakaihitomi.poweract;
 public interface Callback {
 
     /**
-     * Denote the operation completed without any unexpected exception,
-     * <b>but does not mean that it is successfully. It cannot be ensure.</b>
+     * Denote the operation completed without any <b>unexpected exception or permission denial</b>.
+     * <p>
+     * But does not mean that it is successfully, it's not sure.
      */
-    void done();
+    default void done() {
+    }
 
     /**
      * Denote the operation completed failed.
+     * We'd better tell user it.
+     *
+     * @see Callback#done()
      */
     void failed();
 }

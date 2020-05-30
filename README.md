@@ -2,7 +2,7 @@
 
 ## Introduction
 
-An Android library that can manipulate power-related actions with just few lines of code without root privilege.
+An Android library that can manipulate power-related actions with just few lines of code.
 
 (Use `AccessibilityService` and `DevicePolicyManager`)
 

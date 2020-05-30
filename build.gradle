@@ -6,7 +6,9 @@ buildscript {
 
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.6.3'
+        // time to have a rest.
+        // https://github.com/novoda/bintray-release/issues/298#issuecomment-635845436
+        classpath 'com.android.tools.build:gradle:4.0.0'
         classpath 'com.novoda:bintray-release:0.9.2'
 
     }

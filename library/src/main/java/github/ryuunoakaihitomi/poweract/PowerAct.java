@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.app.admin.DevicePolicyManager;
 import android.os.Build;
 import android.util.Log;
 
@@ -45,7 +44,7 @@ public class PowerAct {
      *                 Should not be null.
      * @param callback To return operation status.
      *                 Can be null.
-     * @see DevicePolicyManager#lockNow()
+     * @see android.app.admin.DevicePolicyManager#lockNow()
      * @see android.accessibilityservice.AccessibilityService#GLOBAL_ACTION_LOCK_SCREEN
      */
     public static void lockScreen(@NonNull Activity activity, @Nullable Callback callback) {
