@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.novoda.bintray-release'
+//apply plugin: 'com.novoda.bintray-release'
 
 android {
     compileSdkVersion 29
@@ -30,14 +30,14 @@ dependencies {
 }
 
 // gradlew clean build bintrayUpload -PbintrayUser=BINTRAY_USERNAME -PbintrayKey=BINTRAY_KEY -PdryRun=false
-publish {
-    userOrg = 'ryuunoakaihitomi'
-    groupId = 'github.ryuunoakaihitomi.poweract'
-    artifactId = 'poweract'
-    publishVersion = '1.0.5'
-    desc = 'An Android library that can manipulate power-related actions with just few lines of code.'
-    website = 'https://github.com/ryuunoakaihitomi/PowerAct'
-}
+//publish {
+//    userOrg = 'ryuunoakaihitomi'
+//    groupId = 'github.ryuunoakaihitomi.poweract'
+//    artifactId = 'poweract'
+//    publishVersion = '1.0.5'
+//    desc = 'An Android library that can manipulate power-related actions with just few lines of code.'
+//    website = 'https://github.com/ryuunoakaihitomi/PowerAct'
+//}
 
 // ------- Generate javadoc manually.
 // Upload Files: Rename: poweract-<ver>-javadoc.jar -> Target Path: /github/ryuunoakaihitomi/poweract/poweract/<ver>
