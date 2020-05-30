@@ -31,6 +31,7 @@ public final class PowerButton extends Button implements View.OnClickListener, V
         mPrepareToUse = true;
     }
 
+    @SuppressWarnings("ConstantConditions")
     private static @NonNull
     Activity contextToActivityNoThrow(Context context) {
         try {
