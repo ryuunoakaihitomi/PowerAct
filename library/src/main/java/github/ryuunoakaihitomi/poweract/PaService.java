@@ -38,16 +38,24 @@ public class PaService extends AccessibilityService {
                 Log.e(TAG, "onReceive: Unauthorized token!  Received token is " + receivedToken);
                 return;
             }
-            if (POWER_DIALOG_ACTION.equals(intent.getAction())) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    perform(AccessibilityService.GLOBAL_ACTION_POWER_DIALOG);
-                }
-            } else if (LOCK_SCREEN_ACTION.equals(intent.getAction())) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    perform(AccessibilityService.GLOBAL_ACTION_LOCK_SCREEN);
-                }
-            } else {
-                Log.w(TAG, "onReceive: Unknown intent action.");
+            String action = intent.getAction();
+            if (action == null) {
+                Log.e(TAG, "onReceive: action is null!");
+                return;
+            }
+            switch (action) {
+                case POWER_DIALOG_ACTION:
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        perform(AccessibilityService.GLOBAL_ACTION_POWER_DIALOG);
+                    }
+                    break;
+                case LOCK_SCREEN_ACTION:
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                        perform(AccessibilityService.GLOBAL_ACTION_LOCK_SCREEN);
+                    }
+                    break;
+                default:
+                    Log.w(TAG, "onReceive: Unknown intent action.");
             }
         }
     };
