@@ -8,6 +8,12 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.accessibility.AccessibilityManager;
 
+import androidx.annotation.NonNull;
+
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.IOException;
+
 class Utils {
 
     private static final String TAG = "Utils";
@@ -42,5 +48,35 @@ class Utils {
                 return true;
         }
         return false;
+    }
+
+    public static synchronized boolean runSuJavaWithAppProcess(Context context, Class<?> cls, @NonNull String... args) {
+        final String packageResourcePath = context.getPackageResourcePath();
+        final String className = cls.getName();
+        final String argLine = TextUtils.join(" ", args);
+//        final String cmdDir = "/system/bin";
+        final String cmdDir = File.separator;
+        Process suProcess = null;
+        int exitCode = Integer.MIN_VALUE;
+        try {
+            suProcess = Runtime.getRuntime().exec("su");
+            DataOutputStream stream = new DataOutputStream(suProcess.getOutputStream());
+            stream.writeBytes("export CLASSPATH=" + packageResourcePath + '\n');
+            stream.writeBytes("exec app_process " + cmdDir + " " + className + " " + argLine + '\n');
+            stream.flush();
+        } catch (IOException e) {
+            Log.e(TAG, "runSuJavaWithAppProcess: ", e);
+            return false;
+        } finally {
+            if (suProcess != null) {
+                try {
+                    exitCode = suProcess.waitFor();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        Log.i(TAG, "runSuJavaWithAppProcess: exit code is " + exitCode);
+        return exitCode == 0;
     }
 }

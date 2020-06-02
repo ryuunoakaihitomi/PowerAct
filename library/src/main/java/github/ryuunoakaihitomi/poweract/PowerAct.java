@@ -26,8 +26,7 @@ public class PowerAct {
     /**
      * Go to see {@link PowerAct#lockScreen(Activity, Callback)}.
      *
-     * @param activity Be used to open specific permission request UI and perform power operations.
-     *                 Should not be null.
+     * @param activity As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>activity</code>.
      */
     public static void lockScreen(@NonNull Activity activity) {
         lockScreen(activity, null);
@@ -54,8 +53,7 @@ public class PowerAct {
     /**
      * Go to see {@link PowerAct#showPowerDialog(Activity, Callback)}.
      *
-     * @param activity Be used to open specific permission request user interfaces and perform power operations.
-     *                 Should not be null.
+     * @param activity As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>activity</code>.
      */
     public static void showPowerDialog(@NonNull Activity activity) {
         showPowerDialog(activity, null);
@@ -65,10 +63,8 @@ public class PowerAct {
      * To open the power long-press dialog.
      * <b>The operation can only be available since 21.</b>
      *
-     * @param activity Be used to open specific permission request UI and perform power operations.
-     *                 Should not be null.
-     * @param callback To return operation status.
-     *                 Can be null.
+     * @param activity As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>activity</code>.
+     * @param callback As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>callback</code>.
      * @see android.accessibilityservice.AccessibilityService#GLOBAL_ACTION_POWER_DIALOG
      */
     public static void showPowerDialog(@NonNull Activity activity, @Nullable Callback callback) {

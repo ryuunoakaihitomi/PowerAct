@@ -51,6 +51,8 @@ Create `res/values/poweract_config.xml`
 </resources>
 ```
 
+Class `PowerActX` provides advanced power actions, but it only for rooted environment.
+
 ## Compatibility
 
 **In theory, library should not throw an exception at any time.**

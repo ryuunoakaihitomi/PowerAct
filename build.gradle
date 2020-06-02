@@ -9,8 +9,8 @@ buildscript {
         // time to have a rest.
         // https://github.com/novoda/bintray-release/issues/298#issuecomment-635845436
         classpath 'com.android.tools.build:gradle:4.0.0'
-        classpath 'com.novoda:bintray-release:0.9.2'
-
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
     }
 }
 
@@ -21,9 +21,14 @@ allprojects {
 
     }
     //  Wait for fix: https://github.com/novoda/bintray-release/issues/310
-    tasks.withType(Javadoc).all { enabled = false }
+//    tasks.withType(Javadoc).all { enabled = false }
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+
+ext{
+    compileSdkVersion = 29
 }

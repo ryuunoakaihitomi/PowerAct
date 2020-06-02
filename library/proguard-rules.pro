@@ -30,24 +30,13 @@
 -dontwarn androidx.**
 
 # @Keep
--keep class android.support.annotation.Keep
 -keep class androidx.annotation.Keep
--keep @android.support.annotation.Keep class * {*;}
 -keep @androidx.annotation.Keep class * {*;}
--keepclasseswithmembers class * {
-    @android.support.annotation.Keep <methods>;
-}
 -keepclasseswithmembers class * {
     @androidx.annotation.Keep <methods>;
 }
 -keepclasseswithmembers class * {
-    @android.support.annotation.Keep <fields>;
-}
--keepclasseswithmembers class * {
     @androidx.annotation.Keep <fields>;
-}
--keepclasseswithmembers class * {
-    @android.support.annotation.Keep <init>(...);
 }
 -keepclasseswithmembers class * {
     @androidx.annotation.Keep <init>(...);
@@ -66,5 +55,6 @@
 # Declare classes for the public API
 -keep class github.ryuunoakaihitomi.poweract.Callback {public *;}
 -keep class github.ryuunoakaihitomi.poweract.PowerAct {public *;}
+-keep class github.ryuunoakaihitomi.poweract.PowerActX {public *;}
 -keep class github.ryuunoakaihitomi.poweract.PowerButton {public *;}
 # -----------------------------------------------------------------------------

@@ -1,0 +1,130 @@
+// From https://www.cnblogs.com/mingfeng002/p/10255486.html
+
+apply plugin: 'com.jfrog.bintray'
+// WARNING: Abandoned.
+apply plugin: 'com.github.dcendents.android-maven'
+
+
+group = PROJ_GROUP
+version = PROJ_VERSION
+project.archivesBaseName = PROJ_ARTIFACT_ID
+
+
+// ------- Generate javadoc manually.
+
+task javadoc(type: Javadoc) {
+
+    delete(destinationDir)
+
+    options {
+        locale 'en_US'
+        encoding 'UTF-8'
+        charSet 'UTF-8'
+        author true
+        version true
+        title "$PROJ_NAME $PROJ_VERSION"
+        memberLevel = JavadocMemberLevel.PUBLIC
+    }
+    options.showFromPublic()
+
+    // https://github.com/gradle/gradle/issues/2354#issuecomment-364857181
+    options.addBooleanOption('notree', true)
+    options.addBooleanOption('noindex', true)
+    options.addBooleanOption('nohelp', true)
+    options.addBooleanOption('nonavbar', true)
+
+    source = android.sourceSets.main.java.sourceFiles
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+
+    exclude '**/Pa*'
+}
+
+task javadocJar(type: Jar, dependsOn: 'javadoc') {
+    from javadoc
+    archiveClassifier.set('javadoc')
+}
+
+afterEvaluate {
+    javadoc.classpath += files(android.libraryVariants.collect { variant ->
+        variant.getJavaCompileProvider().get().classpath.files
+    })
+}
+
+// -------
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    archiveClassifier.set('sources')
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
+
+install {
+    repositories.mavenInstaller {
+        pom.project {
+            name PROJ_NAME
+            description PROJ_DESCRIPTION
+            url PROJ_WEBSITE_URL
+
+            packaging 'aar'
+            groupId PROJ_GROUP
+            artifactId PROJ_ARTIFACT_ID
+            version PROJ_VERSION
+
+            licenses {
+                // ['Apache-2.0']
+                license {
+                    name 'The Apache Software License, Version 2.0'
+                    url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    distribution 'repo'
+                }
+            }
+            scm {
+                connection PROJ_VCS_URL
+                url PROJ_WEBSITE_URL
+
+            }
+            developers {
+                developer {
+                    id DEVELOPER_ID
+                    name DEVELOPER_NAME
+                    email DEVELOPER_EMAIL
+                }
+            }
+        }
+    }
+}
+
+bintray {
+
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    user = properties.getProperty('BINTRAY_USER')
+    key = properties.getProperty('BINTRAY_KEY')
+    configurations = ['archives']
+
+    dryRun = false
+    publish = true
+
+    pkg {
+        repo = 'maven'
+        name = PROJ_NAME
+        licenses = ['Apache-2.0']
+        vcsUrl = PROJ_VCS_URL
+        websiteUrl = PROJ_WEBSITE_URL
+        issueTrackerUrl = PROJ_ISSUE_TRACKER_URL
+        publicDownloadNumbers = true
+        version {
+            name = PROJ_VERSION
+            desc = PROJ_DESCRIPTION
+            vcsTag = PROJ_VERSION
+
+            gpg {
+                sign = true
+            }
+        }
+    }
+}

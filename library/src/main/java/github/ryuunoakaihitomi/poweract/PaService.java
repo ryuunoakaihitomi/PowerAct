@@ -145,9 +145,14 @@ public class PaService extends AccessibilityService {
                     .setOngoing(true)
                     .build();
             Notification foregroundNotification = builder.build();
-            int id = new Random().nextInt();
+            int id = randomNonZero();
             Log.i(TAG, "onServiceConnected: notification id = " + id);
             startForeground(id, foregroundNotification);
         }
+    }
+
+    private int randomNonZero() {
+        int ret = new Random().nextInt();
+        return ret == 0 ? randomNonZero() : ret;
     }
 }

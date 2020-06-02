@@ -1,8 +1,10 @@
 apply plugin: 'com.android.library'
+// We no longer use it on Android Studio 4.0,
+// but still keep the relevant code for reference.
 //apply plugin: 'com.novoda.bintray-release'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion rootProject.ext.compileSdkVersion
 
 
     defaultConfig {
@@ -27,6 +29,7 @@ android {
 
 dependencies {
     compileOnly 'androidx.annotation:annotation:1.1.0'
+    compileOnly project(':hidden-api')
 }
 
 // gradlew clean build bintrayUpload -PbintrayUser=BINTRAY_USERNAME -PbintrayKey=BINTRAY_KEY -PdryRun=false
@@ -43,39 +46,4 @@ dependencies {
 // Upload Files: Rename: poweract-<ver>-javadoc.jar -> Target Path: /github/ryuunoakaihitomi/poweract/poweract/<ver>
 // Enable javadoc task in project's build.gradle before run task.
 
-task javadoc(type: Javadoc) {
-
-    delete(destinationDir)
-
-    options {
-        memberLevel = JavadocMemberLevel.PUBLIC
-        locale 'en_US'
-        encoding 'UTF-8'
-        charSet 'UTF-8'
-        links "http://docs.oracle.com/javase/7/docs/api"
-        linksOffline "http://d.android.com/reference", "${android.sdkDirectory}/docs/reference"
-    }
-    options.showFromPublic()
-
-    // https://github.com/gradle/gradle/issues/2354#issuecomment-364857181
-    options.addBooleanOption('notree', true)
-    options.addBooleanOption('noindex', true)
-    options.addBooleanOption('nohelp', true)
-    options.addBooleanOption('nonavbar', true)
-
-    source = android.sourceSets.main.java.sourceFiles
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-
-    exclude '**/Pa*'
-}
-
-task javadocJar(type: Jar, dependsOn: 'javadoc') {
-    from javadoc
-    archiveClassifier.set('javadoc')
-}
-
-afterEvaluate {
-    javadoc.classpath += files(android.libraryVariants.collect { variant ->
-        variant.getJavaCompileProvider().get().classpath.files
-    })
-}
+apply from: 'bintray-release.gradle'

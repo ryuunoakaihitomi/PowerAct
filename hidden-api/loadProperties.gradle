@@ -1,0 +1,14 @@
+Properties loadProperties(fileName) {
+    def localProperties = new File(rootDir, fileName + '.properties')
+    if (localProperties.exists()) {
+        Properties properties = new Properties()
+        localProperties.withInputStream { instr ->
+            properties.load(instr)
+        }
+        return properties
+    }
+}
+
+ext {
+    loadProps = this.&loadProperties
+}

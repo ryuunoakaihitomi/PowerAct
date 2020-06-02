@@ -1,0 +1,18 @@
+apply plugin: 'java-library'
+apply from: "androidJarRef.gradle"
+
+// Before use it, create hidden-api.jar in <hidden-api>\build\libs manually at first.
+// Run gradle: hidden-app -> Tasks -> build -> jar
+
+dependencies {
+    implementation 'androidx.annotation:annotation:1.1.0'
+    compileOnly files("${androidJarPath}")
+
+    //  R8: Unsupported class file version: 56
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}

@@ -1,3 +1,4 @@
 rootProject.name='PowerAct'
 include ':app'
 include ':library'
+include ':hidden-api'
