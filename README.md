@@ -8,14 +8,15 @@ An Android library that can manipulate power-related actions with just few lines
 
 ## Usage
 
-Download
+### Download
 
 [ ![Download](https://api.bintray.com/packages/ryuunoakaihitomi/maven/poweract/images/download.svg) ](https://bintray.com/ryuunoakaihitomi/maven/poweract/_latestVersion)
 
-```gradle
+```groovy
 repositories {
     jcenter()
 }
+
 
 dependencies {
     implementation 'github.ryuunoakaihitomi.poweract:poweract:<latest-version>'
@@ -23,7 +24,20 @@ dependencies {
     
 ```
 
-Use
+### Configure
+
+[Use Java 8 language features and APIs](https://developer.android.google.cn/studio/write/java8-support)
+
+```groovy
+android {
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+```
+
+### Use
 
 ```java
 lockScreenBtn.setOnClickListener(v -> {
@@ -51,11 +65,13 @@ Create `res/values/poweract_config.xml`
 </resources>
 ```
 
-Class `PowerActX` provides advanced power actions, but it only for rooted environment.
+Class `PowerActX` provides advanced power actions, but it only for **rooted** environment.
 
 ## Compatibility
 
 **In theory, library should not throw an exception at any time.**
+
+### PowerAct
 
 API level|Lock Screen|Show System Power Dialog
 :-|-|-
@@ -64,3 +80,10 @@ API level|Lock Screen|Show System Power Dialog
 28+|√+|√
 
 > √+ `Unlock by fingerprint`
+
+### PowerActX
+
+There are few compatibility issues in `PowerActX`. 
+
+> Safe mode cannot work before 16,
+> and shutdown before 17 can only be forced.

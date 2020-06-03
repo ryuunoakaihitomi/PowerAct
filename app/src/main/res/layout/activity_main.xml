@@ -28,4 +28,73 @@
         android:textAllCaps="true"
         tools:ignore="HardcodedText" />
 
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/ls_btn"
+                style="?android:attr/buttonBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lock Screen X"
+                android:textColor="@android:color/holo_red_dark"
+                tools:ignore="HardcodedText" />
+
+            <Button
+                android:id="@+id/rb_btn"
+                style="?android:attr/buttonBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Reboot"
+                tools:ignore="HardcodedText" />
+
+            <Button
+                android:id="@+id/sd_btn"
+                style="?android:attr/buttonBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Shutdown"
+                tools:ignore="HardcodedText" />
+
+            <Button
+                android:id="@+id/rec_btn"
+                style="?android:attr/buttonBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Recovery"
+                tools:ignore="HardcodedText" />
+
+            <Button
+                android:id="@+id/bl_btn"
+                style="?android:attr/buttonBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bootloader"
+                tools:ignore="HardcodedText" />
+
+            <Button
+                android:id="@+id/sm_btn"
+                style="?android:attr/buttonBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Safe Mode"
+                tools:ignore="HardcodedText" />
+
+            <Button
+                android:id="@+id/srb_btn"
+                style="?android:attr/buttonBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Soft Reboot"
+                tools:ignore="HardcodedText" />
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
 </LinearLayout>

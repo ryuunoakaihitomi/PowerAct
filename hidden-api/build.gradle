@@ -2,7 +2,10 @@ apply plugin: 'java-library'
 apply from: "androidJarRef.gradle"
 
 // Before use it, create hidden-api.jar in <hidden-api>\build\libs manually at first.
-// Run gradle: hidden-app -> Tasks -> build -> jar
+// Windows cmd:
+//      mkdir .\hidden-api\build\libs\
+//      fsutil file createnew .\hidden-api\build\libs\hidden-api.jar 0
+// Run gradle task: hidden-app -> Tasks -> build -> jar
 
 dependencies {
     implementation 'androidx.annotation:annotation:1.1.0'

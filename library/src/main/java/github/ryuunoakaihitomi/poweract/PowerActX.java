@@ -116,14 +116,14 @@ public class PowerActX {
     }
 
     /**
-     * Go to see {@link PowerActX#recovery(Callback, boolean)}.
+     * Go to see {@link PowerActX#bootloader(Callback, boolean)}.
      */
     public static void bootloader() {
         bootloader(null);
     }
 
     /**
-     * Go to see {@link PowerActX#recovery(Callback, boolean)}.
+     * Go to see {@link PowerActX#bootloader(Callback, boolean)}.
      *
      * @param callback As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>callback</code>.
      */

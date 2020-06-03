@@ -1,4 +1,5 @@
 // From https://www.cnblogs.com/mingfeng002/p/10255486.html
+// gradlew (install -> bintrayUpload)
 
 apply plugin: 'com.jfrog.bintray'
 // WARNING: Abandoned.
@@ -36,12 +37,14 @@ task javadoc(type: Javadoc) {
     source = android.sourceSets.main.java.sourceFiles
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
 
-    exclude '**/Pa*'
+    exclude '**/Pa*', 'android**'
 }
 
+// I don't know why the javadoc jar's locale can't be changed when I use install task.
+// Execute this task and upload the jar manually.
 task javadocJar(type: Jar, dependsOn: 'javadoc') {
-    from javadoc
     archiveClassifier.set('javadoc')
+    from javadoc.destinationDir
 }
 
 afterEvaluate {
@@ -123,7 +126,7 @@ bintray {
             vcsTag = PROJ_VERSION
 
             gpg {
-                sign = true
+                sign = false // *.asc
             }
         }
     }

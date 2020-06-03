@@ -56,5 +56,13 @@ public class MainActivity extends Activity {
             return false;
         });
 
+        // PowerActX
+        PowerActXTest.setLockScreenActionButton(findViewById(R.id.ls_btn));
+        PowerActXTest.setRebootActionButton(findViewById(R.id.rb_btn));
+        PowerActXTest.setShutdownActionButton(findViewById(R.id.sd_btn));
+        PowerActXTest.setRecoveryActionButton(findViewById(R.id.rec_btn));
+        PowerActXTest.setBootloaderActionButton(findViewById(R.id.bl_btn));
+        PowerActXTest.setSafeModeActionButton(findViewById(R.id.sm_btn));
+        PowerActXTest.setSoftRebootActionButton(findViewById(R.id.srb_btn));
     }
 }

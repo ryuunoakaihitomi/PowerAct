@@ -67,7 +67,7 @@ class PaxExecutor {
 
                 case TOKEN_BOOTLOADER:
                     if (force) {
-                        PaxCompat.execShell("reboot recovery");
+                        PaxCompat.execShell("reboot bootloader");
                     } else {
                         PaxCompat.reboot("bootloader");
                     }

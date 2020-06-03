@@ -32,19 +32,20 @@ class PaxHandler implements InvocationHandler {
         final String forceString = Boolean.toString(force);
         PaxExecApi cmdList = method.getAnnotation(PaxExecApi.class);
         final Callback finalCallback = callback;
-        new Handler(Looper.getMainLooper()).post(() -> {
+        final Handler mainHandler = new Handler(Looper.getMainLooper());
+        new Thread(() -> {
             if (cmdList != null) {
                 Log.d(TAG, "invoke: cmd " + Arrays.asList(cmdList, forceString));
                 boolean returnValue =
                         Utils.runSuJavaWithAppProcess(sApplication,
                                 PaxExecutor.class,
                                 cmdList.value(), forceString);
-                if (returnValue) finalCallback.done();
-                else finalCallback.failed();
+                if (returnValue) mainHandler.post(finalCallback::done);
+                else mainHandler.post(finalCallback::failed);
             } else {
-                finalCallback.failed();
+                mainHandler.post(finalCallback::failed);
             }
-        });
+        }).start();
         // void
         return null;
     }
