@@ -19,14 +19,22 @@
         android:text="System Power Dialog"
         tools:ignore="HardcodedText" />
 
-    <github.ryuunoakaihitomi.poweract.PowerButton
-        android:id="@+id/pwrBtn"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:text="Power Button"
-        android:textAllCaps="true"
-        tools:ignore="HardcodedText" />
+        android:layout_weight="1">
+
+        <github.ryuunoakaihitomi.poweract.PowerButton
+            android:id="@+id/pwrBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Power Button"
+            android:textAllCaps="false"
+            tools:ignore="HardcodedText" />
+
+    </RelativeLayout>
+
 
     <HorizontalScrollView
         android:layout_width="match_parent"

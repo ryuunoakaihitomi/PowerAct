@@ -16,7 +16,7 @@ class PowerActXTest {
     @SuppressLint("StaticFieldLeak")
     private static Context sContext;
 
-    private static Callback sLogCallback = new Callback() {
+    private static final Callback sLogCallback = new Callback() {
         @Override
         public void done() {
             Log.i(TAG, "done: PowerActXTest cb DONE! -------");

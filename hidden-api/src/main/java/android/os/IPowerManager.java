@@ -43,6 +43,12 @@ public interface IPowerManager extends IInterface {
     @TargetApi(N)
     void rebootSafeMode(boolean confirm, boolean wait);
 
+    /**
+     * Crash the runtime (causing a complete restart of the Android framework).
+     * Requires REBOOT permission.  Mostly for testing.  Should not return.
+     */
+    void crash(String message);
+
 
     @SuppressWarnings({"UnnecessaryInterfaceModifier", "unused"})
     public abstract static class Stub extends Binder implements IPowerManager {

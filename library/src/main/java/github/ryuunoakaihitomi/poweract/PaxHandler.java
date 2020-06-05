@@ -40,7 +40,10 @@ class PaxHandler implements InvocationHandler {
                         Utils.runSuJavaWithAppProcess(sApplication,
                                 PaxExecutor.class,
                                 cmdList.value(), forceString);
-                if (returnValue) mainHandler.post(finalCallback::done);
+                if (returnValue) mainHandler.post(() -> {
+                    ExternalUtils.disableExposedComponents(sApplication);
+                    finalCallback.done();
+                });
                 else mainHandler.post(finalCallback::failed);
             } else {
                 mainHandler.post(finalCallback::failed);

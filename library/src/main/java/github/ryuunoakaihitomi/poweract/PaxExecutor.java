@@ -26,7 +26,6 @@ class PaxExecutor {
         if (args != null && args.length == 2 && !TextUtils.isEmpty(args[0])) {
             String token = args[0];
             boolean force = Boolean.parseBoolean(args[1]);
-            PaxCompat.initializePowerService();
             switch (token) {
 
                 case TOKEN_LOCK_SCREEN:
@@ -49,6 +48,7 @@ class PaxExecutor {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                             PaxCompat.shutdown();
                         } else {
+                            // Keep for test.
                             Log.w(TAG, "main: Cannot use pm to shutdown before 17! Forcing...");
                             PaxCompat.execShell(shutdownCmd);
                         }
@@ -91,6 +91,11 @@ class PaxExecutor {
                     break;
 
                 case TOKEN_SOFT_REBOOT:
+                    if (BuildConfig.DEBUG) {
+                        Log.d(TAG, "main: Testing... PowerManagerService.crash() == \"soft reboot\" ?");
+                        PaxCompat.crash();
+                        return;
+                    }
                     SystemService.restart("zygote");
                     break;
 

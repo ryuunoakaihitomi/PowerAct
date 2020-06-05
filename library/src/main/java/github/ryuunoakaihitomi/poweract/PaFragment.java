@@ -12,7 +12,6 @@ import android.provider.Settings;
 import android.util.Log;
 
 import java.util.Random;
-import java.util.UUID;
 
 @SuppressWarnings("deprecation")
 public class PaFragment extends Fragment {
@@ -53,6 +52,9 @@ public class PaFragment extends Fragment {
             mDevicePolicyManager = (DevicePolicyManager) mAssociatedActivity.getSystemService(Context.DEVICE_POLICY_SERVICE);
         }
         if (mAdminReceiverComponentName == null) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+                Utils.setComponentEnabled(mAssociatedActivity, PaReceiver.class, true);
+            }
             mAdminReceiverComponentName = new ComponentName(mAssociatedActivity, PaReceiver.class);
         }
     }
@@ -72,9 +74,19 @@ public class PaFragment extends Fragment {
             if (isAdminActive && !mIsShowPowerDialog) {
                 // lockScreen & adminActive, remove admin automatically.
                 mDevicePolicyManager.removeActiveAdmin(mAdminReceiverComponentName);
+                Utils.setComponentEnabled(activity, PaReceiver.class, false);
             }
             if (!Utils.isAccessibilityServiceEnabled(activity, PaService.class)) {
+                if (!Utils.getComponentEnabled(activity, PaService.class)) {
+                    Utils.setComponentEnabled(activity, PaService.class, true);
+                    // Not be effective immediately. Wait for next request...
+                    // AccessibilityService disabled.
+                    failed();
+                    return;
+                }
                 try {
+                    // If you disabled PaService, and try to enable it.
+                    // You cannot find it in Accessibility Settings instantly.
                     Log.d(TAG, "requestAction: Try to enable Accessibility Service...");
                     Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
                     startActivity(intent);
@@ -147,13 +159,7 @@ public class PaFragment extends Fragment {
 
     private void requireAccessibilityAction() {
         // Send broadcast to show power dialog (21+) or to lock screen (28+).
-        Intent intent = new Intent(mIsShowPowerDialog ? PaService.POWER_DIALOG_ACTION : PaService.LOCK_SCREEN_ACTION);
-        intent.setPackage(mAssociatedActivity.getPackageName());
-        String token = UUID.randomUUID().toString();
-        Log.d(TAG, "requireAction: Set token to " + token);
-        PaService.token = token;
-        intent.putExtra(PaService.EXTRA_TOKEN, token);
-        mAssociatedActivity.sendBroadcast(intent);
+        PaService.sendAction(mAssociatedActivity, mIsShowPowerDialog ? PaService.POWER_DIALOG_ACTION : PaService.LOCK_SCREEN_ACTION);
         done();
     }
 

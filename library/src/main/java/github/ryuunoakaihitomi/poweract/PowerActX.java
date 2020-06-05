@@ -8,6 +8,9 @@ import android.util.Log;
  * Advanced PowerAct to control the device's power state more directly,
  * and can be invoked everywhere without {@link Activity},
  * but requires <b>root</b> permission.
+ * <p>
+ * Note: It will disable all the components that {@link PowerAct} depends on.
+ * Once disabled, they cannot be enabled instantly.
  */
 
 @SuppressWarnings("unused")
@@ -26,7 +29,14 @@ public class PowerActX {
     }
 
     /**
-     * Lock the device without {@link PowerAct#lockScreen(Activity, Callback)}'s restriction.
+     * Lock the device without some {@link PowerAct#lockScreen(Activity, Callback)}'s restriction:
+     * the user can unlock by biometric sensors before 28.
+     * Since 28, We don't need to keep the {@link android.accessibilityservice.AccessibilityService} alive in the background.
+     * <p>
+     * But it's very <b>slow</b>.
+     * In some environments, the user may need to wait a second or longer.
+     * If we use {@link PowerAct#lockScreen(Activity, Callback)} instead,
+     * as long as the relative component is enabled, the effect is almost instant.
      *
      * @param callback As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>callback</code>.
      */
@@ -47,11 +57,12 @@ public class PowerActX {
      * @param callback As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>callback</code>.
      */
     public static void shutdown(Callback callback) {
-        shutdown(null, false);
+        shutdown(callback, false);
     }
 
     /**
      * As its name.
+     * <b>Can only be forced before 17.</b>
      *
      * @param callback As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>callback</code>.
      * @param force    Be true for low-level and instant shutdown process.
@@ -60,7 +71,13 @@ public class PowerActX {
      * @see <a href="https://en.wikipedia.org/wiki/Shutdown_(computing)">Shutdown (computing)</a>
      */
     public static void shutdown(Callback callback, boolean force) {
-        PaxConsole.getInterface().shutdown(callback, force);
+        PaxInterface pi = PaxConsole.getInterface();
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            Log.w(TAG, "shutdown: Can only be forced before 17. BE CAREFUL!");
+            pi.shutdown(callback, true);
+        } else {
+            pi.shutdown(callback, force);
+        }
     }
 
     /**
@@ -76,7 +93,7 @@ public class PowerActX {
      * @param callback As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>callback</code>.
      */
     public static void reboot(Callback callback) {
-        reboot(null, false);
+        reboot(callback, false);
     }
 
     /**
@@ -174,7 +191,7 @@ public class PowerActX {
         } else {
             // Tried on AVD (Android 4.0.3).
             Log.e(TAG, "safeMode: Does not support before 16.");
-            callback.failed();
+            if (callback != null) callback.failed();
         }
     }
 

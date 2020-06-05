@@ -73,7 +73,7 @@ Class `PowerActX` provides advanced power actions, but it only for **rooted** en
 
 ### PowerAct
 
-API level|Lock Screen|Show System Power Dialog
+API level|Lock screen|Show system power dialog
 :-|-|-
 14 ~ 20 |√|×
 21 ~ 27 |√|√

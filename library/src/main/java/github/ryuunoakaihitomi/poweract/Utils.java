@@ -3,6 +3,8 @@ package github.ryuunoakaihitomi.poweract;
 import android.accessibilityservice.AccessibilityService;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.os.SystemClock;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
@@ -51,6 +53,7 @@ class Utils {
     }
 
     public static synchronized boolean runSuJavaWithAppProcess(Context context, Class<?> cls, @NonNull String... args) {
+        final long start = SystemClock.elapsedRealtime();
         final String packageResourcePath = context.getPackageResourcePath();
         final String className = cls.getName();
         final String argLine = TextUtils.join(" ", args);
@@ -65,7 +68,8 @@ class Utils {
             stream.writeBytes("exec app_process " + cmdDir + " " + className + " " + argLine + '\n');
             stream.flush();
         } catch (IOException e) {
-            Log.e(TAG, "runSuJavaWithAppProcess: ", e);
+            Log.e(TAG, "runSuJavaWithAppProcess: " +
+                    "blocked in " + (SystemClock.elapsedRealtime() - start) + " ms.", e);
             return false;
         } finally {
             if (suProcess != null) {
@@ -76,7 +80,21 @@ class Utils {
                 }
             }
         }
-        Log.i(TAG, "runSuJavaWithAppProcess: exit code is " + exitCode);
+        Log.i(TAG, "runSuJavaWithAppProcess: exit code = " + exitCode +
+                ", blocked in " + (SystemClock.elapsedRealtime() - start) + " ms.");
         return exitCode == 0;
+    }
+
+    static void setComponentEnabled(Context context, Class<?> componentClass, boolean enabled) {
+        PackageManager pm = context.getPackageManager();
+        ComponentName cn = new ComponentName(context, componentClass);
+        pm.setComponentEnabledSetting(cn,
+                enabled ? PackageManager.COMPONENT_ENABLED_STATE_DEFAULT : PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP);
+    }
+
+    static boolean getComponentEnabled(Context context, Class<?> componentClass) {
+        final int state = context.getPackageManager().getComponentEnabledSetting(new ComponentName(context, componentClass));
+        return state == PackageManager.COMPONENT_ENABLED_STATE_DEFAULT;
     }
 }

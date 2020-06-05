@@ -20,6 +20,7 @@ public class PaReceiver extends DeviceAdminReceiver {
             Log.w(TAG, "onEnabled: Useless device admin enabled after 28.");
             // >= 28 & adminActive, remove dev admin automatically. (prevent user from enabling it manually)
             getManager(context).removeActiveAdmin(new ComponentName(context, this.getClass()));
+            Utils.setComponentEnabled(context, this.getClass(), false);
         }
     }
 }

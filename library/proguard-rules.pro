@@ -57,4 +57,5 @@
 -keep class github.ryuunoakaihitomi.poweract.PowerAct {public *;}
 -keep class github.ryuunoakaihitomi.poweract.PowerActX {public *;}
 -keep class github.ryuunoakaihitomi.poweract.PowerButton {public *;}
+-keep class github.ryuunoakaihitomi.poweract.ExternalUtils {public *;}
 # -----------------------------------------------------------------------------

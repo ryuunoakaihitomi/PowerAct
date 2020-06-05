@@ -17,14 +17,21 @@ import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 
 import androidx.annotation.RequiresApi;
+import androidx.annotation.StringDef;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.Random;
+import java.util.UUID;
 
 public class PaService extends AccessibilityService {
 
     public static final String
             LOCK_SCREEN_ACTION = BuildConfig.LIBRARY_PACKAGE_NAME + ".LOCK_SCREEN_ACTION",
             POWER_DIALOG_ACTION = BuildConfig.LIBRARY_PACKAGE_NAME + ".POWER_DIALOG_ACTION",
+            DISABLE_SERVICE_ACTION = BuildConfig.LIBRARY_PACKAGE_NAME + ".DISABLE_SERVICE_ACTION",
             EXTRA_TOKEN = "extra_token";
     private static final String TAG = "PaService";
     static String token = "";
@@ -54,11 +61,30 @@ public class PaService extends AccessibilityService {
                         perform(AccessibilityService.GLOBAL_ACTION_LOCK_SCREEN);
                     }
                     break;
+                case DISABLE_SERVICE_ACTION:
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        disableSelf();
+                    } else {
+                        Log.i(TAG, "onReceive: Cannot disable before 24.");
+//                        stopSelf();
+                    }
+                    break;
                 default:
                     Log.w(TAG, "onReceive: Unknown intent action.");
             }
         }
     };
+
+    static void sendAction(Context context, @ActionType String action) {
+        Intent intent = new Intent(action);
+        intent.setPackage(context.getPackageName());
+        String token = UUID.randomUUID().toString();
+        Log.d(TAG, "sendAction: Set token to " + token);
+        PaService.token = token;
+        intent.putExtra(PaService.EXTRA_TOKEN, token);
+        context.sendBroadcast(intent);
+    }
+
     private boolean isBroadcastRegistered;
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -70,16 +96,12 @@ public class PaService extends AccessibilityService {
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        return START_STICKY;    // Keep alive in some env.
-    }
-
-    @Override
     protected void onServiceConnected() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction(LOCK_SCREEN_ACTION);
             intentFilter.addAction(POWER_DIALOG_ACTION);
+            intentFilter.addAction(DISABLE_SERVICE_ACTION);
             registerReceiver(mBroadcastReceiver, intentFilter);
             isBroadcastRegistered = true;
             if (getResources().getBoolean(R.bool.poweract_accessibility_service_show_foreground_notification)) {
@@ -87,7 +109,23 @@ public class PaService extends AccessibilityService {
             }
         } else {
             Log.w(TAG, "onServiceConnected: Useless service enabled before 21.");
+            Utils.setComponentEnabled(getApplicationContext(), this.getClass(), false);
         }
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return START_STICKY;    // Keep alive in some env.
+    }
+
+    @StringDef({
+            LOCK_SCREEN_ACTION,
+            POWER_DIALOG_ACTION,
+            DISABLE_SERVICE_ACTION
+    })
+    @Target(ElementType.PARAMETER)
+    @Retention(RetentionPolicy.SOURCE)
+    private @interface ActionType {
     }
 
     @Override
