@@ -61,6 +61,15 @@ public class PowerActX {
     }
 
     /**
+     * Go to see {@link PowerActX#shutdown(Callback, boolean)}.
+     *
+     * @param force As {@link PowerActX#shutdown(Callback, boolean)}'s <code>force</code>.
+     */
+    public static void shutdown(boolean force) {
+        shutdown(null, force);
+    }
+
+    /**
      * As its name.
      * <b>Can only be forced before 17.</b>
      *
@@ -88,12 +97,21 @@ public class PowerActX {
     }
 
     /**
-     * Go to see {@link PowerActX#reboot(Callback, boolean)}
+     * Go to see {@link PowerActX#reboot(Callback, boolean)}.
      *
      * @param callback As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>callback</code>.
      */
     public static void reboot(Callback callback) {
         reboot(callback, false);
+    }
+
+    /**
+     * Go to see {@link PowerActX#reboot(Callback, boolean)}.
+     *
+     * @param force As {@link PowerActX#shutdown(Callback, boolean)}'s <code>force</code>.
+     */
+    public static void reboot(boolean force) {
+        reboot(null, force);
     }
 
     /**
@@ -123,6 +141,15 @@ public class PowerActX {
     }
 
     /**
+     * Go to see {@link PowerActX#recovery(Callback, boolean)}.
+     *
+     * @param force As {@link PowerActX#shutdown(Callback, boolean)}'s <code>force</code>.
+     */
+    public static void recovery(boolean force) {
+        recovery(null, force);
+    }
+
+    /**
      * Reboot the device to recovery.
      *
      * @param callback As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>callback</code>.
@@ -148,6 +175,14 @@ public class PowerActX {
         bootloader(callback, false);
     }
 
+    /**
+     * Go to see {@link PowerActX#bootloader(Callback, boolean)}.
+     *
+     * @param force As {@link PowerActX#shutdown(Callback, boolean)}'s <code>force</code>.
+     */
+    public static void bootloader(boolean force) {
+        bootloader(null, force);
+    }
 
     /**
      * Reboot the device to bootloader.
@@ -174,6 +209,15 @@ public class PowerActX {
      */
     public static void safeMode(Callback callback) {
         safeMode(callback, false);
+    }
+
+    /**
+     * Go to see {@link PowerActX#safeMode(Callback, boolean)}.
+     *
+     * @param force As {@link PowerActX#shutdown(Callback, boolean)}'s <code>force</code>.
+     */
+    public static void safeMode(boolean force) {
+        safeMode(null, force);
     }
 
     /**

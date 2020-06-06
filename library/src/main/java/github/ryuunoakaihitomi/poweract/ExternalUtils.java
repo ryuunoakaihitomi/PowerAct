@@ -6,6 +6,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import java.util.Arrays;
 
 /**
@@ -30,7 +32,7 @@ public class ExternalUtils {
      * @param context Context for building {@link android.content.ComponentName}
      *                and {@link android.content.BroadcastReceiver}.
      */
-    public static void disableExposedComponents(Context context) {
+    public static void disableExposedComponents(@NonNull Context context) {
         final boolean
                 receiverEnabled = Utils.getComponentEnabled(context, PaReceiver.class),
                 serviceEnabled = Utils.getComponentEnabled(context, PaService.class);
