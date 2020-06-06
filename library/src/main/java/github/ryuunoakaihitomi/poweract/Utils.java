@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 class Utils {
 
@@ -86,11 +87,14 @@ class Utils {
     }
 
     static void setComponentEnabled(Context context, Class<?> componentClass, boolean enabled) {
-        PackageManager pm = context.getPackageManager();
-        ComponentName cn = new ComponentName(context, componentClass);
-        pm.setComponentEnabledSetting(cn,
-                enabled ? PackageManager.COMPONENT_ENABLED_STATE_DEFAULT : PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                PackageManager.DONT_KILL_APP);
+        if (getComponentEnabled(context, componentClass) != enabled) {
+            Log.d(TAG, "setComponentEnabled: Update state: " + Arrays.asList(componentClass.getSimpleName(), enabled));
+            PackageManager pm = context.getPackageManager();
+            ComponentName cn = new ComponentName(context, componentClass);
+            pm.setComponentEnabledSetting(cn,
+                    enabled ? PackageManager.COMPONENT_ENABLED_STATE_DEFAULT : PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                    PackageManager.DONT_KILL_APP);
+        }
     }
 
     static boolean getComponentEnabled(Context context, Class<?> componentClass) {

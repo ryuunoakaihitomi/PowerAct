@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!-- PowerAct(without X) xml resources configuration -->
 <resources>
     <!-- Let user know which service he/she/it wants to enable. -->
     <public name="poweract_accessibility_service_label" type="string" />

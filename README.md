@@ -52,7 +52,7 @@ powerDialogBtn.setOnClickListener(v -> {
 PowerButton powerButton = findViewById(R.id.pwrBtn);
 ```
 
-Create `res/values/poweract_config.xml`
+Create [`res/values/poweract_config.xml`](library/src/main/res/values/public.xml)
 
 ```xml
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="UnusedResources">
@@ -66,6 +66,8 @@ Create `res/values/poweract_config.xml`
 ```
 
 Class `PowerActX` provides advanced power actions, but it only for **rooted** environment.
+
+If you want to know more, click the download badge, download the `*javadoc.jar` and decompress it. ~~(excluding the xml's config)~~
 
 ## Compatibility
 

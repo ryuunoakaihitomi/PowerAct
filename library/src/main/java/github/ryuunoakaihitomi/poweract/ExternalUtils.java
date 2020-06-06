@@ -1,6 +1,8 @@
 package github.ryuunoakaihitomi.poweract;
 
 
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.util.Log;
 
@@ -29,14 +31,23 @@ public class ExternalUtils {
      *                and {@link android.content.BroadcastReceiver}.
      */
     public static void disableExposedComponents(Context context) {
+        final boolean
+                receiverEnabled = Utils.getComponentEnabled(context, PaReceiver.class),
+                serviceEnabled = Utils.getComponentEnabled(context, PaService.class);
         if (BuildConfig.DEBUG) {
             Log.i(TAG, "disableExposedComponents: Current states [receiver, service]: " +
-                    Arrays.asList(
-                            Utils.getComponentEnabled(context, PaReceiver.class),
-                            Utils.getComponentEnabled(context, PaService.class)));
+                    Arrays.asList(receiverEnabled, serviceEnabled));
         }
-        Utils.setComponentEnabled(context, PaReceiver.class, false);
-        PaService.sendAction(context, PaService.DISABLE_SERVICE_ACTION);
-        Utils.setComponentEnabled(context, PaService.class, false);
+        if (receiverEnabled) {
+            DevicePolicyManager dpm = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
+            if (dpm != null) {
+                dpm.removeActiveAdmin(new ComponentName(context, PaReceiver.class));
+            }
+            Utils.setComponentEnabled(context, PaReceiver.class, false);
+        }
+        if (serviceEnabled) {
+            PaService.sendAction(context, PaService.DISABLE_SERVICE_ACTION);
+            Utils.setComponentEnabled(context, PaService.class, false);
+        }
     }
 }
