@@ -4,7 +4,7 @@
 
 An Android library that can manipulate power-related actions with just few lines of code.
 
-(Use `AccessibilityService` and `DevicePolicyManager`)
+(Using `AccessibilityService` and `DevicePolicyManager` or root)
 
 ## Usage
 
