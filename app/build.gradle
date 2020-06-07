@@ -27,5 +27,7 @@ android {
 }
 
 dependencies {
+    // Test aar release.
+//    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
     implementation project(':library')
 }

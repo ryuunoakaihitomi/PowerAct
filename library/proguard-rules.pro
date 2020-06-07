@@ -52,10 +52,27 @@
     public static int v(...);
     public static int d(...);
 }
+
 # Declare classes for the public API
 -keep class github.ryuunoakaihitomi.poweract.Callback {public *;}
 -keep class github.ryuunoakaihitomi.poweract.PowerAct {public *;}
 -keep class github.ryuunoakaihitomi.poweract.PowerActX {public *;}
 -keep class github.ryuunoakaihitomi.poweract.PowerButton {public *;}
 -keep class github.ryuunoakaihitomi.poweract.ExternalUtils {public *;}
+
+# Keep parameters name
+# https://www.guardsquare.com/en/products/proguard/manual/usage
+# https://www.guardsquare.com/en/products/proguard/manual/usage/attributes
+-keepparameternames
+-keepattributes MethodParameters
+
+# Producing useful obfuscated stack traces
+# https://www.guardsquare.com/en/products/proguard/manual/examples#stacktrace
+-renamesourcefileattribute SourceFile
+-keepattributes SourceFile,LineNumberTable
+
+# Keep main entry
+-keepclassmembers class * {
+    public static void main(java.lang.String[]);
+}
 # -----------------------------------------------------------------------------
