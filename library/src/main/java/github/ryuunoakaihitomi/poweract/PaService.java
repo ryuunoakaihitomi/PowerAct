@@ -65,8 +65,10 @@ public class PaService extends AccessibilityService {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         disableSelf();
                     } else {
-                        Log.i(TAG, "onReceive: Cannot disable before 24.");
+                        Log.w(TAG, "onReceive: Cannot disable it before 24.");
 //                        stopSelf();
+                        stopForeground(true);
+                        unregisterReceiver(this);
                     }
                     break;
                 default:

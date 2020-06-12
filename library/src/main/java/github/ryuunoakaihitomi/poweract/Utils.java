@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.accessibility.AccessibilityManager;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.WorkerThread;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -53,6 +54,7 @@ class Utils {
         return false;
     }
 
+    @WorkerThread
     public static synchronized boolean runSuJavaWithAppProcess(Context context, Class<?> cls, @NonNull String... args) {
         final long start = SystemClock.elapsedRealtime();
         final String packageResourcePath = context.getPackageResourcePath();
