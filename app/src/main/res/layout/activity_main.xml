@@ -3,21 +3,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:ignore="HardcodedText">
 
     <Button
         android:id="@+id/lockScreenBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Lock Screen"
-        tools:ignore="HardcodedText" />
+        android:text="Lock Screen" />
 
     <Button
         android:id="@+id/powerDialogBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="System Power Dialog"
-        tools:ignore="HardcodedText" />
+        android:text="System Power Dialog" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -30,8 +29,17 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="Power Button"
-            android:textAllCaps="false"
-            tools:ignore="HardcodedText" />
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/disComBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/pwrBtn"
+            android:layout_centerHorizontal="true"
+            android:text="Disable\nComponent"
+            android:textAllCaps="true"
+            android:textColor="@android:color/holo_orange_light" />
 
     </RelativeLayout>
 
@@ -50,56 +58,49 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Lock Screen X"
-                android:textColor="@android:color/holo_red_dark"
-                tools:ignore="HardcodedText" />
+                android:textColor="@android:color/holo_red_dark" />
 
             <Button
                 android:id="@+id/rb_btn"
                 style="?android:attr/buttonBarStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Reboot"
-                tools:ignore="HardcodedText" />
+                android:text="Reboot" />
 
             <Button
                 android:id="@+id/sd_btn"
                 style="?android:attr/buttonBarStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Shutdown"
-                tools:ignore="HardcodedText" />
+                android:text="Shutdown" />
 
             <Button
                 android:id="@+id/rec_btn"
                 style="?android:attr/buttonBarStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Recovery"
-                tools:ignore="HardcodedText" />
+                android:text="Recovery" />
 
             <Button
                 android:id="@+id/bl_btn"
                 style="?android:attr/buttonBarStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Bootloader"
-                tools:ignore="HardcodedText" />
+                android:text="Bootloader" />
 
             <Button
                 android:id="@+id/sm_btn"
                 style="?android:attr/buttonBarStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Safe Mode"
-                tools:ignore="HardcodedText" />
+                android:text="Safe Mode" />
 
             <Button
                 android:id="@+id/srb_btn"
                 style="?android:attr/buttonBarStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Soft Reboot"
-                tools:ignore="HardcodedText" />
+                android:text="Soft Reboot" />
 
         </LinearLayout>
 

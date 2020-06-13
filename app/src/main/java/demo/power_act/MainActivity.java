@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import github.ryuunoakaihitomi.poweract.Callback;
+import github.ryuunoakaihitomi.poweract.ExternalUtils;
 import github.ryuunoakaihitomi.poweract.PowerAct;
 import github.ryuunoakaihitomi.poweract.PowerButton;
 
@@ -64,5 +65,9 @@ public class MainActivity extends Activity {
         PowerActXTest.setBootloaderActionButton(findViewById(R.id.bl_btn));
         PowerActXTest.setSafeModeActionButton(findViewById(R.id.sm_btn));
         PowerActXTest.setSoftRebootActionButton(findViewById(R.id.srb_btn));
+
+        findViewById(R.id.disComBtn).setOnClickListener(v ->
+                // Disable exposed components manually.
+                ExternalUtils.disableExposedComponents(getApplicationContext()));
     }
 }
