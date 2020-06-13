@@ -6,6 +6,7 @@ apply from: "androidJarRef.gradle"
 //      mkdir .\hidden-api\build\libs\
 //      fsutil file createnew .\hidden-api\build\libs\hidden-api.jar 0
 // Run gradle task: hidden-app -> Tasks -> build -> jar
+//                 or execute cmd: gradlew hidden-api:build
 // After changing the hidden api, rebuild the jar.
 
 dependencies {

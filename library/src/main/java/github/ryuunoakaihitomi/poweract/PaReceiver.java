@@ -15,7 +15,6 @@ public class PaReceiver extends DeviceAdminReceiver {
 
     @Override
     public void onEnabled(@NonNull Context context, @NonNull Intent intent) {
-        super.onEnabled(context, intent);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             Log.w(TAG, "onEnabled: Useless device admin enabled after 28.");
             // >= 28 & adminActive, remove dev admin automatically. (prevent user from enabling it manually)
