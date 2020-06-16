@@ -9,12 +9,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.provider.Settings;
-import android.util.Log;
 
 import java.util.Random;
 
 @SuppressWarnings("deprecation")
-public class PaFragment extends Fragment {
+public final class PaFragment extends Fragment {
 
     private static final String TAG = "PaFragment";
 
@@ -27,12 +26,12 @@ public class PaFragment extends Fragment {
 
         @Override
         public void done() {
-            Log.d(TAG, "done: normal callback.");
+            DebugLog.d(TAG, "done: normal callback.");
         }
 
         @Override
         public void failed() {
-            Log.d(TAG, "failed: normal callback.");
+            DebugLog.d(TAG, "failed: normal callback.");
         }
     };
 
@@ -64,7 +63,7 @@ public class PaFragment extends Fragment {
         Activity activity = getActivity();
         if (callback != null) mCallback = callback;
         if (activity == null) {
-            Log.e(TAG, "requestAction: Activity does not prepare!");
+            DebugLog.e(TAG, "requestAction: Activity does not prepare!");
             failed();
             return;
         }
@@ -87,15 +86,15 @@ public class PaFragment extends Fragment {
                 try {
                     // If you disabled PaService, and try to enable it.
                     // You cannot find it in Accessibility Settings instantly.
-                    Log.d(TAG, "requestAction: Try to enable Accessibility Service...");
+                    DebugLog.d(TAG, "requestAction: Try to enable Accessibility Service...");
                     Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
                     startActivity(intent);
                     mHasRequestedAccessibility = true;
                 } catch (ActivityNotFoundException e) {
                     // ActivityNotFoundException: Settings.ACTION_ACCESSIBILITY_SETTINGS
                     failed();
-                } /* For some fking weird env. */ catch (SecurityException e) {
-                    Log.e(TAG, "requestAction: ", e);
+                } /* For some weird env. */ catch (SecurityException e) {
+                    DebugLog.e(TAG, "requestAction: ", e);
                     failed();
                 }
             } else {
@@ -122,9 +121,9 @@ public class PaFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume");
+        DebugLog.d(TAG, "onResume");
         if (!mFirstRun) {
-            Log.d(TAG, "onResume: First run. There's not accessibility settings ui now");
+            DebugLog.d(TAG, "onResume: First run. There's not accessibility settings ui now");
             mFirstRun = true;
         } else if (mHasRequestedAccessibility) {
             mHasRequestedAccessibility = false;
@@ -140,7 +139,7 @@ public class PaFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d(TAG, "onActivityResult");
+        DebugLog.d(TAG, "onActivityResult");
         if (mRequestCode == requestCode) {
             if (resultCode == Activity.RESULT_OK) {
                 if (mDevicePolicyManager.isAdminActive(mAdminReceiverComponentName)) {
@@ -164,13 +163,13 @@ public class PaFragment extends Fragment {
     }
 
     private void done() {
-        Log.d(TAG, "done...");
+        DebugLog.d(TAG, "done...");
         mCallback.done();
         detach();
     }
 
     private void failed() {
-        Log.d(TAG, "failed...");
+        DebugLog.d(TAG, "failed...");
         mCallback.failed();
         detach();
     }
@@ -182,6 +181,6 @@ public class PaFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        Log.v(TAG, "onDetach");
+        DebugLog.v(TAG, "onDetach");
     }
 }

@@ -5,7 +5,6 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Build;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,9 +23,9 @@ public class PowerAct {
     }
 
     /**
-     * Go to see {@link PowerAct#lockScreen(Activity, Callback)}.
+     * Go to see {@link #lockScreen(Activity, Callback)}.
      *
-     * @param activity As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>activity</code>.
+     * @param activity As {@link #lockScreen(Activity, Callback)}'s <code>activity</code>.
      */
     public static void lockScreen(@NonNull Activity activity) {
         lockScreen(activity, null);
@@ -51,9 +50,9 @@ public class PowerAct {
     }
 
     /**
-     * Go to see {@link PowerAct#showPowerDialog(Activity, Callback)}.
+     * Go to see {@link #showPowerDialog(Activity, Callback)}.
      *
-     * @param activity As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>activity</code>.
+     * @param activity As {@link #lockScreen(Activity, Callback)}'s <code>activity</code>.
      */
     public static void showPowerDialog(@NonNull Activity activity) {
         showPowerDialog(activity, null);
@@ -63,8 +62,8 @@ public class PowerAct {
      * To open the power long-press dialog.
      * <b>The operation can only be available since 21.</b>
      *
-     * @param activity As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>activity</code>.
-     * @param callback As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>callback</code>.
+     * @param activity As {@link #lockScreen(Activity, Callback)}'s <code>activity</code>.
+     * @param callback As {@link #lockScreen(Activity, Callback)}'s <code>callback</code>.
      * @see android.accessibilityservice.AccessibilityService#GLOBAL_ACTION_POWER_DIALOG
      */
     public static void showPowerDialog(@NonNull Activity activity, @Nullable Callback callback) {
@@ -73,12 +72,12 @@ public class PowerAct {
 
     private static void requestAction(Activity activity, Callback callback, boolean isShowPowerDialog) {
         if (activity == null) {
-            Log.e(TAG, "requestAction: Activity is null!");
+            DebugLog.e(TAG, "requestAction: Activity is null!");
             if (callback != null) callback.failed();
             return;
         }
         if (isShowPowerDialog && Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            Log.e(TAG, "requestAction: Cannot show power dialog before API level 21!");
+            DebugLog.e(TAG, "requestAction: Cannot show power dialog before API level 21!");
             if (callback != null) callback.failed();
             return;
         }

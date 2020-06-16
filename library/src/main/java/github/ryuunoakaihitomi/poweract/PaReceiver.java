@@ -5,18 +5,17 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-public class PaReceiver extends DeviceAdminReceiver {
+public final class PaReceiver extends DeviceAdminReceiver {
 
     private static final String TAG = "PaReceiver";
 
     @Override
     public void onEnabled(@NonNull Context context, @NonNull Intent intent) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            Log.w(TAG, "onEnabled: Useless device admin enabled after 28.");
+            DebugLog.w(TAG, "onEnabled: Useless device admin enabled after 28.");
             // >= 28 & adminActive, remove dev admin automatically. (prevent user from enabling it manually)
             getManager(context).removeActiveAdmin(new ComponentName(context, this.getClass()));
             Utils.setComponentEnabled(context, this.getClass(), false);

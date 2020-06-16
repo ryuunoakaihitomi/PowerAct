@@ -26,7 +26,7 @@ dependencies {
 
 ### Configure
 
-[Use Java 8 language features and APIs](https://developer.android.google.cn/studio/write/java8-support)
+[Use Java 8 language features and APIs](https://developer.android.com/studio/write/java8-support)
 
 ```groovy
 android {

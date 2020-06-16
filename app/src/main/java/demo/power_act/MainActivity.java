@@ -9,6 +9,7 @@ import android.widget.Toast;
 import github.ryuunoakaihitomi.poweract.Callback;
 import github.ryuunoakaihitomi.poweract.ExternalUtils;
 import github.ryuunoakaihitomi.poweract.PowerAct;
+import github.ryuunoakaihitomi.poweract.PowerActX;
 import github.ryuunoakaihitomi.poweract.PowerButton;
 
 
@@ -21,26 +22,28 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        getApplication().registerActivityLifecycleCallbacks(new DebugALC());
-
         Button lockScreenBtn = findViewById(R.id.lockScreenBtn);
         Button powerDialogBtn = findViewById(R.id.powerDialogBtn);
 
+        // Create callback object
         final Callback callback = new Callback() {
 
             @Override
             public void done() {
+                Log.i(TAG, "done: PowerAct cb DONE! -------");
                 finish();
             }
 
             @Override
             public void failed() {
+                Log.e(TAG, "failed: PowerActX cb FAILED! *******");
                 Toast.makeText(getApplicationContext(), "Denied", Toast.LENGTH_SHORT).show();
             }
         };
 
         Activity activity = this;
 
+        // PowerAct examples
         lockScreenBtn.setOnClickListener(v -> {
             // Lock screen, without callback.
             PowerAct.lockScreen(activity);
@@ -57,17 +60,38 @@ public class MainActivity extends Activity {
             return false;
         });
 
-        // PowerActX
-        PowerActXTest.setLockScreenActionButton(findViewById(R.id.ls_btn));
-        PowerActXTest.setRebootActionButton(findViewById(R.id.rb_btn));
-        PowerActXTest.setShutdownActionButton(findViewById(R.id.sd_btn));
-        PowerActXTest.setRecoveryActionButton(findViewById(R.id.rec_btn));
-        PowerActXTest.setBootloaderActionButton(findViewById(R.id.bl_btn));
-        PowerActXTest.setSafeModeActionButton(findViewById(R.id.sm_btn));
-        PowerActXTest.setSoftRebootActionButton(findViewById(R.id.srb_btn));
+        // PowerActX examples
+        /*
+         * Usage:
+         * PowerActX.<action>()
+         * PowerActX.<action>(callback)
+         * PowerActX.<action>(force)
+         * PowerActX.<action>(callback, force)
+         */
+        setXButtonAction(R.id.ls_btn, () -> PowerActX.lockScreen(callback), null);
+        setXButtonAction(R.id.rb_btn, () -> PowerActX.reboot(callback), () -> PowerActX.reboot(callback, true));
+        setXButtonAction(R.id.sd_btn, () -> PowerActX.shutdown(callback), () -> PowerActX.shutdown(callback, true));
+        setXButtonAction(R.id.rec_btn, () -> PowerActX.recovery(callback), () -> PowerActX.recovery(callback, true));
+        setXButtonAction(R.id.bl_btn, () -> PowerActX.bootloader(callback), () -> PowerActX.bootloader(callback, true));
+        setXButtonAction(R.id.sm_btn, () -> PowerActX.safeMode(callback), () -> PowerActX.safeMode(callback, true));
+        setXButtonAction(R.id.srb_btn, () -> PowerActX.softReboot(callback), null);
 
         findViewById(R.id.disComBtn).setOnClickListener(v ->
                 // Disable exposed components manually.
                 ExternalUtils.disableExposedComponents(getApplicationContext()));
+
+        // Control logcat output.
+        ExternalUtils.enableLog(true);
+    }
+
+    private void setXButtonAction(int btnRes, Runnable action, Runnable longClickAction) {
+        Button button = findViewById(btnRes);
+        button.setOnClickListener(v -> action.run());
+        if (longClickAction != null) {
+            button.setOnLongClickListener(v -> {
+                longClickAction.run();
+                return true;
+            });
+        }
     }
 }

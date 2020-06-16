@@ -4,7 +4,6 @@ package github.ryuunoakaihitomi.poweract;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -13,7 +12,7 @@ import java.util.Arrays;
 /**
  * Public utilities.
  */
-public class ExternalUtils {
+public final class ExternalUtils {
 
     private static final String TAG = "ExternalUtils";
 
@@ -37,7 +36,7 @@ public class ExternalUtils {
                 receiverEnabled = Utils.getComponentEnabled(context, PaReceiver.class),
                 serviceEnabled = Utils.getComponentEnabled(context, PaService.class);
         if (BuildConfig.DEBUG) {
-            Log.i(TAG, "disableExposedComponents: Current states [receiver, service]: " +
+            DebugLog.i(TAG, "disableExposedComponents: Current states [receiver, service]: " +
                     Arrays.asList(receiverEnabled, serviceEnabled));
         }
         if (receiverEnabled) {
@@ -51,5 +50,20 @@ public class ExternalUtils {
             PaService.sendAction(context, PaService.DISABLE_SERVICE_ACTION);
             Utils.setComponentEnabled(context, PaService.class, false);
         }
+    }
+
+    /**
+     * Enable or disable logcat output.
+     * The default value is <b>true</b>.
+     * <p>
+     * Example: You can turn off log output in the release version:
+     * <pre>
+     * ExternalUtils.enableLog(BuildConfig.DEBUG);
+     * </pre>
+     *
+     * @param isEnabled ↑
+     */
+    public static void enableLog(boolean isEnabled) {
+        DebugLog.isOutput = isEnabled;
     }
 }

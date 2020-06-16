@@ -17,7 +17,7 @@ public interface Callback {
      * Denote the operation completed failed.
      * We'd better tell user it.
      *
-     * @see Callback#done()
+     * @see #done()
      */
     void failed();
 }

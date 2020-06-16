@@ -1,7 +1,5 @@
 package github.ryuunoakaihitomi.poweract;
 
-import android.util.Log;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 
@@ -16,7 +14,7 @@ class PaxConsole {
 
     public static PaxInterface getInterface() {
         if (sInterface == null) {
-            Log.d(TAG, "getInterface: initializing interface...");
+            DebugLog.d(TAG, "getInterface: initializing interface...");
             ClassLoader loader = PaxInterface.class.getClassLoader();
             Class<?>[] interfaces = new Class[]{PaxInterface.class};
             InvocationHandler handler = new PaxHandler();

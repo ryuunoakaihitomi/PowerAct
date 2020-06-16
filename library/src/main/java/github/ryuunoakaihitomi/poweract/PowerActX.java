@@ -22,7 +22,7 @@ public class PowerActX {
     }
 
     /**
-     * Go to see {@link PowerActX#lockScreen(Callback)}.
+     * Go to see {@link #lockScreen(Callback)}.
      */
     public static void lockScreen() {
         lockScreen(null);
@@ -45,14 +45,14 @@ public class PowerActX {
     }
 
     /**
-     * Go to see {@link PowerActX#shutdown(Callback, boolean)}.
+     * Go to see {@link #shutdown(Callback, boolean)}.
      */
     public static void shutdown() {
         shutdown(null);
     }
 
     /**
-     * Go to see {@link PowerActX#shutdown(Callback, boolean)}.
+     * Go to see {@link #shutdown(Callback, boolean)}.
      *
      * @param callback As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>callback</code>.
      */
@@ -61,9 +61,9 @@ public class PowerActX {
     }
 
     /**
-     * Go to see {@link PowerActX#shutdown(Callback, boolean)}.
+     * Go to see {@link #shutdown(Callback, boolean)}.
      *
-     * @param force As {@link PowerActX#shutdown(Callback, boolean)}'s <code>force</code>.
+     * @param force As {@link #shutdown(Callback, boolean)}'s <code>force</code>.
      */
     public static void shutdown(boolean force) {
         shutdown(null, force);
@@ -90,14 +90,14 @@ public class PowerActX {
     }
 
     /**
-     * Go to see {@link PowerActX#reboot(Callback, boolean)}.
+     * Go to see {@link #reboot(Callback, boolean)}.
      */
     public static void reboot() {
         reboot(null);
     }
 
     /**
-     * Go to see {@link PowerActX#reboot(Callback, boolean)}.
+     * Go to see {@link #reboot(Callback, boolean)}.
      *
      * @param callback As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>callback</code>.
      */
@@ -106,9 +106,9 @@ public class PowerActX {
     }
 
     /**
-     * Go to see {@link PowerActX#reboot(Callback, boolean)}.
+     * Go to see {@link #reboot(Callback, boolean)}.
      *
-     * @param force As {@link PowerActX#shutdown(Callback, boolean)}'s <code>force</code>.
+     * @param force As {@link #shutdown(Callback, boolean)}'s <code>force</code>.
      */
     public static void reboot(boolean force) {
         reboot(null, force);
@@ -118,21 +118,21 @@ public class PowerActX {
      * Reboot the device.
      *
      * @param callback As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>callback</code>.
-     * @param force    As {@link PowerActX#shutdown(Callback, boolean)}'s <code>force</code>.
+     * @param force    As {@link #shutdown(Callback, boolean)}'s <code>force</code>.
      */
     public static void reboot(Callback callback, boolean force) {
         PaxConsole.getInterface().reboot(callback, force);
     }
 
     /**
-     * Go to see {@link PowerActX#recovery(Callback, boolean)}.
+     * Go to see {@link #recovery(Callback, boolean)}.
      */
     public static void recovery() {
         recovery(null);
     }
 
     /**
-     * Go to see {@link PowerActX#recovery(Callback, boolean)}.
+     * Go to see {@link #recovery(Callback, boolean)}.
      *
      * @param callback As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>callback</code>.
      */
@@ -141,9 +141,9 @@ public class PowerActX {
     }
 
     /**
-     * Go to see {@link PowerActX#recovery(Callback, boolean)}.
+     * Go to see {@link #recovery(Callback, boolean)}.
      *
-     * @param force As {@link PowerActX#shutdown(Callback, boolean)}'s <code>force</code>.
+     * @param force As {@link #shutdown(Callback, boolean)}'s <code>force</code>.
      */
     public static void recovery(boolean force) {
         recovery(null, force);
@@ -153,21 +153,21 @@ public class PowerActX {
      * Reboot the device to recovery.
      *
      * @param callback As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>callback</code>.
-     * @param force    As {@link PowerActX#shutdown(Callback, boolean)}'s <code>force</code>.
+     * @param force    As {@link #shutdown(Callback, boolean)}'s <code>force</code>.
      */
     public static void recovery(Callback callback, boolean force) {
         PaxConsole.getInterface().recovery(callback, force);
     }
 
     /**
-     * Go to see {@link PowerActX#bootloader(Callback, boolean)}.
+     * Go to see {@link #bootloader(Callback, boolean)}.
      */
     public static void bootloader() {
         bootloader(null);
     }
 
     /**
-     * Go to see {@link PowerActX#bootloader(Callback, boolean)}.
+     * Go to see {@link #bootloader(Callback, boolean)}.
      *
      * @param callback As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>callback</code>.
      */
@@ -176,9 +176,9 @@ public class PowerActX {
     }
 
     /**
-     * Go to see {@link PowerActX#bootloader(Callback, boolean)}.
+     * Go to see {@link #bootloader(Callback, boolean)}.
      *
-     * @param force As {@link PowerActX#shutdown(Callback, boolean)}'s <code>force</code>.
+     * @param force As {@link #shutdown(Callback, boolean)}'s <code>force</code>.
      */
     public static void bootloader(boolean force) {
         bootloader(null, force);
@@ -189,21 +189,21 @@ public class PowerActX {
      * In this mode, we can control the device with <code>fastboot</code> command-line tool.
      *
      * @param callback As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>callback</code>.
-     * @param force    As {@link PowerActX#shutdown(Callback, boolean)}'s <code>force</code>.
+     * @param force    As {@link #shutdown(Callback, boolean)}'s <code>force</code>.
      */
     public static void bootloader(Callback callback, boolean force) {
         PaxConsole.getInterface().bootloader(callback, force);
     }
 
     /**
-     * Go to see {@link PowerActX#safeMode(Callback, boolean)}.
+     * Go to see {@link #safeMode(Callback, boolean)}.
      */
     public static void safeMode() {
         safeMode(null);
     }
 
     /**
-     * Go to see {@link PowerActX#safeMode(Callback, boolean)}.
+     * Go to see {@link #safeMode(Callback, boolean)}.
      *
      * @param callback As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>callback</code>.
      */
@@ -212,9 +212,9 @@ public class PowerActX {
     }
 
     /**
-     * Go to see {@link PowerActX#safeMode(Callback, boolean)}.
+     * Go to see {@link #safeMode(Callback, boolean)}.
      *
-     * @param force As {@link PowerActX#shutdown(Callback, boolean)}'s <code>force</code>.
+     * @param force As {@link #shutdown(Callback, boolean)}'s <code>force</code>.
      */
     public static void safeMode(boolean force) {
         safeMode(null, force);
@@ -226,7 +226,7 @@ public class PowerActX {
      * Useless before 16.
      *
      * @param callback As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>callback</code>.
-     * @param force    As {@link PowerActX#shutdown(Callback, boolean)}'s <code>force</code>.
+     * @param force    As {@link #shutdown(Callback, boolean)}'s <code>force</code>.
      * @see <a href="https://support.google.com/android/answer/7665064?hl=en">Find problem apps by rebooting to safe mode on Android</a>
      */
     public static void safeMode(Callback callback, boolean force) {
@@ -240,7 +240,7 @@ public class PowerActX {
     }
 
     /**
-     * Go to see {@link PowerActX#softReboot(Callback)}.
+     * Go to see {@link #softReboot(Callback)}.
      */
     public static void softReboot() {
         softReboot(null);

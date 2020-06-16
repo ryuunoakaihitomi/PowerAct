@@ -13,7 +13,6 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.provider.Settings;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 
 import androidx.annotation.RequiresApi;
@@ -26,7 +25,7 @@ import java.lang.annotation.Target;
 import java.util.Random;
 import java.util.UUID;
 
-public class PaService extends AccessibilityService {
+public final class PaService extends AccessibilityService {
 
     public static final String
             LOCK_SCREEN_ACTION = BuildConfig.LIBRARY_PACKAGE_NAME + ".LOCK_SCREEN_ACTION",
@@ -39,15 +38,15 @@ public class PaService extends AccessibilityService {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d(TAG, "onReceive: " + intent);
+            DebugLog.d(TAG, "onReceive: " + intent);
             String receivedToken = intent.getStringExtra(EXTRA_TOKEN);
             if (!token.equals(receivedToken)) {
-                Log.e(TAG, "onReceive: Unauthorized token!  Received token is " + receivedToken);
+                DebugLog.e(TAG, "onReceive: Unauthorized token!  Received token is " + receivedToken);
                 return;
             }
             String action = intent.getAction();
             if (action == null) {
-                Log.e(TAG, "onReceive: action is null!");
+                DebugLog.e(TAG, "onReceive: action is null!");
                 return;
             }
             switch (action) {
@@ -65,14 +64,14 @@ public class PaService extends AccessibilityService {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         disableSelf();
                     } else {
-                        Log.w(TAG, "onReceive: Cannot disable it before 24.");
+                        DebugLog.w(TAG, "onReceive: Cannot disable it before 24.");
 //                        stopSelf();
                         stopForeground(true);
                         unregisterReceiver(this);
                     }
                     break;
                 default:
-                    Log.w(TAG, "onReceive: Unknown intent action.");
+                    DebugLog.w(TAG, "onReceive: Unknown intent action.");
             }
         }
     };
@@ -81,7 +80,7 @@ public class PaService extends AccessibilityService {
         Intent intent = new Intent(action);
         intent.setPackage(context.getPackageName());
         String token = UUID.randomUUID().toString();
-        Log.d(TAG, "sendAction: Set token to " + token);
+        DebugLog.d(TAG, "sendAction: Set token to " + token);
         PaService.token = token;
         intent.putExtra(PaService.EXTRA_TOKEN, token);
         context.sendBroadcast(intent);
@@ -94,7 +93,7 @@ public class PaService extends AccessibilityService {
         boolean result = performGlobalAction(action);
         // GLOBAL_ACTION_POWER_DIALOG = 6
         // GLOBAL_ACTION_LOCK_SCREEN = 8
-        Log.i(TAG, "perform: Action " + action + " returned " + result);
+        DebugLog.i(TAG, "perform: Action " + action + " returned " + result);
     }
 
     @Override
@@ -110,7 +109,7 @@ public class PaService extends AccessibilityService {
                 loadForegroundNotification();
             }
         } else {
-            Log.w(TAG, "onServiceConnected: Useless service enabled before 21.");
+            DebugLog.w(TAG, "onServiceConnected: Useless service enabled before 21.");
             Utils.setComponentEnabled(getApplicationContext(), this.getClass(), false);
         }
     }
@@ -186,7 +185,7 @@ public class PaService extends AccessibilityService {
                     .build();
             Notification foregroundNotification = builder.build();
             int id = randomNonZero();
-            Log.i(TAG, "onServiceConnected: notification id = " + id);
+            DebugLog.i(TAG, "onServiceConnected: notification id = " + id);
             startForeground(id, foregroundNotification);
         }
     }

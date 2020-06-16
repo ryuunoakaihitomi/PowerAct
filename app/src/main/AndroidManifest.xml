@@ -4,6 +4,7 @@
     package="demo.power_act">
 
     <application
+        android:name=".MyApplication"
         android:allowBackup="false"
         android:label="@string/app_name"
         tools:ignore="MissingApplicationIcon">

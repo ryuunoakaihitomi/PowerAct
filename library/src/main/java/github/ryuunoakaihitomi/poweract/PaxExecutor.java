@@ -4,7 +4,6 @@ import android.os.Build;
 import android.os.SystemProperties;
 import android.os.SystemService;
 import android.text.TextUtils;
-import android.util.Log;
 
 class PaxExecutor {
 
@@ -49,7 +48,7 @@ class PaxExecutor {
                             PaxCompat.shutdown();
                         } else {
                             // Keep for test.
-                            Log.w(TAG, "main: Cannot use pm to shutdown before 17! Forcing...");
+                            DebugLog.w(TAG, "main: Cannot use pm to shutdown before 17! Forcing...");
                             PaxCompat.execShell(shutdownCmd);
                         }
                     }
@@ -92,7 +91,7 @@ class PaxExecutor {
 
                 case TOKEN_SOFT_REBOOT:
                     if (BuildConfig.DEBUG) {
-                        Log.d(TAG, "main: Testing... PowerManagerService.crash() == \"soft reboot\" ?");
+                        DebugLog.d(TAG, "main: Testing... PowerManagerService.crash() == \"soft reboot\" ?");
                         PaxCompat.crash();
                         return;
                     }

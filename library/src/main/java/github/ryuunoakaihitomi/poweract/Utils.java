@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.os.SystemClock;
 import android.provider.Settings;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.accessibility.AccessibilityManager;
 
 import androidx.annotation.NonNull;
@@ -42,7 +41,7 @@ class Utils {
         ComponentName expectedComponentName = new ComponentName(context, accessibilityService);
         String enabledServicesSetting = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
         if (enabledServicesSetting == null) return false;
-        Log.d(TAG, "isAccessibilityServiceEnabled: Enabled services are " + enabledServicesSetting);
+        DebugLog.d(TAG, "isAccessibilityServiceEnabled: Enabled services are " + enabledServicesSetting);
         TextUtils.SimpleStringSplitter colonSplitter = new TextUtils.SimpleStringSplitter(':');
         colonSplitter.setString(enabledServicesSetting);
         while (colonSplitter.hasNext()) {
@@ -71,7 +70,7 @@ class Utils {
             stream.writeBytes("exec app_process " + cmdDir + " " + className + " " + argLine + '\n');
             stream.flush();
         } catch (IOException e) {
-            Log.e(TAG, "runSuJavaWithAppProcess: " +
+            DebugLog.e(TAG, "runSuJavaWithAppProcess: " +
                     "blocked in " + (SystemClock.elapsedRealtime() - start) + " ms.", e);
             return false;
         } finally {
@@ -83,14 +82,14 @@ class Utils {
                 }
             }
         }
-        Log.i(TAG, "runSuJavaWithAppProcess: exit code = " + exitCode +
+        DebugLog.i(TAG, "runSuJavaWithAppProcess: exit code = " + exitCode +
                 ", blocked in " + (SystemClock.elapsedRealtime() - start) + " ms.");
         return exitCode == 0;
     }
 
     static void setComponentEnabled(Context context, Class<?> componentClass, boolean enabled) {
         if (getComponentEnabled(context, componentClass) != enabled) {
-            Log.d(TAG, "setComponentEnabled: Update state: " + Arrays.asList(componentClass.getSimpleName(), enabled));
+            DebugLog.d(TAG, "setComponentEnabled: Update state: " + Arrays.asList(componentClass.getSimpleName(), enabled));
             PackageManager pm = context.getPackageManager();
             ComponentName cn = new ComponentName(context, componentClass);
             pm.setComponentEnabledSetting(cn,

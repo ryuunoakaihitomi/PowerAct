@@ -3,7 +3,6 @@ package github.ryuunoakaihitomi.poweract;
 import android.app.Activity;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -72,7 +71,7 @@ public final class PowerButton extends Button implements View.OnClickListener, V
         PowerAct.showPowerDialog(contextToActivityNoThrow(getContext()));
         if (mOnLongClickListener != null) {
             boolean ret = mOnLongClickListener.onLongClick(v);
-            Log.d(TAG, "onLongClick: onLongClick(v) -> " + ret);
+            DebugLog.d(TAG, "onLongClick: onLongClick(v) -> " + ret);
         }
         return true;
     }
