@@ -36,7 +36,7 @@ public class MainActivity extends Activity {
 
             @Override
             public void failed() {
-                Log.e(TAG, "failed: PowerActX cb FAILED! *******");
+                Log.e(TAG, "failed: PowerAct cb FAILED! *******");
                 Toast.makeText(getApplicationContext(), "Denied", Toast.LENGTH_SHORT).show();
             }
         };
@@ -84,8 +84,8 @@ public class MainActivity extends Activity {
         ExternalUtils.enableLog(true);
     }
 
-    private void setXButtonAction(int btnRes, Runnable action, Runnable longClickAction) {
-        Button button = findViewById(btnRes);
+    private void setXButtonAction(int btnResId, Runnable action, Runnable longClickAction) {
+        Button button = findViewById(btnResId);
         button.setOnClickListener(v -> action.run());
         if (longClickAction != null) {
             button.setOnLongClickListener(v -> {

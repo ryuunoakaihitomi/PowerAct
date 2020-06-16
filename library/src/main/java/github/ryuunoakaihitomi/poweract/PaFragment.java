@@ -123,7 +123,7 @@ public final class PaFragment extends Fragment {
         super.onResume();
         DebugLog.d(TAG, "onResume");
         if (!mFirstRun) {
-            DebugLog.d(TAG, "onResume: First run. There's not accessibility settings ui now");
+            DebugLog.d(TAG, "onResume: First run. There's not accessibility settings ui now.");
             mFirstRun = true;
         } else if (mHasRequestedAccessibility) {
             mHasRequestedAccessibility = false;

@@ -52,11 +52,11 @@ final class DebugLog {
     }
 
     public static void e(@Nullable String tag, @NonNull String msg) {
-        if (isOutput) Log.w(formatTag(tag), msg);
+        if (isOutput) Log.e(formatTag(tag), msg);
     }
 
     public static void e(@Nullable String tag, @Nullable String msg, @Nullable Throwable tr) {
-        if (isOutput) Log.w(formatTag(tag), msg, tr);
+        if (isOutput) Log.e(formatTag(tag), msg, tr);
     }
 
     private static String formatTag(String baseTag) {

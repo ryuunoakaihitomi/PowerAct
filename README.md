@@ -67,7 +67,9 @@ Create [`res/values/poweract_config.xml`](library/src/main/res/values/public.xml
 
 Class `PowerActX` provides advanced power actions, but it only for **rooted** environment.
 
-If you want to know more, click the download badge, download the `*javadoc.jar` and decompress it. ~~(excluding the xml's config)~~
+If you want to know more...
+* Demo app's source code. For example, [MainActivity.java](app/src/main/java/demo/power_act/MainActivity.java).
+* Click the download badge, download the `*javadoc.jar` and decompress it. ~~(excluding the xml's config)~~
 
 ## Compatibility
 
