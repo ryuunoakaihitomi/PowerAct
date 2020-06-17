@@ -52,9 +52,10 @@ public class MainActivity extends Activity {
             // Show system power dialog, with callback.
             PowerAct.showPowerDialog(activity, callback);
         });
+
         // An additional widget.
         PowerButton powerButton = findViewById(R.id.pwrBtn);
-
+        powerButton.setOnClickListener(v -> Log.d(TAG, "onClick: pwrBtn"));
         powerButton.setOnLongClickListener(v -> {
             Log.d(TAG, "onLongClick: pwrBtn");
             return false;
@@ -65,6 +66,7 @@ public class MainActivity extends Activity {
          * Usage:
          * PowerActX.<action>()
          * PowerActX.<action>(callback)
+         * If force mode available:
          * PowerActX.<action>(force)
          * PowerActX.<action>(callback, force)
          */
