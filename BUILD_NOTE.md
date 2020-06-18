@@ -10,5 +10,6 @@ Write some ~~weird~~special steps for rebuilding & releasing the lib next time.
 * Modify **gradle.properties**, to change the version code ~~and developer id~~.
 * Build & release, go to see `bintray-release.gradle(:library)` and `build.gradle(:library)`.
 
-## Debug with demo `app`
-* Modify **build.gradle** to test the release aar library file. **Must do it before release.**
+## Debug
+* Import **PowerActLog.xml** to simplify debug log statement in Android Studio.
+* Modify **build.gradle(:app)** to test the release aar library file. **Must do it before uploading.**

@@ -1,0 +1,47 @@
+<!--
+ A live template to simplify logcat output statement in PowerAct.
+ Import:
+    Copy it to <User Dir>/.AndroidStudio<ide_version>/config/templates/
+    Restart the IDE.
+ Usage:
+    palg(d,i,w,e)
+ Before using it, make sure that it doesn't conflict with the existing live templates.
+ -->
+<templateSet group="PowerActLog">
+    <template name="palgd" description="Output debug level logcat in PowerAct." toReformat="false"
+        toShortenFQNames="true"
+        value="github.ryuunoakaihitomi.poweract.DebugLog.d(TAG, &quot;$method$: $input$&quot;);">
+        <variable name="method" alwaysStopAt="false" defaultValue="" expression="methodName()" />
+        <variable name="input" alwaysStopAt="true" defaultValue="" expression="" />
+        <context>
+            <option name="JAVA_STATEMENT" value="true" />
+        </context>
+    </template>
+    <template name="palgi" description="Output info level logcat in PowerAct." toReformat="false"
+        toShortenFQNames="true"
+        value="github.ryuunoakaihitomi.poweract.DebugLog.i(TAG, &quot;$method$: $input$&quot;);">
+        <variable name="method" alwaysStopAt="false" defaultValue="" expression="methodName()" />
+        <variable name="input" alwaysStopAt="true" defaultValue="" expression="" />
+        <context>
+            <option name="JAVA_STATEMENT" value="true" />
+        </context>
+    </template>
+    <template name="palgw" description="Output warn level logcat in PowerAct." toReformat="false"
+        toShortenFQNames="true"
+        value="github.ryuunoakaihitomi.poweract.DebugLog.w(TAG, &quot;$method$: $input$&quot;);">
+        <variable name="method" alwaysStopAt="false" defaultValue="" expression="methodName()" />
+        <variable name="input" alwaysStopAt="true" defaultValue="" expression="" />
+        <context>
+            <option name="JAVA_STATEMENT" value="true" />
+        </context>
+    </template>
+    <template name="palge" description="Output error level logcat in PowerAct." toReformat="false"
+        toShortenFQNames="true"
+        value="github.ryuunoakaihitomi.poweract.DebugLog.e(TAG, &quot;$method$: $input$&quot;);">
+        <variable name="method" alwaysStopAt="false" defaultValue="" expression="methodName()" />
+        <variable name="input" alwaysStopAt="true" defaultValue="" expression="" />
+        <context>
+            <option name="JAVA_STATEMENT" value="true" />
+        </context>
+    </template>
+</templateSet>
