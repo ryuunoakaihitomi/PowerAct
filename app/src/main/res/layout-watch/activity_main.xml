@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:ignore="HardcodedText">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/lockScreenBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Lock Screen" />
+
+        <Button
+            android:id="@+id/powerDialogBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="System Power Dialog" />
+
+        <github.ryuunoakaihitomi.poweract.PowerButton
+            android:id="@+id/pwrBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Power Button"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/disComBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Disable Component"
+            android:textAllCaps="true"
+            android:textColor="@android:color/holo_orange_light" />
+
+        <Button
+            android:id="@+id/ls_btn"
+            style="?android:attr/buttonBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lock Screen X"
+            android:textColor="@android:color/holo_red_dark" />
+
+        <Button
+            android:id="@+id/rb_btn"
+            style="?android:attr/buttonBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Reboot" />
+
+        <Button
+            android:id="@+id/sd_btn"
+            style="?android:attr/buttonBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Shutdown" />
+
+        <Button
+            android:id="@+id/rec_btn"
+            style="?android:attr/buttonBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Recovery" />
+
+        <Button
+            android:id="@+id/bl_btn"
+            style="?android:attr/buttonBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bootloader" />
+
+        <Button
+            android:id="@+id/sm_btn"
+            style="?android:attr/buttonBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Safe Mode" />
+
+        <Button
+            android:id="@+id/srb_btn"
+            style="?android:attr/buttonBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Soft Reboot" />
+
+    </LinearLayout>
+
+</ScrollView>

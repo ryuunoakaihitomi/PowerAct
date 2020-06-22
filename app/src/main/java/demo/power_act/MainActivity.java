@@ -1,8 +1,13 @@
 package demo.power_act;
 
 import android.app.Activity;
+import android.app.UiModeManager;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.ViewDebug;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -95,5 +100,20 @@ public class MainActivity extends Activity {
                 return true;
             });
         }
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        /* Show which view is focused on Android TV. */
+        Log.d(TAG, "onKeyUp: " + KeyEvent.keyCodeToString(keyCode));
+        UiModeManager uiModeManager = (UiModeManager) getSystemService(UI_MODE_SERVICE);
+        if (uiModeManager != null && uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION) {
+            View focusedView = findViewById(R.id.root_layout).findFocus();
+            ViewDebug.dumpCapturedView(TAG, focusedView);
+            if (focusedView instanceof Button) {
+                Log.d(TAG, "onKeyUp: [" + ((Button) focusedView).getText() + "] focused.");
+            }
+        }
+        return super.onKeyUp(keyCode, event);
     }
 }

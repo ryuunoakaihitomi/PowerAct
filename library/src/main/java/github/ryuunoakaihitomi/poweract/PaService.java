@@ -52,6 +52,8 @@ public final class PaService extends AccessibilityService {
             switch (action) {
                 case POWER_DIALOG_ACTION:
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        // On Wear OS before 28, it will call out the voice assistant
+                        // instead of the system power dialog.
                         perform(AccessibilityService.GLOBAL_ACTION_POWER_DIALOG);
                     }
                     break;

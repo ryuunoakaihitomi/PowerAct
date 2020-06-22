@@ -42,7 +42,13 @@ public final class ExternalUtils {
         if (receiverEnabled) {
             DevicePolicyManager dpm = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
             if (dpm != null) {
-                dpm.removeActiveAdmin(new ComponentName(context, PaReceiver.class));
+                try {
+                    // The operation is not supported on Wear.
+                    dpm.removeActiveAdmin(new ComponentName(context, PaReceiver.class));
+                } catch (UnsupportedOperationException e) {
+                    DebugLog.e(TAG, "disableExposedComponents: [removeActiveAdmin] " +
+                            e.getMessage());
+                }
             }
             Utils.setComponentEnabled(context, PaReceiver.class, false);
         }

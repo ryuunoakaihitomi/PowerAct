@@ -3,15 +3,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="demo.power_act">
 
+    <uses-feature
+        android:name="android.hardware.type.watch"
+        android:required="false"
+        tools:ignore="InvalidWearFeatureAttribute" />
+
+    <uses-feature
+        android:name="android.software.leanback"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
+
     <application
         android:name=".MyApplication"
         android:allowBackup="false"
+        android:banner="@android:drawable/ic_lock_power_off"
         android:label="@string/app_name"
-        tools:ignore="MissingApplicationIcon">
+        tools:ignore="MissingApplicationIcon"
+        tools:targetApi="lollipop">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
         </activity>
 
@@ -37,6 +53,10 @@
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility" />
         </service>
+
+        <meta-data
+            android:name="com.google.android.wearable.standalone"
+            android:value="true" />
     </application>
 
 </manifest>

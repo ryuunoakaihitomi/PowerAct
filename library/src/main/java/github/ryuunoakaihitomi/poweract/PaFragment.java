@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.provider.Settings;
 
+import java.util.Arrays;
 import java.util.Random;
 
 @SuppressWarnings("deprecation")
@@ -64,7 +65,7 @@ public final class PaFragment extends Fragment {
         if (callback != null) mCallback = callback;
         if (activity == null) {
             DebugLog.e(TAG, "requestAction: Activity does not prepare!");
-            failed();
+            failed("getActivity() is null.");
             return;
         }
         initialize();
@@ -79,8 +80,7 @@ public final class PaFragment extends Fragment {
                 if (!Utils.getComponentEnabled(activity, PaService.class)) {
                     Utils.setComponentEnabled(activity, PaService.class, true);
                     // Not be effective immediately. Wait for next request...
-                    // AccessibilityService disabled.
-                    failed();
+                    failed("AccessibilityService disabled.");
                     return;
                 }
                 try {
@@ -92,10 +92,10 @@ public final class PaFragment extends Fragment {
                     mHasRequestedAccessibility = true;
                 } catch (ActivityNotFoundException e) {
                     // ActivityNotFoundException: Settings.ACTION_ACCESSIBILITY_SETTINGS
-                    failed();
+                    failed(e.getMessage());
                 } /* For some weird env. */ catch (SecurityException e) {
                     DebugLog.e(TAG, "requestAction: ", e);
-                    failed();
+                    failed("SecurityException");
                 }
             } else {
                 requireAccessibilityAction();
@@ -112,7 +112,7 @@ public final class PaFragment extends Fragment {
                     startActivityForResult(intent, mRequestCode);
                 } catch (ActivityNotFoundException e) {
                     // ActivityNotFoundException: DevicePolicyManager.EXTRA_DEVICE_ADMIN
-                    failed();
+                    failed(e.getMessage());
                 }
             }
         }
@@ -130,8 +130,7 @@ public final class PaFragment extends Fragment {
             if (Utils.isAccessibilityServiceEnabled(mAssociatedActivity, PaService.class)) {
                 requireAccessibilityAction();
             } else {
-                // Accessibility Service is still disabled.
-                failed();
+                failed("Accessibility Service is still disabled.");
             }
         }
     }
@@ -148,11 +147,11 @@ public final class PaFragment extends Fragment {
                 }
             } else {
                 // resultCode != Activity.RESULT_OK
-                failed();
+                failed("resultCode(" + resultCode + ") != Activity.RESULT_OK(-1)");
             }
         } else {
             // mRequestCode != requestCode
-            failed();
+            failed("mRequestCode != requestCode " + Arrays.asList(mRequestCode, requestCode));
         }
     }
 
@@ -168,8 +167,8 @@ public final class PaFragment extends Fragment {
         detach();
     }
 
-    private void failed() {
-        DebugLog.d(TAG, "failed...");
+    private void failed(String reason) {
+        DebugLog.i(TAG, "failed... Reason: " + reason);
         mCallback.failed();
         detach();
     }
