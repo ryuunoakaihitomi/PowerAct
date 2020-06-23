@@ -250,6 +250,7 @@ public class PowerActX {
      * Kill and restart the software system while the hardware parts are still running.
      *
      * @param callback As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>callback</code>.
+     * @see <a href="https://developer.android.com/reference/android/os/PowerManager#isRebootingUserspaceSupported()">Rebooting userspace</a>
      */
     public static void softReboot(Callback callback) {
         PaxConsole.getInterface().softReboot(callback);

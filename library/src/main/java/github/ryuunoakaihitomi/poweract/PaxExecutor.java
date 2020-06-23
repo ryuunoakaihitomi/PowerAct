@@ -90,6 +90,7 @@ class PaxExecutor {
                     break;
 
                 case TOKEN_SOFT_REBOOT:
+                    // A new official solution "reboot userspace" is available since 30.
                     if (BuildConfig.DEBUG) {
                         DebugLog.d(TAG, "main: Testing... PowerManagerService.crash() == \"soft reboot\" ?");
                         PaxCompat.crash();

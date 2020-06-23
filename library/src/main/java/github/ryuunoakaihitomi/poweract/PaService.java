@@ -33,7 +33,7 @@ public final class PaService extends AccessibilityService {
             DISABLE_SERVICE_ACTION = BuildConfig.LIBRARY_PACKAGE_NAME + ".DISABLE_SERVICE_ACTION",
             EXTRA_TOKEN = "extra_token";
     private static final String TAG = "PaService";
-    static String token = "";
+    private static String token = "";
     private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
 
         @Override
@@ -77,24 +77,47 @@ public final class PaService extends AccessibilityService {
             }
         }
     };
+    // It's too dirty.
+    // But there's no more elegant way to get the check if the BroadcastReceiver is registered.
+    // pm.queryBroadcastReceivers(intent, flags) only return the BR declared in AndroidManifest.xml.
+    private static boolean sIsBroadcastRegistered;
 
-    static void sendAction(Context context, @ActionType String action) {
-        Intent intent = new Intent(action);
-        intent.setPackage(context.getPackageName());
-        String token = UUID.randomUUID().toString();
-        DebugLog.d(TAG, "sendAction: Set token to " + token);
-        PaService.token = token;
-        intent.putExtra(PaService.EXTRA_TOKEN, token);
-        context.sendBroadcast(intent);
+    static boolean sendAction(Context context, @ActionType String action) {
+        if (sIsBroadcastRegistered) {
+            Intent intent = new Intent(action);
+            intent.setPackage(context.getPackageName());
+            String token = UUID.randomUUID().toString();
+            DebugLog.d(TAG, "sendAction: Set token to " + token);
+            PaService.token = token;
+            intent.putExtra(PaService.EXTRA_TOKEN, token);
+            context.sendBroadcast(intent);
+        }
+        return sIsBroadcastRegistered;
     }
 
-    private boolean isBroadcastRegistered;
+    @Override
+    public Intent registerReceiver(BroadcastReceiver receiver, IntentFilter filter) {
+        sIsBroadcastRegistered = true;
+        return super.registerReceiver(receiver, filter);
+    }
+
+    @Override
+    public void unregisterReceiver(BroadcastReceiver receiver) {
+        if (sIsBroadcastRegistered) {
+            super.unregisterReceiver(mBroadcastReceiver);
+            sIsBroadcastRegistered = false;
+        }
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void perform(int action) {
         boolean result = performGlobalAction(action);
         // GLOBAL_ACTION_POWER_DIALOG = 6
         // GLOBAL_ACTION_LOCK_SCREEN = 8
+        /*
+         * Go to see {@code frameworks/base/services/accessibility/java/com/android/server/accessibility/GlobalActionPerformer.java}.
+         * We can completely ignore the return value of {@link #performGlobalAction(int)}. (Assuming it's always true)
+         */
         DebugLog.i(TAG, "perform: Action " + action + " returned " + result);
     }
 
@@ -106,7 +129,6 @@ public final class PaService extends AccessibilityService {
             intentFilter.addAction(POWER_DIALOG_ACTION);
             intentFilter.addAction(DISABLE_SERVICE_ACTION);
             registerReceiver(mBroadcastReceiver, intentFilter);
-            isBroadcastRegistered = true;
             if (getResources().getBoolean(R.bool.poweract_accessibility_service_show_foreground_notification)) {
                 loadForegroundNotification();
             }
@@ -133,10 +155,7 @@ public final class PaService extends AccessibilityService {
 
     @Override
     public boolean onUnbind(Intent intent) {
-        if (isBroadcastRegistered) {
-            unregisterReceiver(mBroadcastReceiver);
-            isBroadcastRegistered = false;
-        }
+        unregisterReceiver(mBroadcastReceiver);
         stopForeground(true);
         return super.onUnbind(intent);
     }

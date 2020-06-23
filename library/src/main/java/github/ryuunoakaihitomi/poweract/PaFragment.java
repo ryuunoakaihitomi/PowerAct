@@ -157,8 +157,14 @@ public final class PaFragment extends Fragment {
 
     private void requireAccessibilityAction() {
         // Send broadcast to show power dialog (21+) or to lock screen (28+).
-        PaService.sendAction(mAssociatedActivity, mIsShowPowerDialog ? PaService.POWER_DIALOG_ACTION : PaService.LOCK_SCREEN_ACTION);
-        done();
+        boolean receiverState =
+                PaService.sendAction(mAssociatedActivity,
+                        mIsShowPowerDialog ? PaService.POWER_DIALOG_ACTION : PaService.LOCK_SCREEN_ACTION);
+        if (receiverState) {
+            done();
+        } else {
+            failed("Unregistered BroadcastReceiver.");
+        }
     }
 
     private void done() {
