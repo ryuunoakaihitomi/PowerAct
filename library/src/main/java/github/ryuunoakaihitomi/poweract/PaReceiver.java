@@ -1,6 +1,7 @@
 package github.ryuunoakaihitomi.poweract;
 
 import android.app.admin.DeviceAdminReceiver;
+import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +9,16 @@ import android.os.Build;
 
 import androidx.annotation.NonNull;
 
+/**
+ * <b>NOT FOR EXTERNAL USE!</b> It has to be public in order for system to call.
+ * <p>
+ * The {@link DeviceAdminReceiver} of PowerAct.
+ * To provide the permission to lock screen before 28.
+ * Since 28, it will be disabled automatically.
+ *
+ * @see DevicePolicyManager#lockNow()
+ * @see <a href="https://developer.android.com/guide/topics/admin/device-admin">Device administration overview</a>
+ */
 public final class PaReceiver extends DeviceAdminReceiver {
 
     private static final String TAG = "PaReceiver";

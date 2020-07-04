@@ -13,6 +13,7 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.SparseArray;
 import android.view.accessibility.AccessibilityEvent;
 
 import androidx.annotation.RequiresApi;
@@ -22,10 +23,24 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.UUID;
 
+/**
+ * <b>NOT FOR EXTERNAL USE!</b> It has to be public in order for system to call.
+ * <p>
+ * The {@link AccessibilityService} of PowerAct.
+ * To provide the permission to show power dialog since 21 and lock screen since 28.
+ *
+ * @see AccessibilityService#GLOBAL_ACTION_POWER_DIALOG
+ * @see AccessibilityService#GLOBAL_ACTION_LOCK_SCREEN
+ */
 public final class PaService extends AccessibilityService {
+
+    //
+    private static SparseArray<String> sGlobalActionMap;
 
     public static final String
             LOCK_SCREEN_ACTION = BuildConfig.LIBRARY_PACKAGE_NAME + ".LOCK_SCREEN_ACTION",
@@ -82,6 +97,27 @@ public final class PaService extends AccessibilityService {
     // pm.queryBroadcastReceivers(intent, flags) only return the BR declared in AndroidManifest.xml.
     private static boolean sIsBroadcastRegistered;
 
+    static {
+        SparseArray<String> globalActionMap = new SparseArray<>();
+        Class<?> as = AccessibilityService.class;
+        for (Field f : as.getFields()) {
+            String name = f.getName();
+            if (name.startsWith("GLOBAL_ACTION")) {
+                try {
+                    globalActionMap.put(f.getInt(null), name);
+                } catch (IllegalAccessException ignored) {
+                }
+            }
+        }
+        if (BuildConfig.DEBUG) {
+            for (int i = 0; i < globalActionMap.size(); i++) {
+                DebugLog.i(as.getSimpleName(), "Global Action: " +
+                        Arrays.asList(globalActionMap.valueAt(i), globalActionMap.keyAt(i)));
+            }
+        }
+        sGlobalActionMap = globalActionMap;
+    }
+
     static boolean sendAction(Context context, @ActionType String action) {
         if (sIsBroadcastRegistered) {
             Intent intent = new Intent(action);
@@ -118,7 +154,7 @@ public final class PaService extends AccessibilityService {
          * Go to see {@code frameworks/base/services/accessibility/java/com/android/server/accessibility/GlobalActionPerformer.java}.
          * We can completely ignore the return value of {@link #performGlobalAction(int)}. (Assuming it's always true)
          */
-        DebugLog.i(TAG, "perform: Action " + action + " returned " + result);
+        DebugLog.i(TAG, "perform: Action " + sGlobalActionMap.get(action) + " returned " + result);
     }
 
     @Override
