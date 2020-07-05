@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.os.SystemClock;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.SparseArray;
 import android.view.accessibility.AccessibilityManager;
 
 import androidx.annotation.NonNull;
@@ -15,6 +16,7 @@ import androidx.annotation.WorkerThread;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.Arrays;
 
 class Utils {
@@ -101,5 +103,20 @@ class Utils {
     static boolean getComponentEnabled(Context context, Class<?> componentClass) {
         final int state = context.getPackageManager().getComponentEnabledSetting(new ComponentName(context, componentClass));
         return state == PackageManager.COMPONENT_ENABLED_STATE_DEFAULT;
+    }
+
+    static SparseArray<String> getClassIntApiConstant(Class<?> clz, String prefix) {
+        SparseArray<String> container = new SparseArray<>();
+        for (Field field : clz.getFields()) {
+            String name = field.getName();
+            if (name.startsWith(prefix)) {
+                try {
+                    container.put(field.getInt(null), name);
+                } catch (IllegalAccessException e) {
+                    DebugLog.w(TAG, "getClassIntConstant: name = " + name, e);
+                }
+            }
+        }
+        return container;
     }
 }

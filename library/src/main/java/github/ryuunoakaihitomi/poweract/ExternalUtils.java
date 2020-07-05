@@ -70,6 +70,6 @@ public final class ExternalUtils {
      * @param isEnabled ↑
      */
     public static void enableLog(boolean isEnabled) {
-        DebugLog.isOutput = isEnabled;
+        DebugLog.enabled = isEnabled;
     }
 }

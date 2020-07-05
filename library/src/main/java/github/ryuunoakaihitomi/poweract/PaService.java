@@ -2,6 +2,7 @@ package github.ryuunoakaihitomi.poweract;
 
 import android.accessibilityservice.AccessibilityService;
 import android.annotation.TargetApi;
+import android.app.AppOpsManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -12,6 +13,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.provider.Settings;
+import android.system.Os;
 import android.text.TextUtils;
 import android.util.SparseArray;
 import android.view.accessibility.AccessibilityEvent;
@@ -23,7 +25,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.UUID;
@@ -39,8 +40,8 @@ import java.util.UUID;
  */
 public final class PaService extends AccessibilityService {
 
-    //
-    private static SparseArray<String> sGlobalActionMap;
+    // There're 9 global actions in 29.
+    private static final SparseArray<String> sGlobalActionMap;
 
     public static final String
             LOCK_SCREEN_ACTION = BuildConfig.LIBRARY_PACKAGE_NAME + ".LOCK_SCREEN_ACTION",
@@ -98,17 +99,8 @@ public final class PaService extends AccessibilityService {
     private static boolean sIsBroadcastRegistered;
 
     static {
-        SparseArray<String> globalActionMap = new SparseArray<>();
         Class<?> as = AccessibilityService.class;
-        for (Field f : as.getFields()) {
-            String name = f.getName();
-            if (name.startsWith("GLOBAL_ACTION")) {
-                try {
-                    globalActionMap.put(f.getInt(null), name);
-                } catch (IllegalAccessException ignored) {
-                }
-            }
-        }
+        SparseArray<String> globalActionMap = Utils.getClassIntApiConstant(as, "GLOBAL_ACTION");
         if (BuildConfig.DEBUG) {
             for (int i = 0; i < globalActionMap.size(); i++) {
                 DebugLog.i(as.getSimpleName(), "Global Action: " +
@@ -206,6 +198,24 @@ public final class PaService extends AccessibilityService {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void loadForegroundNotification() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            AppOpsManager appOps = getSystemService(AppOpsManager.class);
+            int mode = Integer.MIN_VALUE;
+            if (appOps != null) {
+                try {
+                    // https://android.googlesource.com/platform/frameworks/base/+/e9d9b4b9a27f419fbd6096698f692b474939cb48
+                    // Add app op to control foreground services: OPSTR_START_FOREGROUND
+                    mode = appOps.noteOpNoThrow("android:start_foreground", Os.getuid(), getPackageName());
+                } catch (IllegalArgumentException e) {
+                    // "Unknown operation string: "
+                    DebugLog.e(TAG, "loadForegroundNotification: " + e.getMessage(), e);
+                }
+            }
+            if (mode != AppOpsManager.MODE_ALLOWED) {
+                DebugLog.e(TAG, "loadForegroundNotification: The foreground service may be disabled by AppOps's restriction." +
+                        " mode = " + Utils.getClassIntApiConstant(AppOpsManager.class, "MODE").get(mode, String.valueOf(mode)));
+            }
+        }
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (manager != null) {
             Notification.Builder builder;

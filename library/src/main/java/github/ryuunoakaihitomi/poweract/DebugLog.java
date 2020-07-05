@@ -10,53 +10,53 @@ import androidx.annotation.Nullable;
 final class DebugLog {
 
     private static final String MAIN_TAG = "PowerAct";
-    static boolean isOutput = true;
+    static boolean enabled = true;
 
     private DebugLog() {
     }
 
     public static void v(@Nullable String tag, @NonNull String msg) {
-        if (isOutput) Log.v(formatTag(tag), msg);
+        if (enabled) Log.v(formatTag(tag), msg);
     }
 
     public static void v(@Nullable String tag, @Nullable String msg, @Nullable Throwable tr) {
-        if (isOutput) Log.v(formatTag(tag), msg, tr);
+        if (enabled) Log.v(formatTag(tag), msg, tr);
     }
 
     public static void d(@Nullable String tag, @NonNull String msg) {
-        if (isOutput) Log.d(formatTag(tag), msg);
+        if (enabled) Log.d(formatTag(tag), msg);
     }
 
     public static void d(@Nullable String tag, @Nullable String msg, @Nullable Throwable tr) {
-        if (isOutput) Log.d(formatTag(tag), msg, tr);
+        if (enabled) Log.d(formatTag(tag), msg, tr);
     }
 
     public static void i(@Nullable String tag, @NonNull String msg) {
-        if (isOutput) Log.i(formatTag(tag), msg);
+        if (enabled) Log.i(formatTag(tag), msg);
     }
 
     public static void i(@Nullable String tag, @Nullable String msg, @Nullable Throwable tr) {
-        if (isOutput) Log.i(formatTag(tag), msg, tr);
+        if (enabled) Log.i(formatTag(tag), msg, tr);
     }
 
     public static void w(@Nullable String tag, @NonNull String msg) {
-        if (isOutput) Log.w(formatTag(tag), msg);
+        if (enabled) Log.w(formatTag(tag), msg);
     }
 
     public static void w(@Nullable String tag, @Nullable Throwable tr) {
-        if (isOutput) Log.w(formatTag(tag), tr);
+        if (enabled) Log.w(formatTag(tag), tr);
     }
 
     public static void w(@Nullable String tag, @Nullable String msg, @Nullable Throwable tr) {
-        if (isOutput) Log.w(formatTag(tag), msg, tr);
+        if (enabled) Log.w(formatTag(tag), msg, tr);
     }
 
     public static void e(@Nullable String tag, @NonNull String msg) {
-        if (isOutput) Log.e(formatTag(tag), msg);
+        if (enabled) Log.e(formatTag(tag), msg);
     }
 
     public static void e(@Nullable String tag, @Nullable String msg, @Nullable Throwable tr) {
-        if (isOutput) Log.e(formatTag(tag), msg, tr);
+        if (enabled) Log.e(formatTag(tag), msg, tr);
     }
 
     private static String formatTag(String baseTag) {

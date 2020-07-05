@@ -1,15 +1,33 @@
 package demo.power_act;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.UiModeManager;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.BackgroundColorSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewDebug;
 import android.widget.Button;
 import android.widget.Toast;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import github.ryuunoakaihitomi.poweract.Callback;
 import github.ryuunoakaihitomi.poweract.ExternalUtils;
@@ -102,6 +120,7 @@ public class MainActivity extends Activity {
         }
     }
 
+    //<editor-fold desc="This part is not important for showing the library's usage.">
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         /* Show which view is focused on Android TV. */
@@ -116,4 +135,67 @@ public class MainActivity extends Activity {
         }
         return super.onKeyUp(keyCode, event);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            /* For debugging */
+            case R.id.info:
+                StringBuilder info = new StringBuilder();
+                final String timeFormat = "yyyy-MM-dd HH:mm:ss:SSS";
+                PackageInfo myPkgInfo = new PackageInfo();
+                try {
+                    myPkgInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+                } catch (PackageManager.NameNotFoundException ignored) {
+                }
+                Map<String, String> infoMap = new HashMap<>();
+                infoMap.put("Build Type", BuildConfig.BUILD_TYPE);
+                infoMap.put("Build Time", Utils.timestamp2String(timeFormat, BuildConfig.BUILD_TIME));
+                infoMap.put("First Install Time", Utils.timestamp2String(timeFormat, myPkgInfo.firstInstallTime));
+                infoMap.put("Last Update Time", Utils.timestamp2String(timeFormat, myPkgInfo.lastUpdateTime));
+                for (Map.Entry<String, String> entry : infoMap.entrySet()) {
+                    info.append(entry.getKey())
+                            .append(":\n\t")
+                            .append(entry.getValue())
+                            .append("\n\n");
+                }
+                new AlertDialog.Builder(this)
+                        .setTitle("The version info of the app.")
+                        .setMessage(info.toString())
+                        .show();
+                break;
+            /* Readme inside */
+            case R.id.about:
+                final String logo = "PowerAct", link = "https://github.com/ryuunoakaihitomi/PowerAct";
+                SpannableString text = new SpannableString("A demo app of the android library " + logo + ".");
+                final int logoStart = text.length() - logo.length() - 1,
+                        logoEnd = text.length() - 1,
+                        flag = Spanned.SPAN_INCLUSIVE_INCLUSIVE;
+                text.setSpan(new StyleSpan(Typeface.BOLD), logoStart, logoEnd, flag);
+                text.setSpan(new ForegroundColorSpan(Color.GREEN), logoStart, logoEnd, flag);
+                text.setSpan(new BackgroundColorSpan(Color.BLACK), logoStart, logoEnd, flag);
+                new AlertDialog.Builder(this)
+                        .setTitle("What's this?")
+                        .setMessage(text)
+                        .setPositiveButton("Link", (dialog, which) -> {
+                            try {
+                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(link)));
+                            } catch (ActivityNotFoundException e) {
+                                Log.e(TAG, "onClick: " + link, e);
+                            }
+                        })
+                        .show();
+                break;
+            default:
+                return false;
+        }
+        return true;
+    }
+    //</editor-fold>
 }
