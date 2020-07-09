@@ -213,7 +213,7 @@ public final class PaService extends AccessibilityService {
             }
             if (mode != AppOpsManager.MODE_ALLOWED) {
                 DebugLog.e(TAG, "loadForegroundNotification: The foreground service may be disabled by AppOps's restriction." +
-                        " mode = " + Utils.getClassIntApiConstant(AppOpsManager.class, "MODE").get(mode, String.valueOf(mode)));
+                        " mode = " + Utils.getClassIntApiConstantString(AppOpsManager.class, "MODE", mode));
             }
         }
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

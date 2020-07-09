@@ -194,7 +194,7 @@ public final class PaFragment extends Fragment {
 
     private void failed(String reason) {
         DebugLog.i(TAG, "failed... Action: " +
-                Utils.getClassIntApiConstant(PowerAct.class, "ACTION").get(mAction) +
+                Utils.getClassIntApiConstantString(PowerAct.class, "ACTION", mAction) +
                 "   Reason: " + reason);
         CallbackHelper.of(mCallback).failed();
         detach();

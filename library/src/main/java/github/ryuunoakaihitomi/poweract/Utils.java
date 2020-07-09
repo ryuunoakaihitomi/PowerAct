@@ -119,4 +119,8 @@ class Utils {
         }
         return container;
     }
+
+    static String getClassIntApiConstantString(Class<?> clz, String prefix, int value) {
+        return getClassIntApiConstant(clz, prefix).get(value, String.valueOf(value));
+    }
 }

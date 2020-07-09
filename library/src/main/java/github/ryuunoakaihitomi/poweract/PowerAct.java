@@ -10,6 +10,7 @@ import android.content.Context;
 import android.os.Build;
 
 import androidx.annotation.IntDef;
+import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -28,6 +29,7 @@ public class PowerAct {
 
     private static final String TAG = "PowerAct";
 
+    @Keep
     static final int
             ACTION_LOCK_SCREEN = 1,
             ACTION_POWER_DIALOG = 2,
