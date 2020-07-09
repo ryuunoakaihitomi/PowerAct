@@ -107,7 +107,7 @@ class Utils {
 
     static SparseArray<String> getClassIntApiConstant(Class<?> clz, String prefix) {
         SparseArray<String> container = new SparseArray<>();
-        for (Field field : clz.getFields()) {
+        for (Field field : clz.getDeclaredFields()) {
             String name = field.getName();
             if (name.startsWith(prefix)) {
                 try {

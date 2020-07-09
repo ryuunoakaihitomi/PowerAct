@@ -19,6 +19,12 @@
         android:layout_height="wrap_content"
         android:text="System Power Dialog" />
 
+    <Button
+        android:id="@+id/rebootBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Reboot" />
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"

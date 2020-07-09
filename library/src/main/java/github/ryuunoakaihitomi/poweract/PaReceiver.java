@@ -13,8 +13,7 @@ import androidx.annotation.NonNull;
  * <b>NOT FOR EXTERNAL USE!</b> It has to be public in order for system to call.
  * <p>
  * The {@link DeviceAdminReceiver} of PowerAct.
- * To provide the permission to lock screen before 28.
- * Since 28, it will be disabled automatically.
+ * To provide the permission to lock screen before 28 and reboot since 24.
  *
  * @see DevicePolicyManager#lockNow()
  * @see <a href="https://developer.android.com/guide/topics/admin/device-admin">Device administration overview</a>
@@ -29,7 +28,6 @@ public final class PaReceiver extends DeviceAdminReceiver {
             DebugLog.w(TAG, "onEnabled: Useless device admin enabled after 28.");
             // >= 28 & adminActive, remove dev admin automatically. (prevent user from enabling it manually)
             getManager(context).removeActiveAdmin(new ComponentName(context, this.getClass()));
-            Utils.setComponentEnabled(context, this.getClass(), false);
         }
     }
 }

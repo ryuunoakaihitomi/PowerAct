@@ -21,20 +21,13 @@ public final class PaFragment extends Fragment {
     // For DevicePolicyManager
     private int mRequestCode;
 
-    private boolean mHasRequestedAccessibility, mIsShowPowerDialog, mFirstRun;
+    @PowerAct.ActionType
+    private int mAction;
 
-    private Callback mCallback = new Callback() {
+    // Check the status returned from the Accessibility settings.
+    private boolean mHasRequestedAccessibility, mFirstRun;
 
-        @Override
-        public void done() {
-            DebugLog.d(TAG, "done: normal callback.");
-        }
-
-        @Override
-        public void failed() {
-            DebugLog.d(TAG, "failed: normal callback.");
-        }
-    };
+    private Callback mCallback;
 
     private DevicePolicyManager mDevicePolicyManager;
     private ComponentName mAdminReceiverComponentName;
@@ -52,17 +45,15 @@ public final class PaFragment extends Fragment {
             mDevicePolicyManager = (DevicePolicyManager) mAssociatedActivity.getSystemService(Context.DEVICE_POLICY_SERVICE);
         }
         if (mAdminReceiverComponentName == null) {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-                Utils.setComponentEnabled(mAssociatedActivity, PaReceiver.class, true);
-            }
+            Utils.setComponentEnabled(mAssociatedActivity, PaReceiver.class, true);
             mAdminReceiverComponentName = new ComponentName(mAssociatedActivity, PaReceiver.class);
         }
     }
 
-    void requestAction(Callback callback, boolean isShowPowerDialog) {
-        mIsShowPowerDialog = isShowPowerDialog;
+    void requestAction(Callback callback, @PowerAct.ActionType int action) {
+        mAction = action;
         Activity activity = getActivity();
-        if (callback != null) mCallback = callback;
+        mCallback = callback;
         if (activity == null) {
             DebugLog.e(TAG, "requestAction: Activity does not prepare!");
             failed("getActivity() is null.");
@@ -70,11 +61,17 @@ public final class PaFragment extends Fragment {
         }
         initialize();
         boolean isAdminActive = mDevicePolicyManager.isAdminActive(mAdminReceiverComponentName);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P || mIsShowPowerDialog) {
-            if (isAdminActive && !mIsShowPowerDialog) {
+        boolean isDeviceOwner = false;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            isDeviceOwner = mDevicePolicyManager.isDeviceOwnerApp(activity.getPackageName());
+        }
+        /* The action AccessibilityService must be used.
+           Show power dialog and lock screen by it. (>=28) */
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && mAction != PowerAct.ACTION_REBOOT || mAction == PowerAct.ACTION_POWER_DIALOG) {
+            // The device admin is no longer useful.
+            if (isAdminActive && mAction == PowerAct.ACTION_LOCK_SCREEN) {
                 // lockScreen & adminActive, remove admin automatically.
                 mDevicePolicyManager.removeActiveAdmin(mAdminReceiverComponentName);
-                Utils.setComponentEnabled(activity, PaReceiver.class, false);
             }
             if (!Utils.isAccessibilityServiceEnabled(activity, PaService.class)) {
                 if (!Utils.getComponentEnabled(activity, PaService.class)) {
@@ -100,8 +97,30 @@ public final class PaFragment extends Fragment {
             } else {
                 requireAccessibilityAction();
             }
-        } else {
-            if (isAdminActive) {
+        }
+        /* The action DevicePolicyManager be used.
+           reboot and lock screen by it. (<28) */
+        else {
+            if (action == PowerAct.ACTION_REBOOT) {
+                if (isDeviceOwner) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        try {
+                            mDevicePolicyManager.reboot(mAdminReceiverComponentName);
+                            done();
+                        }
+                        // No active admin ComponentInfo{..}
+                        catch (SecurityException e) {
+                            failed(e.getMessage());
+                        } catch (IllegalStateException e) {
+                            failed("Outgoing call?");
+                        }
+                    }
+                } else {
+                    failed("Not a device owner.");
+                }
+            }
+            // lock screen by dpm.
+            else if (isAdminActive) {
                 mDevicePolicyManager.lockNow();
                 done();
             } else {
@@ -159,7 +178,7 @@ public final class PaFragment extends Fragment {
         // Send broadcast to show power dialog (21+) or to lock screen (28+).
         boolean receiverState =
                 PaService.sendAction(mAssociatedActivity,
-                        mIsShowPowerDialog ? PaService.POWER_DIALOG_ACTION : PaService.LOCK_SCREEN_ACTION);
+                        mAction == PowerAct.ACTION_POWER_DIALOG ? PaService.POWER_DIALOG_ACTION : PaService.LOCK_SCREEN_ACTION);
         if (receiverState) {
             done();
         } else {
@@ -169,13 +188,15 @@ public final class PaFragment extends Fragment {
 
     private void done() {
         DebugLog.d(TAG, "done...");
-        mCallback.done();
+        CallbackHelper.of(mCallback).done();
         detach();
     }
 
     private void failed(String reason) {
-        DebugLog.i(TAG, "failed... Reason: " + reason);
-        mCallback.failed();
+        DebugLog.i(TAG, "failed... Action: " +
+                Utils.getClassIntApiConstant(PowerAct.class, "ACTION").get(mAction) +
+                "   Reason: " + reason);
+        CallbackHelper.of(mCallback).failed();
         detach();
     }
 

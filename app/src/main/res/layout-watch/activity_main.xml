@@ -23,6 +23,12 @@
             android:layout_height="wrap_content"
             android:text="System Power Dialog" />
 
+        <Button
+            android:id="@+id/rebootBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Reboot" />
+
         <github.ryuunoakaihitomi.poweract.PowerButton
             android:id="@+id/pwrBtn"
             android:layout_width="wrap_content"

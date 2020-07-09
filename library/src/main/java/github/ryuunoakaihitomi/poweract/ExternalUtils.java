@@ -1,9 +1,13 @@
 package github.ryuunoakaihitomi.poweract;
 
 
+import android.accessibilityservice.AccessibilityService;
+import android.app.admin.DeviceAdminReceiver;
 import android.app.admin.DevicePolicyManager;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.os.Build;
 
 import androidx.annotation.NonNull;
 
@@ -20,16 +24,16 @@ public final class ExternalUtils {
     }
 
     /**
-     * {@link PowerAct} depends on {@link android.accessibilityservice.AccessibilityService}
-     * or/and {@link android.app.admin.DeviceAdminReceiver} for providing permissions to perform actions.
+     * {@link PowerAct} depends on {@link AccessibilityService}
+     * or/and {@link DeviceAdminReceiver} for providing permissions to perform actions.
      * The components must be registered in <code>AndroidManifest.xml</code>.
      * So they are visible in <code>Settings</code> even before use.
      * <p>
      * The library will enable or disable them automatically in different cases,
      * but we can disable them manually as soon as possible in order not to confuse the user.
      *
-     * @param context Context for building {@link android.content.ComponentName}
-     *                and {@link android.content.BroadcastReceiver}.
+     * @param context Context for building {@link ComponentName}
+     *                and {@link BroadcastReceiver}.
      */
     public static void disableExposedComponents(@NonNull Context context) {
         final boolean
@@ -43,6 +47,12 @@ public final class ExternalUtils {
             DevicePolicyManager dpm = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
             if (dpm != null) {
                 try {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        String myPkgName = context.getPackageName();
+                        if (dpm.isDeviceOwnerApp(myPkgName)) {
+                            dpm.clearDeviceOwnerApp(myPkgName);
+                        }
+                    }
                     // The operation is not supported on Wear.
                     dpm.removeActiveAdmin(new ComponentName(context, PaReceiver.class));
                 } catch (UnsupportedOperationException e) {

@@ -45,8 +45,10 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button lockScreenBtn = findViewById(R.id.lockScreenBtn);
-        Button powerDialogBtn = findViewById(R.id.powerDialogBtn);
+        Button
+                lockScreenBtn = findViewById(R.id.lockScreenBtn),
+                powerDialogBtn = findViewById(R.id.powerDialogBtn),
+                rebootBtn = findViewById(R.id.rebootBtn);
 
         // Create callback object
         final Callback callback = new Callback() {
@@ -75,6 +77,7 @@ public class MainActivity extends Activity {
             // Show system power dialog, with callback.
             PowerAct.showPowerDialog(activity, callback);
         });
+        rebootBtn.setOnClickListener(v -> PowerAct.reboot(activity));
 
         // An additional widget.
         PowerButton powerButton = findViewById(R.id.pwrBtn);
