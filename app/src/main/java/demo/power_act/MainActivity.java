@@ -29,6 +29,7 @@ import android.widget.Toast;
 import java.util.HashMap;
 import java.util.Map;
 
+import demo.power_act.utils.Utils;
 import github.ryuunoakaihitomi.poweract.Callback;
 import github.ryuunoakaihitomi.poweract.ExternalUtils;
 import github.ryuunoakaihitomi.poweract.PowerAct;

@@ -1,10 +1,10 @@
-package demo.power_act;
+package demo.power_act.utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-class Utils {
+public class Utils {
 
     private Utils() {
     }
