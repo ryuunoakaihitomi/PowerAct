@@ -16,11 +16,15 @@ class CallbackHelper implements Callback {
 
     @Override
     public void done() {
-        if (mCallback != null) mCallback.done();
+        if (nonNull()) mCallback.done();
     }
 
     @Override
     public void failed() {
-        if (mCallback != null) mCallback.failed();
+        if (nonNull()) mCallback.failed();
+    }
+
+    private boolean nonNull() {
+        return mCallback != null;
     }
 }

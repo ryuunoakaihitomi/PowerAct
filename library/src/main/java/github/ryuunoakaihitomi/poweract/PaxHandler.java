@@ -23,15 +23,11 @@ class PaxHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) {
-        Callback callback = (Callback) args[0];
-        if (callback == null) {
-            callback = () -> DebugLog.d(TAG, "invoke: normal callback: FAILED!");
-        }
+        final CallbackHelper callbackHelper = CallbackHelper.of((Callback) args[0]);
         boolean force = false;
         if (args.length == 2) force = (boolean) args[1];
         final String forceString = Boolean.toString(force);
         PaxExecApi cmdList = method.getAnnotation(PaxExecApi.class);
-        final Callback finalCallback = callback;
         final Handler mainHandler = new Handler(Looper.getMainLooper());
         Executors.newSingleThreadExecutor().execute(() -> {
             if (cmdList != null) {
@@ -42,11 +38,11 @@ class PaxHandler implements InvocationHandler {
                                 cmdList.value(), forceString);
                 if (returnValue) mainHandler.post(() -> {
                     ExternalUtils.disableExposedComponents(sApplication);
-                    finalCallback.done();
+                    callbackHelper.done();
                 });
-                else mainHandler.post(finalCallback::failed);
+                else mainHandler.post(callbackHelper::failed);
             } else {
-                mainHandler.post(finalCallback::failed);
+                mainHandler.post(callbackHelper::failed);
             }
         });
         // void
