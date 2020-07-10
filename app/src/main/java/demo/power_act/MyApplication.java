@@ -3,7 +3,7 @@ package demo.power_act;
 import android.app.Application;
 import android.os.StrictMode;
 
-import demo.power_act.utils.DebugALC;
+import demo.power_act.util.DebugALC;
 
 public class MyApplication extends Application {
 

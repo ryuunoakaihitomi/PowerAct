@@ -1,4 +1,4 @@
-package demo.power_act.utils;
+package demo.power_act.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
