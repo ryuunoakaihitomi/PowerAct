@@ -8,11 +8,11 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
-public class DebugALC {
+public class DebugAlc {
 
-    private static final String TAG = "DebugALC";
+    private static final String TAG = "DebugAlc";
 
-    private DebugALC() {
+    private DebugAlc() {
         Log.d(TAG, "new instance: " + this);
     }
 
