@@ -26,8 +26,11 @@ public class DebugAlc {
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) {
-            Activity activity = (Activity) args[0];
-            Log.d(TAG, activity.getLocalClassName() + " -> " + method.getName());
+            Object firstArg = args[0];
+            if (firstArg instanceof Activity) {
+                Activity activity = (Activity) firstArg;
+                Log.d(TAG, activity.getLocalClassName() + " -> " + method.getName());
+            }
             return null;
         }
     }

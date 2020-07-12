@@ -13,6 +13,9 @@ import androidx.annotation.NonNull;
  * <p>
  * Click to lock screen, and long click to show system power dialog.
  * In order to prevent the behavior from being destroyed, the class cannot be inherited.
+ *
+ * @see PowerAct#lockScreen(Activity)
+ * @see PowerAct#showPowerDialog(Activity)
  */
 public final class PowerButton extends Button implements View.OnClickListener, View.OnLongClickListener {
 

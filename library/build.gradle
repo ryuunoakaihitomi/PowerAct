@@ -27,6 +27,40 @@ android {
     }
 
     resourcePrefix "poweract_"
+
+    //region Packing copyright into release aar.
+    // https://stackoverflow.com/questions/45846957/android-how-can-i-include-a-licence-txt-file-in-aar
+    // https://stackoverflow.com/questions/51433769/why-android-gradle-maven-publish-artifact-bundlerelease-not-found
+    def libraryModuleName = 'poweract'
+    def outputAarDir = rootProject.file('/library/build/outputs/aar')
+    def outputAarUnzippedDir = rootProject.file('/library/build/outputs/aar/unziped')
+    def aarReleaseFilename = libraryModuleName + '-release.aar'
+    def aarReleaseFile = rootProject.file('/library/build/outputs/aar/' + aarReleaseFilename)
+
+    task unzipAar(type: Copy) {
+        delete(outputAarUnzippedDir)
+        from zipTree(aarReleaseFile)
+        into outputAarUnzippedDir
+    }
+
+    task addLicenseFileInUnzipedAar(type: Copy, dependsOn: 'unzipAar') {
+        def fromDir = rootProject.file(File.separator)
+        from fromDir
+        into outputAarUnzippedDir
+        include 'NOTICE.txt'
+    }
+
+    task reZipAar(type: Zip, dependsOn: 'addLicenseFileInUnzipedAar') {
+        from outputAarUnzippedDir
+        include '**'
+        archiveName aarReleaseFilename
+        destinationDir(outputAarDir)
+    }
+
+    afterEvaluate {
+        bundleReleaseAar.finalizedBy(reZipAar)
+    }
+    //endregion
 }
 
 dependencies {

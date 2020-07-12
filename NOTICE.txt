@@ -1,0 +1,3 @@
+PowerAct includes code from ZQY.
+Copyright© 2020 ZQY
+https://github.com/ryuunoakaihitomi

@@ -66,6 +66,8 @@ Create [`res/values/poweract_config.xml`](library/src/main/res/values/public.xml
 ```
 
 Class `PowerActX` provides advanced power actions, but it only for **rooted** environment.
+Nevertheless, if you only use the library without `PowerAct` and `PowerButton` class, you don't need to create `poweract_config.xml`.
+Use `ExternalUtils.disableExposedComponents()` to make the exposed components for `PowerAct` invisible.
 
 If you want to know more...
 * Demo app's source code. For example, [MainActivity.java](app/src/main/java/demo/power_act/MainActivity.java).

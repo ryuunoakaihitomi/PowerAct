@@ -10,9 +10,12 @@ import android.content.Intent;
 import android.os.Build;
 import android.provider.Settings;
 
+import androidx.annotation.RestrictTo;
+
 import java.util.Arrays;
 import java.util.Random;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 @SuppressWarnings("deprecation")
 public final class PaFragment extends Fragment {
 

@@ -2,7 +2,7 @@
  A live template to simplify logcat output statement in PowerAct.
  Import:
     Copy it to <User Dir>/.AndroidStudio<ide_version>/config/templates/
-    Restart the IDE.
+    Restart the IDE. (Android Studio 4.0)
  Usage:
     palg(d,i,w,e)
  Before using it, make sure that it doesn't conflict with the existing live templates.

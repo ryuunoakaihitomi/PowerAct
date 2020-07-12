@@ -110,7 +110,7 @@ public final class PaService extends AccessibilityService {
         sGlobalActionMap = globalActionMap;
     }
 
-    static boolean sendAction(Context context, @ActionType String action) {
+    static boolean sendAction(Context context, @Action String action) {
         if (sIsBroadcastRegistered) {
             Intent intent = new Intent(action);
             intent.setPackage(context.getPackageName());
@@ -178,7 +178,7 @@ public final class PaService extends AccessibilityService {
     })
     @Target(ElementType.PARAMETER)
     @Retention(RetentionPolicy.SOURCE)
-    private @interface ActionType {
+    private @interface Action {
     }
 
     @Override
