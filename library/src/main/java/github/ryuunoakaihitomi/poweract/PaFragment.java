@@ -83,6 +83,13 @@ public final class PaFragment extends Fragment {
                     failed("AccessibilityService disabled.");
                     return;
                 }
+                /*
+                 * It's just a waste of time implementing some additional demands with these APIs.
+                 *
+                 * @see DevicePolicyManager#setSecureSetting(ComponentName, String, String)
+                 * @see DevicePolicyManager#setPermittedAccessibilityServices(ComponentName, List)
+                 * @see DevicePolicyManager#setUninstallBlocked(ComponentName, String, boolean)
+                 */
                 try {
                     // If you disabled PaService, and try to enable it.
                     // You cannot find it in Accessibility Settings instantly.
