@@ -29,8 +29,11 @@ android {
 }
 
 dependencies {
+    // Test uploaded aar release.
+//    implementation 'github.ryuunoakaihitomi.poweract:poweract:latest.release'
     // Test aar release.
 //    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+    // Developing mode
     implementation project(':library')
 
     // debugImplementation because LeakCanary should only run in debug builds.

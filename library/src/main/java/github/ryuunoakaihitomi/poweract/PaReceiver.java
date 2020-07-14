@@ -2,7 +2,6 @@ package github.ryuunoakaihitomi.poweract;
 
 import android.app.admin.DeviceAdminReceiver;
 import android.app.admin.DevicePolicyManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -25,9 +24,13 @@ public final class PaReceiver extends DeviceAdminReceiver {
     @Override
     public void onEnabled(@NonNull Context context, @NonNull Intent intent) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            DebugLog.w(TAG, "onEnabled: Useless device admin enabled after 28.");
+            DevicePolicyManager manager = getManager(context);
+            DebugLog.w(TAG, "onEnabled: The device admin enabled after 28." +
+                    " isDeviceOwner=" + manager.isDeviceOwnerApp(context.getPackageName()));
             // >= 28 & adminActive, remove dev admin automatically. (prevent user from enabling it manually)
-            getManager(context).removeActiveAdmin(new ComponentName(context, this.getClass()));
+            // The result of isDeviceOwnerApp() is uncertain here,
+            // and removeActiveAdmin() don't effect on the device owner, no need to judge.
+            manager.removeActiveAdmin(getWho(context));
         }
     }
 }
