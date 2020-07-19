@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.UiModeManager;
 import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -11,18 +12,20 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
-import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.text.style.TypefaceSpan;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewDebug;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -170,23 +173,42 @@ public class MainActivity extends Activity {
                             .append("\n\n");
                 }
                 new AlertDialog.Builder(this)
-                        .setTitle("The version info of the app.")
                         .setMessage(info.toString())
                         .show();
+                Toast.makeText(this, Build.FINGERPRINT, Toast.LENGTH_LONG).show();
                 break;
             /* Readme inside */
             case R.id.about:
-                final String logo = "PowerAct", link = "https://github.com/ryuunoakaihitomi/PowerAct";
-                SpannableString text = new SpannableString("A demo app of the android library " + logo + ".");
-                final int logoStart = text.length() - logo.length() - 1,
-                        logoEnd = text.length() - 1,
-                        flag = Spanned.SPAN_INCLUSIVE_INCLUSIVE;
-                text.setSpan(new StyleSpan(Typeface.BOLD), logoStart, logoEnd, flag);
-                text.setSpan(new ForegroundColorSpan(Color.GREEN), logoStart, logoEnd, flag);
-                text.setSpan(new BackgroundColorSpan(Color.BLACK), logoStart, logoEnd, flag);
-                new AlertDialog.Builder(this)
-                        .setTitle("What's this?")
-                        .setMessage(text)
+                final int flag = Spanned.SPAN_INCLUSIVE_INCLUSIVE;
+
+                /* title */
+                final String titleText = "What's this?";
+                SpannableString title = new SpannableString(titleText);
+                title.setSpan(new ForegroundColorSpan(Color.WHITE), 0, titleText.length(), flag);
+                title.setSpan(new StyleSpan(Typeface.BOLD_ITALIC), 0, titleText.length(), flag);
+
+                /* content */
+                final String
+                        logo = "PowerAct",
+                        link = "https://github.com/ryuunoakaihitomi/PowerAct",
+                        contentText = "A demo app of the android library " + logo + ".";
+                SpannableString content = new SpannableString(contentText);
+                content.setSpan(new ForegroundColorSpan(Color.GRAY), 0, contentText.length(), flag);
+
+                /* logo */
+                final int
+                        logoStart = contentText.indexOf(logo),
+                        logoEnd = contentText.indexOf(logo) + logo.length();
+                content.setSpan(new StyleSpan(Typeface.BOLD), logoStart, logoEnd, flag);
+                content.setSpan(new ForegroundColorSpan(Color.GREEN), logoStart, logoEnd, flag);
+                TypefaceSpan monospaceSpan = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P ?
+                        new TypefaceSpan(Typeface.MONOSPACE) :
+                        new TypefaceSpan("monospace");
+                content.setSpan(monospaceSpan, logoStart, logoEnd, flag);
+
+                AlertDialog aboutDialog = new AlertDialog.Builder(this)
+                        .setTitle(title)
+                        .setMessage(content)
                         .setPositiveButton("Link", (dialog, which) -> {
                             try {
                                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(link)));
@@ -194,7 +216,26 @@ public class MainActivity extends Activity {
                                 Log.e(TAG, "onClick: " + link, e);
                             }
                         })
-                        .show();
+                        .create();
+
+                aboutDialog.show();
+
+                /* button */
+                Button linkBtn = aboutDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                linkBtn.setAllCaps(false);
+                linkBtn.setTextColor(Color.WHITE);
+                linkBtn.setBackgroundColor(Color.RED);
+                linkBtn.setTypeface(Typeface.DEFAULT_BOLD);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    linkBtn.setTooltipText(link);
+                }
+
+                /* background */
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    Window w = aboutDialog.getWindow();
+                    if (w != null)
+                        w.getDecorView().setBackgroundResource(R.drawable.about_dialog_bg);
+                }
                 break;
             default:
                 return false;
