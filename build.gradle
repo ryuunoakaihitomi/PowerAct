@@ -8,7 +8,7 @@ buildscript {
     dependencies {
         // time to have a rest.
         // https://github.com/novoda/bintray-release/issues/298#issuecomment-635845436
-        classpath 'com.android.tools.build:gradle:4.0.0'
+        classpath 'com.android.tools.build:gradle:4.0.1'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
     }
