@@ -7,9 +7,11 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import github.ryuunoakaihitomi.poweract.test.BaseTest;
+
 import static org.junit.Assert.assertTrue;
 
-public class PaxExecutorTest {
+public class PaxExecutorTest extends BaseTest {
 
     @Test
     public void checkDuplicatedToken() throws IllegalAccessException {

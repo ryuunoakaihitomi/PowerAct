@@ -11,6 +11,7 @@ import android.os.Build;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.Keep;
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -24,6 +25,7 @@ import java.lang.annotation.Target;
  * <p>
  * Hello! I am <b>PowerAct</b>.
  */
+@MainThread
 @SuppressWarnings("WeakerAccess")
 public class PowerAct {
 
@@ -120,6 +122,11 @@ public class PowerAct {
     }
 
     private static void requestAction(Activity activity, Callback callback, @ActionType int action) {
+        if (!Utils.isMainThread()) {
+            DebugLog.e(TAG, "requestAction: Must be called from main thread!");
+            CallbackHelper.of(callback).failed();
+            return;
+        }
         if (activity == null) {
             DebugLog.e(TAG, "requestAction: Activity is null!");
             CallbackHelper.of(callback).failed();

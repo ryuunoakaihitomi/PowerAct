@@ -12,6 +12,8 @@ android {
         targetSdkVersion 29
 
         consumerProguardFiles 'consumer-rules.pro'
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -64,7 +66,10 @@ android {
 }
 
 dependencies {
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test:rules:1.2.0'
     testImplementation 'junit:junit:4.12'
+
     compileOnly 'androidx.annotation:annotation:1.1.0'
     compileOnly project(':hidden-api')
 }

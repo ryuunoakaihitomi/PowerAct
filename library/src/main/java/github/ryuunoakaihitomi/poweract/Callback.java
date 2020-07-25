@@ -3,6 +3,7 @@ package github.ryuunoakaihitomi.poweract;
 /**
  * Callback to notify the result of the operation.
  */
+@FunctionalInterface
 public interface Callback {
 
     /**

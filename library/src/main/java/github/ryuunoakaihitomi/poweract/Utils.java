@@ -4,12 +4,15 @@ import android.accessibilityservice.AccessibilityService;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Build;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.SparseArray;
 import android.view.accessibility.AccessibilityManager;
 
+import androidx.annotation.AnyThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.WorkerThread;
 
@@ -105,7 +108,7 @@ class Utils {
         return state == PackageManager.COMPONENT_ENABLED_STATE_DEFAULT;
     }
 
-    static SparseArray<String> getClassIntApiConstant(Class<?> clz, String prefix) {
+    static SparseArray<String> getClassIntApiConstant(@NonNull Class<?> clz, @NonNull String prefix) {
         SparseArray<String> container = new SparseArray<>();
         for (Field field : clz.getDeclaredFields()) {
             String name = field.getName();
@@ -120,7 +123,15 @@ class Utils {
         return container;
     }
 
-    static String getClassIntApiConstantString(Class<?> clz, String prefix, int value) {
+    static String getClassIntApiConstantString(@NonNull Class<?> clz, @NonNull String prefix, int value) {
         return getClassIntApiConstant(clz, prefix).get(value, String.valueOf(value));
+    }
+
+    @AnyThread
+    static boolean isMainThread() {
+        Looper mainLooper = Looper.getMainLooper();
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
+                mainLooper.isCurrentThread() :
+                Looper.myLooper() == mainLooper;
     }
 }
