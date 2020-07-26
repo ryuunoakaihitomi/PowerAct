@@ -5,7 +5,7 @@ import androidx.test.filters.Suppress;
 
 import org.junit.Test;
 
-import static android.os.Build.VERSION_CODES.M;
+import static android.os.Build.VERSION_CODES.N;
 import static android.os.Build.VERSION_CODES.O_MR1;
 
 /**
@@ -33,7 +33,7 @@ public class PaxCompatTest {
         PaxCompat.shutdown();
     }
 
-    @SdkSuppress(minSdkVersion = M, maxSdkVersion = O_MR1)
+    @SdkSuppress(minSdkVersion = N, maxSdkVersion = O_MR1)
     @Test(expected = SecurityException.class)
     public void rebootSafeMode() {
         PaxCompat.rebootSafeMode();
