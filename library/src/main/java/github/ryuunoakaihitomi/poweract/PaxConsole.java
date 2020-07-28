@@ -7,18 +7,22 @@ class PaxConsole {
 
     private static final String TAG = "PaxConsole";
 
-    private static PaxInterface sInterface;
+    private static volatile PaxInterface sInterface;
 
     private PaxConsole() {
     }
 
     public static PaxInterface getInterface() {
         if (sInterface == null) {
-            DebugLog.d(TAG, "getInterface: Initializing interface...");
-            ClassLoader loader = PaxInterface.class.getClassLoader();
-            Class<?>[] interfaces = new Class[]{PaxInterface.class};
-            InvocationHandler handler = new PaxHandler();
-            sInterface = (PaxInterface) Proxy.newProxyInstance(loader, interfaces, handler);
+            synchronized (PaxConsole.class) {
+                if (sInterface == null) {
+                    DebugLog.d(TAG, "getInterface: Initializing interface...");
+                    ClassLoader loader = PaxInterface.class.getClassLoader();
+                    Class<?>[] interfaces = new Class[]{PaxInterface.class};
+                    InvocationHandler handler = new PaxHandler();
+                    sInterface = (PaxInterface) Proxy.newProxyInstance(loader, interfaces, handler);
+                }
+            }
         }
         return sInterface;
     }

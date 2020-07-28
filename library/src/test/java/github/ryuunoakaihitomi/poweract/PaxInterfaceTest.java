@@ -42,10 +42,10 @@ public class PaxInterfaceTest extends BaseTest {
             switch (count) {
                 case 2:
                     /* force */
-                    assertEquals(parameters[1].getType(), boolean.class);
+                    assertEquals(boolean.class, parameters[1].getType());
                     i(method.getName() + "() has force mode.");
                 case 1:
-                    assertEquals(parameters[0].getType(), Callback.class);
+                    assertEquals(Callback.class, parameters[0].getType());
                     break;
                 default:
                     fail("Illegal parameter count: " + Arrays.asList(parameters) + " = " + count);

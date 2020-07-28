@@ -22,7 +22,7 @@ public class UtilsTest {
         for (int i = 0; i < constants.size(); i++) {
             final String value = constants.valueAt(i);
             assertTrue(value.startsWith(prefix));
-            assertEquals(testClazz.getDeclaredField(value).getInt(null), constants.keyAt(i));
+            assertEquals(constants.keyAt(i), testClazz.getDeclaredField(value).getInt(null));
         }
     }
 
