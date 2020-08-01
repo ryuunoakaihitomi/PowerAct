@@ -68,6 +68,15 @@ public class PowerAct {
     }
 
     /**
+     * Go to see {@link #showPowerDialog(Activity, Callback)}.
+     *
+     * @param activity As {@link #lockScreen(Activity, Callback)}'s <code>activity</code>.
+     */
+    public static void showPowerDialog(@NonNull Activity activity) {
+        showPowerDialog(activity, null);
+    }
+
+    /**
      * To open the power long-press dialog.
      * <b>The operation can only be available since 21.</b>
      *
@@ -77,15 +86,6 @@ public class PowerAct {
      */
     public static void showPowerDialog(@NonNull Activity activity, @Nullable Callback callback) {
         requestAction(activity, callback, ACTION_POWER_DIALOG);
-    }
-
-    /**
-     * Go to see {@link #showPowerDialog(Activity, Callback)}.
-     *
-     * @param activity As {@link #lockScreen(Activity, Callback)}'s <code>activity</code>.
-     */
-    public static void showPowerDialog(@NonNull Activity activity) {
-        showPowerDialog(activity, null);
     }
 
     /**
