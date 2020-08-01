@@ -1,5 +1,6 @@
 package github.ryuunoakaihitomi.poweract;
 
+import android.Manifest;
 import android.accessibilityservice.AccessibilityService;
 import android.annotation.TargetApi;
 import android.app.AppOpsManager;
@@ -18,6 +19,7 @@ import android.text.TextUtils;
 import android.util.SparseArray;
 import android.view.accessibility.AccessibilityEvent;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.StringDef;
 
@@ -26,7 +28,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Arrays;
-import java.util.Random;
 import java.util.UUID;
 
 /**
@@ -50,6 +51,7 @@ public final class PaService extends AccessibilityService {
             EXTRA_TOKEN = "extra_token";
     private static final String TAG = "PaService";
     private static String token = "";
+    private static Callback callback;
     private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
 
         @Override
@@ -91,6 +93,8 @@ public final class PaService extends AccessibilityService {
                 default:
                     DebugLog.w(TAG, "onReceive: Unknown intent action.");
             }
+            // Consuming the callback in order to prevent memory leaks.
+            callback = null;
         }
     };
     // It's too dirty.
@@ -110,13 +114,14 @@ public final class PaService extends AccessibilityService {
         sGlobalActionMap = globalActionMap;
     }
 
-    static boolean sendAction(Context context, @Action String action) {
+    static boolean sendAction(Context context, @Action String action, @Nullable Callback callback) {
         if (sIsBroadcastRegistered) {
             Intent intent = new Intent(action);
             intent.setPackage(context.getPackageName());
             String token = UUID.randomUUID().toString();
             DebugLog.d(TAG, "sendAction: Set token to " + token);
             PaService.token = token;
+            PaService.callback = callback;
             intent.putExtra(PaService.EXTRA_TOKEN, token);
             context.sendBroadcast(intent);
         }
@@ -143,14 +148,19 @@ public final class PaService extends AccessibilityService {
         // GLOBAL_ACTION_POWER_DIALOG = 6
         // GLOBAL_ACTION_LOCK_SCREEN = 8
         /*
-         * Go to see {@code frameworks/base/services/accessibility/java/com/android/server/accessibility/GlobalActionPerformer.java}.
-         * We can completely ignore the return value of {@link #performGlobalAction(int)}. (Assuming it's always true)
+         * @see {@code frameworks/base/services/accessibility/java/com/android/server/accessibility/GlobalActionPerformer.java}.
          */
         DebugLog.i(TAG, "perform: Action " + sGlobalActionMap.get(action) + " returned " + result);
+        if (result) {
+            CallbackHelper.of(callback).done();
+        } else {
+            CallbackHelper.of(callback).failed();
+        }
     }
 
     @Override
     protected void onServiceConnected() {
+        DebugLog.v(TAG, "onServiceConnected");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction(LOCK_SCREEN_ACTION);
@@ -205,7 +215,12 @@ public final class PaService extends AccessibilityService {
                 try {
                     // https://android.googlesource.com/platform/frameworks/base/+/e9d9b4b9a27f419fbd6096698f692b474939cb48
                     // Add app op to control foreground services: OPSTR_START_FOREGROUND
-                    mode = appOps.noteOpNoThrow("android:start_foreground", Os.getuid(), getPackageName());
+                    final String op = AppOpsManager.permissionToOp(Manifest.permission.FOREGROUND_SERVICE);
+                    final int uid = Os.getuid();
+                    final String packageName = getPackageName();
+                    mode = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ?
+                            appOps.unsafeCheckOpNoThrow(op, uid, packageName) :
+                            appOps.checkOpNoThrow(op, uid, packageName);
                 } catch (IllegalArgumentException e) {
                     // "Unknown operation string: "
                     DebugLog.e(TAG, "loadForegroundNotification: " + e.getMessage(), e);
@@ -251,14 +266,9 @@ public final class PaService extends AccessibilityService {
                     .setOngoing(true)
                     .build();
             Notification foregroundNotification = builder.build();
-            int id = randomNonZero();
+            int id = Utils.randomNonZero();
             DebugLog.i(TAG, "onServiceConnected: notification id = " + id);
             startForeground(id, foregroundNotification);
         }
-    }
-
-    private int randomNonZero() {
-        int ret = new Random().nextInt();
-        return ret == 0 ? randomNonZero() : ret;
     }
 }

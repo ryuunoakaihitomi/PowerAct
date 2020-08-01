@@ -1,4 +1,4 @@
-package demo.power_act.util;
+package poweract.test.res;
 
 import android.app.Activity;
 import android.app.Application;
@@ -8,7 +8,10 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
-public class DebugAlc {
+/**
+ * @see android.app.Application.ActivityLifecycleCallbacks
+ */
+class DebugAlc {
 
     private static final String TAG = "DebugAlc";
 
@@ -29,7 +32,7 @@ public class DebugAlc {
             Object firstArg = args[0];
             if (firstArg instanceof Activity) {
                 Activity activity = (Activity) firstArg;
-                Log.d(TAG, activity.getLocalClassName() + " -> " + method.getName());
+                Log.d(TAG, activity.getComponentName().getClassName() + " -> " + method.getName());
             }
             return null;
         }

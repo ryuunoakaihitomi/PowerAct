@@ -37,6 +37,18 @@ public class PowerAct {
             ACTION_POWER_DIALOG = 2,
             ACTION_REBOOT = 3;
 
+    private PowerAct() {
+    }
+
+    /**
+     * Go to see {@link #lockScreen(Activity, Callback)}.
+     *
+     * @param activity As {@link #lockScreen(Activity, Callback)}'s <code>activity</code>.
+     */
+    public static void lockScreen(@NonNull Activity activity) {
+        lockScreen(activity, null);
+    }
+
     /**
      * Make the device lock immediately, as if the lock screen timeout has expired at the point of this call.
      * <p>
@@ -53,18 +65,6 @@ public class PowerAct {
      */
     public static void lockScreen(@NonNull Activity activity, @Nullable Callback callback) {
         requestAction(activity, callback, ACTION_LOCK_SCREEN);
-    }
-
-    private PowerAct() {
-    }
-
-    /**
-     * Go to see {@link #lockScreen(Activity, Callback)}.
-     *
-     * @param activity As {@link #lockScreen(Activity, Callback)}'s <code>activity</code>.
-     */
-    public static void lockScreen(@NonNull Activity activity) {
-        lockScreen(activity, null);
     }
 
     /**
@@ -145,6 +145,7 @@ public class PowerAct {
         FragmentManager manager = activity.getFragmentManager();
         PaFragment fragment = (PaFragment) manager.findFragmentByTag(TAG);
         if (fragment == null) {
+            DebugLog.i(TAG, "requestAction: Initializing fragment...");
             Fragment invisibleFragment = new PaFragment();
             FragmentTransaction transaction = manager.beginTransaction().add(invisibleFragment, TAG);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

@@ -20,7 +20,9 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.Random;
 
 class Utils {
 
@@ -112,12 +114,25 @@ class Utils {
         SparseArray<String> container = new SparseArray<>();
         for (Field field : clz.getDeclaredFields()) {
             String name = field.getName();
-            if (name.startsWith(prefix)) {
+            final int modifiers = field.getModifiers();
+            if (name.startsWith(prefix) &&
+                    /* check modifiers */
+                    Modifier.isStatic(modifiers) &&
+                    Modifier.isFinal(modifiers) &&
+                    // check type
+                    field.getType().equals(int.class)) {
                 try {
                     container.put(field.getInt(null), name);
                 } catch (IllegalAccessException e) {
                     DebugLog.w(TAG, "getClassIntConstant: name = " + name, e);
                 }
+            }
+        }
+        if (BuildConfig.DEBUG) {
+            DebugLog.d(TAG, "getClassIntApiConstant() called with: clz = [" + clz + "], prefix = [" + prefix + "]");
+            for (int i = 0; i < container.size(); i++) {
+                DebugLog.d(TAG, "getClassIntApiConstant: " +
+                        Arrays.asList(i, container.valueAt(i), container.keyAt(i)));
             }
         }
         return container;
@@ -133,5 +148,10 @@ class Utils {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
                 mainLooper.isCurrentThread() :
                 Looper.myLooper() == mainLooper;
+    }
+
+    public static int randomNonZero() {
+        int ret = new Random().nextInt();
+        return ret == 0 ? randomNonZero() : ret;
     }
 }

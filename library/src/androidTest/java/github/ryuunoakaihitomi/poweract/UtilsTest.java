@@ -5,14 +5,18 @@ import android.util.SparseArray;
 import android.widget.Toast;
 
 import androidx.test.annotation.UiThreadTest;
+import androidx.test.filters.SmallTest;
 
 import org.junit.Test;
+
+import github.ryuunoakaihitomi.poweract.test.BaseTest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class UtilsTest {
+@SmallTest
+public final class UtilsTest extends BaseTest {
 
     @Test
     public void getClassIntApiConstant() throws NoSuchFieldException, IllegalAccessException {

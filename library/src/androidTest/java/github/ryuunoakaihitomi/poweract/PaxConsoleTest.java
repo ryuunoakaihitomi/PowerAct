@@ -3,15 +3,19 @@ package github.ryuunoakaihitomi.poweract;
 import android.util.Log;
 
 import androidx.test.filters.RequiresDevice;
+import androidx.test.filters.SmallTest;
 
 import org.junit.Test;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import github.ryuunoakaihitomi.poweract.test.BaseTest;
+
 import static org.junit.Assert.assertNotNull;
 
-public class PaxConsoleTest {
+@SmallTest
+public final class PaxConsoleTest extends BaseTest {
 
     private static final String TAG = "PaxConsoleTest";
 

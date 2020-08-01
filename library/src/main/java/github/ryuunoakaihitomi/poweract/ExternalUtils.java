@@ -63,7 +63,7 @@ public final class ExternalUtils {
             Utils.setComponentEnabled(context, PaReceiver.class, false);
         }
         if (serviceEnabled) {
-            PaService.sendAction(context, PaService.DISABLE_SERVICE_ACTION);
+            PaService.sendAction(context, PaService.DISABLE_SERVICE_ACTION, null);
             Utils.setComponentEnabled(context, PaService.class, false);
         }
     }

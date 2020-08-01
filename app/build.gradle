@@ -35,6 +35,8 @@ dependencies {
 //    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
     // Developing mode
     implementation project(':library')
+    // Export APK contains test res.
+//    implementation project(':test-resource')
 
     // debugImplementation because LeakCanary should only run in debug builds.
 //    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.4'

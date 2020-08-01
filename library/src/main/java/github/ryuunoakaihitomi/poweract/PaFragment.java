@@ -188,10 +188,8 @@ public final class PaFragment extends Fragment {
         // Send broadcast to show power dialog (21+) or to lock screen (28+).
         boolean receiverState =
                 PaService.sendAction(mAssociatedActivity,
-                        mAction == PowerAct.ACTION_POWER_DIALOG ? PaService.POWER_DIALOG_ACTION : PaService.LOCK_SCREEN_ACTION);
-        if (receiverState) {
-            done();
-        } else {
+                        mAction == PowerAct.ACTION_POWER_DIALOG ? PaService.POWER_DIALOG_ACTION : PaService.LOCK_SCREEN_ACTION, mCallback);
+        if (!receiverState) {
             failed("Unregistered BroadcastReceiver.");
         }
     }
@@ -203,9 +201,9 @@ public final class PaFragment extends Fragment {
     }
 
     private void failed(String reason) {
-        DebugLog.i(TAG, "failed... Action: " +
+        DebugLog.i(TAG, "failed... Action:" +
                 Utils.getClassIntApiConstantString(PowerAct.class, "ACTION", mAction) +
-                "   Reason: " + reason);
+                " Reason:" + reason);
         CallbackHelper.of(mCallback).failed();
         detach();
     }

@@ -1,9 +1,13 @@
 package github.ryuunoakaihitomi.poweract;
 
+import androidx.test.filters.FlakyTest;
 import androidx.test.filters.SdkSuppress;
+import androidx.test.filters.SmallTest;
 import androidx.test.filters.Suppress;
 
 import org.junit.Test;
+
+import github.ryuunoakaihitomi.poweract.test.BaseTest;
 
 import static android.os.Build.VERSION_CODES.N;
 import static android.os.Build.VERSION_CODES.O_MR1;
@@ -15,8 +19,10 @@ import static android.os.Build.VERSION_CODES.O_MR1;
  * Since {@link android.os.Build.VERSION_CODES#P},
  * remove {@link SdkSuppress#maxSdkVersion()} and see logcat: Accessing hidden method...
  */
+@FlakyTest(detail = "Only for testing available hidden API.")
+@SmallTest
 @SdkSuppress(maxSdkVersion = O_MR1)
-public class PaxCompatTest {
+public final class PaxCompatTest extends BaseTest {
 
     @Test(expected = SecurityException.class)
     public void goToSleep() {
