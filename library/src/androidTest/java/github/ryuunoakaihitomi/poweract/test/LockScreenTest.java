@@ -16,7 +16,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class LockScreenTest extends BaseTest {
+public final class LockScreenTest extends BaseTest {
 
     public static final int WAIT_TIME_MILLIS = 20_000;
     private static final String TAG = "LockScreenTest";

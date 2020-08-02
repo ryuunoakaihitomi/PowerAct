@@ -17,6 +17,7 @@ import androidx.test.filters.SdkSuppress;
 import androidx.test.filters.Suppress;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
+import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.Configurator;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject;
@@ -40,11 +41,12 @@ import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 @LargeTest
 @SdkSuppress(minSdkVersion = JELLY_BEAN_MR2)    // Ui automator required.
-public class PowerActTest extends BaseTest {
+public final class PowerActTest extends BaseTest {
 
     private static final String TAG = "PowerActTest";
 
@@ -116,13 +118,18 @@ public class PowerActTest extends BaseTest {
         }
         countDownLatch.await();
 
-        /* Check if it's system ui. (The system power dialog).*/
+        /* Check if it's system ui. (The system power dialog) */
         final String currentPackageName = mUiDevice.getCurrentPackageName();
         Log.d(TAG, "showPowerDialog: Test end. currentPackageName = " + currentPackageName);
         assertThat(currentPackageName, anyOf(is("android"), is("com.android.systemui")));
         // Dump window hierarchy to logcat.
         mUiDevice.dumpWindowHierarchy(System.out);
-        // Exit power dialog
+        /* Check "Power Off" item. */
+        final Resources sysRes = Resources.getSystem();
+        final String powerOffText = sysRes.getString(sysRes.getIdentifier("power_off", "string", "android"));
+        Log.d(TAG, "showPowerDialog: powerOffText = " + powerOffText);
+        assertTrue(mUiDevice.hasObject(By.text(powerOffText)));
+        // Exit power dialog.
         mUiDevice.pressBack();
     }
 
