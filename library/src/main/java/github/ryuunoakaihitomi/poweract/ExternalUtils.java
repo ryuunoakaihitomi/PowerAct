@@ -70,9 +70,9 @@ public final class ExternalUtils {
 
     /**
      * Enable or disable logcat output.
-     * The default value is <b>true</b>.
+     * Logcat output is enabled by default for debugging. We can filter the logcat by tags that contain "<b>PowerAct_</b>".
      * <p>
-     * Example: You can turn off log output in the release version:
+     * Example: We can disable log output in the release version:
      * <pre>
      * ExternalUtils.enableLog(BuildConfig.DEBUG);
      * </pre>
