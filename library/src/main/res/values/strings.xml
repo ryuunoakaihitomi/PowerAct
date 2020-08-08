@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Rewrite these fields in App. -->
-    <string name="poweract_accessibility_service_label">Label</string>
-    <string name="poweract_accessibility_service_description">Description</string>
-    <string name="poweract_accessibility_service_summary">Summary</string>
+    <string name="poweract_accessibility_service_label">PowerAct Label</string>
+    <string name="poweract_accessibility_service_description">PowerAct Description\nhttps://github.com/ryuunoakaihitomi/PowerAct</string>
+    <string name="poweract_accessibility_service_summary">PowerAct Summary</string>
 </resources>

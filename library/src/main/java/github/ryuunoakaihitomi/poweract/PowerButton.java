@@ -17,7 +17,7 @@ import androidx.annotation.NonNull;
  * @see PowerAct#lockScreen(Activity)
  * @see PowerAct#showPowerDialog(Activity)
  */
-public final class PowerButton extends Button implements View.OnClickListener, View.OnLongClickListener {
+public final class PowerButton extends Button {
 
     private static final String TAG = "PowerButton";
 
@@ -28,8 +28,25 @@ public final class PowerButton extends Button implements View.OnClickListener, V
 
     public PowerButton(Context context, AttributeSet attrs) {
         super(context, attrs);
-        setOnClickListener(this);
-        setOnLongClickListener(this);
+
+        /* Lock screen by click. */
+        final OnClickListener lockScreenListener = v -> {
+            PowerAct.lockScreen(contextToActivityNoThrow(getContext()));
+            if (mOnClickListener != null) mOnClickListener.onClick(v);
+        };
+        setOnClickListener(lockScreenListener);
+
+        /* Show power dialog by long click. */
+        final OnLongClickListener showPowerDialogListener = v -> {
+            PowerAct.showPowerDialog(contextToActivityNoThrow(getContext()));
+            if (mOnLongClickListener != null) {
+                boolean ret = mOnLongClickListener.onLongClick(v);
+                DebugLog.d(TAG, "onLongClick: onLongClick(v) -> " + ret);
+            }
+            return true;
+        };
+        setOnLongClickListener(showPowerDialogListener);
+
         mPrepareToUse = true;
     }
 
@@ -61,21 +78,5 @@ public final class PowerButton extends Button implements View.OnClickListener, V
     public void setOnLongClickListener(OnLongClickListener l) {
         if (mPrepareToUse) mOnLongClickListener = l;
         else super.setOnLongClickListener(l);
-    }
-
-    @Override
-    public void onClick(View v) {
-        PowerAct.lockScreen(contextToActivityNoThrow(getContext()));
-        if (mOnClickListener != null) mOnClickListener.onClick(v);
-    }
-
-    @Override
-    public boolean onLongClick(View v) {
-        PowerAct.showPowerDialog(contextToActivityNoThrow(getContext()));
-        if (mOnLongClickListener != null) {
-            boolean ret = mOnLongClickListener.onLongClick(v);
-            DebugLog.d(TAG, "onLongClick: onLongClick(v) -> " + ret);
-        }
-        return true;
     }
 }
