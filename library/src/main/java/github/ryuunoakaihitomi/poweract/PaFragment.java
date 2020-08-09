@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.admin.DevicePolicyManager;
 import android.content.ActivityNotFoundException;
+import android.content.ComponentCallbacks2;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -216,5 +217,20 @@ public final class PaFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         DebugLog.v(TAG, "onDetach");
+    }
+
+    /**
+     * Developer Note:
+     * <p>
+     * Don't {@link #detach()} it in this method,
+     * {@link #mCallback} will be null.
+     *
+     * @param level {@link ComponentCallbacks2}
+     */
+    @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
+        if (BuildConfig.DEBUG)
+            DebugLog.d(TAG, "onTrimMemory: " + Utils.getClassIntApiConstantString(ComponentCallbacks2.class, "TRIM", level));
     }
 }

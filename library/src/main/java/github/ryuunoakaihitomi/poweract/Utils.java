@@ -9,6 +9,7 @@ import android.os.Looper;
 import android.os.SystemClock;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.DebugUtils;
 import android.util.SparseArray;
 import android.view.accessibility.AccessibilityManager;
 
@@ -139,6 +140,13 @@ class Utils {
     }
 
     static String getClassIntApiConstantString(@NonNull Class<?> clz, @NonNull String prefix, int value) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            // There's also flagToString().
+            String ret = (String) ReflectionUtils.invokeStaticMethod(ReflectionUtils.findMethod(
+                    DebugUtils.class, "valueToString", Class.class, String.class, Integer.TYPE),
+                    clz, prefix, value);
+            if (ret != null) return prefix + ret;
+        }
         return getClassIntApiConstant(clz, prefix).get(value, String.valueOf(value));
     }
 
