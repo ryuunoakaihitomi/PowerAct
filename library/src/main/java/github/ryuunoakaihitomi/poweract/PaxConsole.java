@@ -1,5 +1,7 @@
 package github.ryuunoakaihitomi.poweract;
 
+import androidx.annotation.CheckResult;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 
@@ -12,6 +14,7 @@ class PaxConsole {
     private PaxConsole() {
     }
 
+    @CheckResult
     public static PaxInterface getInterface() {
         if (sInterface == null) {
             synchronized (PaxConsole.class) {

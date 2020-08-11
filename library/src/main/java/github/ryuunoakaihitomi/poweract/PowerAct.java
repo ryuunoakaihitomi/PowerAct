@@ -15,6 +15,7 @@ import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.io.PrintWriter;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -143,7 +144,17 @@ public class PowerAct {
             return;
         }
         FragmentManager manager = activity.getFragmentManager();
-        PaFragment fragment = (PaFragment) manager.findFragmentByTag(TAG);
+        PaFragment fragment;
+        try {
+            fragment = (PaFragment) manager.findFragmentByTag(TAG);
+        } catch (ClassCastException e) {
+            Fragment fakeFragment = manager.findFragmentByTag(TAG);
+            DebugLog.e(TAG, "requestAction: Occupied \"PowerAct\" fragment: " +
+                    fakeFragment + "   Dump it to System.out...");
+            fakeFragment.dump("", null, new PrintWriter(System.out, true), null);
+            CallbackHelper.of(callback).failed();
+            return;
+        }
         if (fragment == null) {
             DebugLog.i(TAG, "requestAction: Initializing fragment...");
             Fragment invisibleFragment = new PaFragment();

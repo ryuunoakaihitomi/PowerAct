@@ -39,6 +39,7 @@ public final class PaFragment extends Fragment {
 
     @Override
     public void onAttach(Context context) {
+        DebugLog.v(TAG, "onAttach");
         super.onAttach(context);
         initialize();
     }
