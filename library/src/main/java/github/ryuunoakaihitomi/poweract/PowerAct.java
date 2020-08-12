@@ -144,14 +144,16 @@ public class PowerAct {
             return;
         }
         FragmentManager manager = activity.getFragmentManager();
+        Fragment sourceFragment = manager.findFragmentByTag(TAG);
         PaFragment fragment;
         try {
-            fragment = (PaFragment) manager.findFragmentByTag(TAG);
+            fragment = (PaFragment) sourceFragment;
         } catch (ClassCastException e) {
-            Fragment fakeFragment = manager.findFragmentByTag(TAG);
             DebugLog.e(TAG, "requestAction: Occupied \"PowerAct\" fragment: " +
-                    fakeFragment + "   Dump it to System.out...");
-            fakeFragment.dump("", null, new PrintWriter(System.out, true), null);
+                    sourceFragment + "   Dump it to System.out...");
+            if (DebugLog.enabled) {
+                sourceFragment.dump("", null, new PrintWriter(System.out, true), null);
+            }
             CallbackHelper.of(callback).failed();
             return;
         }
