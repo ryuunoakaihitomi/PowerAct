@@ -13,6 +13,6 @@ public class PaxHandlerTest {
      */
     @Test
     public void checkUserGuideDelayTimeMillis() {
-        assertThat(PaxHandler.USER_GUIDE_DELAY_TIME_MILLS, lessThan(UserGuideRunnable.RELEASE_DELAY_TIME_MILLIS));
+        assertThat(PaxHandler.USER_GUIDE_DELAY_TIME_MILLIS, lessThan(UserGuideRunnable.RELEASE_DELAY_TIME_MILLIS));
     }
 }

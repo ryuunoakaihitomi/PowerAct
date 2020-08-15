@@ -21,7 +21,7 @@ final class PaxHandler implements InvocationHandler {
     private static final Application sApplication;
 
     @VisibleForTesting
-    public static final int USER_GUIDE_DELAY_TIME_MILLS = 3000;
+    public static final int USER_GUIDE_DELAY_TIME_MILLIS = 3000;
 
     static {
         DebugLog.d(TAG, "static initializer");
@@ -40,7 +40,7 @@ final class PaxHandler implements InvocationHandler {
             if (cmdList != null) {
                 DebugLog.d(TAG, "invoke: cmd " + Arrays.asList(cmdList, forceString));
                 final ScheduledExecutorService guideExecutor = Executors.newSingleThreadScheduledExecutor();
-                guideExecutor.schedule(UserGuideRunnable::run, USER_GUIDE_DELAY_TIME_MILLS, TimeUnit.MILLISECONDS);
+                guideExecutor.schedule(UserGuideRunnable::run, USER_GUIDE_DELAY_TIME_MILLIS, TimeUnit.MILLISECONDS);
                 boolean returnValue =
                         Utils.runSuJavaWithAppProcess(sApplication,
                                 PaxExecutor.class,
