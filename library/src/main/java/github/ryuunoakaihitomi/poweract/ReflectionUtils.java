@@ -102,8 +102,8 @@ class ReflectionUtils {
             case Q:
             case P:
                 String vmRuntimeClassName = "dalvik.system.VMRuntime";
-                Object runtime = ReflectionUtils.invokeStaticMethod(ReflectionUtils.findMethod(vmRuntimeClassName, "getRuntime"));
-                ReflectionUtils.invokeMethod(ReflectionUtils.findMethodCallerSensitive(
+                Object runtime = invokeStaticMethod(findMethod(vmRuntimeClassName, "getRuntime"));
+                invokeMethod(findMethodCallerSensitive(
                         vmRuntimeClassName, "setHiddenApiExemptions", String[].class),
                         runtime, (Object) new String[]{"L"});
                 break;
