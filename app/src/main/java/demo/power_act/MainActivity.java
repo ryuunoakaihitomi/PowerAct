@@ -74,10 +74,12 @@ public class MainActivity extends Activity {
 
         // PowerAct examples
         lockScreenBtn.setOnClickListener(v -> {
+            tipForAccessibilityService();
             // Lock screen, without callback.
             PowerAct.lockScreen(activity);
         });
         powerDialogBtn.setOnClickListener(v -> {
+            tipForAccessibilityService();
             // Show system power dialog, with callback.
             PowerAct.showPowerDialog(activity, callback);
         });
@@ -118,13 +120,26 @@ public class MainActivity extends Activity {
 
     private void setXButtonAction(int btnResId, Runnable action, Runnable longClickAction) {
         Button button = findViewById(btnResId);
-        button.setOnClickListener(v -> action.run());
+        button.setOnClickListener(v -> {
+            tipForRootAccess();
+            action.run();
+        });
         if (longClickAction != null) {
             button.setOnLongClickListener(v -> {
+                tipForRootAccess();
                 longClickAction.run();
                 return true;
             });
         }
+    }
+
+    private void tipForAccessibilityService() {
+        // User guide.
+        ExternalUtils.setUserGuideRunnable(() -> Toast.makeText(this, "Please enable the accessibility service.", Toast.LENGTH_LONG).show());
+    }
+
+    private void tipForRootAccess() {
+        ExternalUtils.setUserGuideRunnable(() -> Toast.makeText(this, "Please grant the root permission.", Toast.LENGTH_SHORT).show());
     }
 
     //<editor-fold desc="This part is not important for showing the library's usage.">

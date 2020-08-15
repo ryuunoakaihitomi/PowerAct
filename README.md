@@ -40,16 +40,24 @@ android {
 ### Use
 
 ```java
-lockScreenBtn.setOnClickListener(v -> {
-    // Lock screen, without callback.
-    PowerAct.lockScreen(activity);
-});
-powerDialogBtn.setOnClickListener(v -> {
-    // Show system power dialog, with callback.
-    PowerAct.showPowerDialog(activity, callback);
-});
-// An additional widget.
+import github.ryuunoakaihitomi.poweract.*;
+
+...
+
+// Lock screen.
+PowerAct.lockScreen(activity);
+// Show system power dialog.
+PowerAct.showPowerDialog(activity, callback);
+// An additional widget for Quick Integration.
+/*
+        <github.ryuunoakaihitomi.poweract.PowerButton
+            android:id="@+id/pwrBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+*/
 PowerButton powerButton = findViewById(R.id.pwrBtn);
+// Guide user to grant the accessibility service permission.
+ExternalUtils.setUserGuideRunnable(runnable);
 ```
 
 Create [`res/values/poweract_config.xml`](library/src/main/res/values/public.xml)

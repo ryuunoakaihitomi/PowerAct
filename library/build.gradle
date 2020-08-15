@@ -72,6 +72,7 @@ dependencies {
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
     androidTestImplementation project(':test-resource')
     testImplementation 'junit:junit:4.12'
+    testImplementation 'org.hamcrest:hamcrest:2.2'
 
     compileOnly 'androidx.annotation:annotation:1.1.0'
     compileOnly project(':hidden-api')

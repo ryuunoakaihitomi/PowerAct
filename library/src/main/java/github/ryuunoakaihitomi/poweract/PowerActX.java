@@ -235,7 +235,7 @@ public class PowerActX {
         } else {
             // Tried on AVD (Android 4.0.3).
             Log.e(TAG, "safeMode: Does not support before 16.");
-            if (callback != null) callback.failed();
+            CallbackHelper.of(callback).failed();
         }
     }
 

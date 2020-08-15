@@ -82,4 +82,20 @@ public final class ExternalUtils {
     public static void enableLog(boolean isEnabled) {
         DebugLog.enabled = isEnabled;
     }
+
+    /**
+     * Sometimes we need to guide user to grant permission the library needs manually,
+     * such as {@link AccessibilityService} or root permission.
+     * <p>
+     * If the library thinks that we should guide user, the {@link Runnable} will be executed.
+     * <p>
+     * After setting up the {@link Runnable} is done, <b>we must use the library AS SOON AS POSSIBLE!</b>
+     * it will be null to recycle memory after 5 seconds.
+     *
+     * @param runnable How do you want to guide the user?
+     * @see UserGuideRunnable#RELEASE_DELAY_TIME_MILLIS
+     */
+    public static void setUserGuideRunnable(@NonNull Runnable runnable) {
+        UserGuideRunnable.set(runnable);
+    }
 }

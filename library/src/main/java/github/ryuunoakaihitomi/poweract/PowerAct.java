@@ -122,7 +122,7 @@ public class PowerAct {
         requestAction(activity, callback, ACTION_REBOOT);
     }
 
-    private static void requestAction(Activity activity, Callback callback, @ActionType int action) {
+    private static void requestAction(final Activity activity, final Callback callback, final @ActionType int action) {
         if (!Utils.isMainThread()) {
             DebugLog.e(TAG, "requestAction: Must be called from main thread!");
             CallbackHelper.of(callback).failed();
@@ -143,9 +143,9 @@ public class PowerAct {
             CallbackHelper.of(callback).failed();
             return;
         }
-        FragmentManager manager = activity.getFragmentManager();
-        Fragment sourceFragment = manager.findFragmentByTag(TAG);
-        PaFragment fragment;
+        final FragmentManager manager = activity.getFragmentManager();
+        final Fragment sourceFragment = manager.findFragmentByTag(TAG);
+        final PaFragment fragment;
         try {
             fragment = (PaFragment) sourceFragment;
         } catch (ClassCastException e) {
@@ -159,8 +159,8 @@ public class PowerAct {
         }
         if (fragment == null) {
             DebugLog.i(TAG, "requestAction: Initializing fragment...");
-            Fragment invisibleFragment = new PaFragment();
-            FragmentTransaction transaction = manager.beginTransaction().add(invisibleFragment, TAG);
+            final Fragment invisibleFragment = new PaFragment();
+            final FragmentTransaction transaction = manager.beginTransaction().add(invisibleFragment, TAG);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 transaction.commitNow();
             } else {

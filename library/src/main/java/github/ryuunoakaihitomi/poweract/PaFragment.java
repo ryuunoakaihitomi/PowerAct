@@ -96,6 +96,7 @@ public final class PaFragment extends Fragment {
                     // If you disabled PaService, and try to enable it.
                     // You cannot find it in Accessibility Settings instantly.
                     DebugLog.d(TAG, "requestAction: Try to enable Accessibility Service...");
+                    UserGuideRunnable.run();
                     Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
                     startActivity(intent);
                     mHasRequestedAccessibility = true;
@@ -187,6 +188,7 @@ public final class PaFragment extends Fragment {
     }
 
     private void requireAccessibilityAction() {
+        UserGuideRunnable.release();
         // Send broadcast to show power dialog (21+) or to lock screen (28+).
         boolean receiverState = PaService.sendAction(mAssociatedActivity,
                 mAction == PowerAct.ACTION_POWER_DIALOG ? PaService.POWER_DIALOG_ACTION : PaService.LOCK_SCREEN_ACTION,
