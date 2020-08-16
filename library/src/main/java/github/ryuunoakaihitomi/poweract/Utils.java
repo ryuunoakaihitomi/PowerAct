@@ -145,7 +145,8 @@ class Utils {
             String ret = (String) ReflectionUtils.invokeStaticMethod(ReflectionUtils.findMethod(
                     DebugUtils.class, "valueToString", Class.class, String.class, Integer.TYPE),
                     clz, prefix, value);
-            if (ret != null) return prefix + ret;
+            if (ret != null && !String.valueOf(value).equals(ret)) return prefix + ret;
+            DebugLog.d(TAG, "getClassIntApiConstantString: Use alternative solution. ret=" + ret);
         }
         return getClassIntApiConstant(clz, prefix).get(value, String.valueOf(value));
     }
