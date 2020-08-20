@@ -60,6 +60,7 @@ final class DebugLog {
     }
 
     private static String formatTag(String baseTag) {
+        if (MAIN_TAG.equals(baseTag)) return baseTag;
         final int maxTagLength = 23;
         String tag = MAIN_TAG + '_' + baseTag;
         /*
