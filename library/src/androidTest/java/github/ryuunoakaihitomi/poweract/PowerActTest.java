@@ -138,7 +138,7 @@ public final class PowerActTest extends BaseTest {
     @Suppress   // It will cut off the entire test process. Be careful if you want to test reboot().
     @Test
     public void reboot() throws Throwable {
-        final String shell = "dpm set-device-owner " + targetContext.getPackageName() + "/" + PaReceiver.class.getName();
+        final String shell = "dpm set-device-owner " + new ComponentName(targetContext, PaReceiver.class).flattenToShortString();
         InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand(shell).close();
         TimeUnit.SECONDS.sleep(1);
         mActivityTestRule.runOnUiThread(() -> {
