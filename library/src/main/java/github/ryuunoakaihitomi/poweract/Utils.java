@@ -62,7 +62,7 @@ class Utils {
     }
 
     @WorkerThread
-    public static synchronized boolean runSuJavaWithAppProcess(Context context, Class<?> cls, @NonNull String... args) {
+    public static synchronized boolean runSuJavaWithAppProcess(@NonNull Context context, @NonNull Class<?> cls, @NonNull String... args) {
         final long start = SystemClock.elapsedRealtime();
         final String packageResourcePath = context.getPackageResourcePath();
         final String className = cls.getName();
