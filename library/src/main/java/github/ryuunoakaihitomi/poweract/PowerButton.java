@@ -2,10 +2,19 @@ package github.ryuunoakaihitomi.poweract;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.annotation.ColorInt;
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 
 /**
@@ -25,9 +34,12 @@ public final class PowerButton extends Button {
     private OnLongClickListener mOnLongClickListener;
     @SuppressWarnings("CanBeFinal")
     private boolean mPrepareToUse;
+    private boolean mHasCustomMeasure;
+    private int mSize;
 
     public PowerButton(Context context, AttributeSet attrs) {
         super(context, attrs);
+        initNormalStyles();
 
         /* Lock screen by click. */
         final OnClickListener lockScreenListener = v -> {
@@ -48,6 +60,41 @@ public final class PowerButton extends Button {
         setOnLongClickListener(showPowerDialogListener);
 
         mPrepareToUse = true;
+    }
+
+    private void initNormalStyles() {
+        /* Normal Style: ic_lock_power_off, red */
+        final @DrawableRes int powerIconResId = android.R.drawable.ic_lock_power_off;
+        final @ColorInt int tintColor = Color.RED;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            final Drawable powerIcon = getContext().getDrawable(powerIconResId);
+            if (powerIcon != null) {
+                powerIcon.setTint(tintColor);
+                setBackground(powerIcon);
+            }
+        } else {
+            final Bitmap powerIcon = BitmapFactory.decodeResource(getResources(), powerIconResId);
+            setBackgroundDrawable(new BitmapDrawable(getResources(), Utils.makeTintBitmap(powerIcon, tintColor)));
+        }
+        // Normal Style: 48dp
+        mSize = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, getResources().getDisplayMetrics()));
+        mHasCustomMeasure = true;
+    }
+
+    /**
+     * Make the size mutable.
+     * <p>
+     * The size of {@link PowerButton} is immutable in default.
+     */
+    public void unlockSize() {
+        mHasCustomMeasure = false;
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        if (mHasCustomMeasure) setMeasuredDimension(mSize, mSize);
+        else super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     @SuppressWarnings("ConstantConditions")

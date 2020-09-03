@@ -10,6 +10,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
@@ -92,6 +93,14 @@ public class MainActivity extends Activity {
             Log.d(TAG, "onLongClick: pwrBtn");
             return false;
         });
+        /* Change the size of PowerButton. */
+        powerButton.unlockSize();
+        Point p = new Point();
+        getWindowManager().getDefaultDisplay().getSize(p);
+        final int customSize = Math.min(p.x, p.y) >> 1;
+        Log.d(TAG, "onCreate: The size of PowerButton is " + customSize);
+        powerButton.setHeight(customSize);
+        powerButton.setWidth(customSize);
 
         // PowerActX examples
         /*

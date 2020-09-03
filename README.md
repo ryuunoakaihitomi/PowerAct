@@ -93,7 +93,7 @@ API level|Lock screen|Show system power dialog
 21 ~ 27 |√|√
 28+|√+|√
 
-> √+ `Unlock by fingerprint`
+> √+ `Can be unlocked by fingerprint`
 
 ### PowerActX
 
@@ -101,6 +101,7 @@ There are few compatibility issues in `PowerActX`.
 
 > Safe mode cannot work before 16,
 > and shutdown before 17 can only be forced.
+> PowerActX class must be called in main thread before 18.
 
 ## License
 

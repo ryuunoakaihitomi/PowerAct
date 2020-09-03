@@ -4,6 +4,11 @@ import android.accessibilityservice.AccessibilityService;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.os.Build;
 import android.os.Looper;
 import android.os.SystemClock;
@@ -162,5 +167,14 @@ class Utils {
     public static int randomNonZero() {
         int ret = new Random().nextInt();
         return ret == 0 ? randomNonZero() : ret;
+    }
+
+    public static Bitmap makeTintBitmap(@NonNull Bitmap inputBitmap, int tintColor) {
+        Bitmap outputBitmap = Bitmap.createBitmap(inputBitmap.getWidth(), inputBitmap.getHeight(), inputBitmap.getConfig());
+        Canvas canvas = new Canvas(outputBitmap);
+        Paint paint = new Paint();
+        paint.setColorFilter(new PorterDuffColorFilter(tintColor, PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(inputBitmap, 0, 0, paint);
+        return outputBitmap;
     }
 }
