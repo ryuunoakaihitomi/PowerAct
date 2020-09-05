@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -12,6 +13,7 @@ class UserGuideRunnable {
 
     public static final int RELEASE_DELAY_TIME_MILLIS = 5000;
     private static final String TAG = "UserGuideRunnable";
+    @VisibleForTesting  // For testing, but invisible.
     private static Runnable sUserGuideRunnable;
 
     private UserGuideRunnable() {

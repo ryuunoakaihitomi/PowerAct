@@ -11,12 +11,12 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.Switch;
 
+import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.filters.FlakyTest;
 import androidx.test.filters.LargeTest;
 import androidx.test.filters.SdkSuppress;
 import androidx.test.filters.Suppress;
 import androidx.test.platform.app.InstrumentationRegistry;
-import androidx.test.rule.ActivityTestRule;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.Configurator;
 import androidx.test.uiautomator.UiDevice;
@@ -51,7 +51,7 @@ public final class PowerActTest extends BaseTest {
     private static final String TAG = "PowerActTest";
 
     @Rule
-    public final ActivityTestRule<PlaygroundActivity> mActivityTestRule = new ActivityTestRule<>(PlaygroundActivity.class);
+    public final ActivityScenarioRule<PlaygroundActivity> rule = new ActivityScenarioRule<>(PlaygroundActivity.class);
 
     private UiDevice mUiDevice;
 
@@ -68,7 +68,7 @@ public final class PowerActTest extends BaseTest {
     @Test(timeout = LockScreenTest.WAIT_TIME_MILLIS)
     public void lockScreen() throws InterruptedException {
         LockScreenTest test = new LockScreenTest(callback -> {
-            mActivityTestRule.runOnUiThread(() -> PowerAct.lockScreen(mActivityTestRule.getActivity(), callback));
+            rule.getScenario().onActivity(activity -> activity.runOnUiThread(() -> PowerAct.lockScreen(activity, callback)));
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
                 final String settingsPkgName = "com.android.settings";
                 final Resources settingsRes = targetContext.getPackageManager().getResourcesForApplication(settingsPkgName);
@@ -110,7 +110,7 @@ public final class PowerActTest extends BaseTest {
             }
         };
 
-        mActivityTestRule.runOnUiThread(() -> PowerAct.showPowerDialog(mActivityTestRule.getActivity(), callback));
+        rule.getScenario().onActivity(activity -> PowerAct.showPowerDialog(activity, callback));
         try {
             enableAccessibilityService();
         } catch (UiObjectNotFoundException e) {
@@ -141,8 +141,8 @@ public final class PowerActTest extends BaseTest {
         final String shell = "dpm set-device-owner " + new ComponentName(targetContext, PaReceiver.class).flattenToShortString();
         InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand(shell).close();
         TimeUnit.SECONDS.sleep(1);
-        mActivityTestRule.runOnUiThread(() -> {
-            PowerAct.reboot(mActivityTestRule.getActivity(), () -> fail("reboot() callback"));
+        rule.getScenario().onActivity(activity -> {
+            PowerAct.reboot(activity, () -> fail("reboot() callback"));
             fail("reboot() doesn't work.");
         });
     }
