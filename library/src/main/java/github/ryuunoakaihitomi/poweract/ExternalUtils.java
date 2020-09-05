@@ -15,6 +15,8 @@ import java.util.Arrays;
 
 /**
  * Public utilities.
+ *
+ * @since 1.0.8
  */
 public final class ExternalUtils {
 
@@ -78,6 +80,7 @@ public final class ExternalUtils {
      * </pre>
      *
      * @param isEnabled ↑
+     * @since 1.0.13
      */
     public static void enableLog(boolean isEnabled) {
         DebugLog.enabled = isEnabled;
@@ -94,6 +97,7 @@ public final class ExternalUtils {
      *
      * @param runnable How do you want to guide the user?
      * @see UserGuideRunnable#RELEASE_DELAY_TIME_MILLIS
+     * @since 1.1.0
      */
     public static void setUserGuideRunnable(@NonNull Runnable runnable) {
         UserGuideRunnable.set(runnable);

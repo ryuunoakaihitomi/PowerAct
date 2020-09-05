@@ -38,6 +38,7 @@ import java.util.UUID;
  *
  * @see AccessibilityService#GLOBAL_ACTION_POWER_DIALOG
  * @see AccessibilityService#GLOBAL_ACTION_LOCK_SCREEN
+ * @since 1.0.0
  */
 public final class PaService extends AccessibilityService {
 

@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
  *
  * @see DevicePolicyManager#lockNow()
  * @see <a href="https://developer.android.com/guide/topics/admin/device-admin">Device administration overview</a>
+ * @since 1.0.3
  */
 public final class PaReceiver extends DeviceAdminReceiver {
 

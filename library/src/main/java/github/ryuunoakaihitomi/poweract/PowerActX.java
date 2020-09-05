@@ -11,6 +11,8 @@ import android.util.Log;
  * <p>
  * Note: It will disable all the components that {@link PowerAct} depends on.
  * Once disabled, they cannot be enabled instantly.
+ *
+ * @since 1.0.6
  */
 
 @SuppressWarnings("unused")
@@ -64,6 +66,7 @@ public class PowerActX {
      * Go to see {@link #shutdown(Callback, boolean)}.
      *
      * @param force As {@link #shutdown(Callback, boolean)}'s <code>force</code>.
+     * @since 1.0.10
      */
     public static void shutdown(boolean force) {
         shutdown(null, force);
@@ -109,6 +112,7 @@ public class PowerActX {
      * Go to see {@link #reboot(Callback, boolean)}.
      *
      * @param force As {@link #shutdown(Callback, boolean)}'s <code>force</code>.
+     * @since 1.0.10
      */
     public static void reboot(boolean force) {
         reboot(null, force);
@@ -144,6 +148,7 @@ public class PowerActX {
      * Go to see {@link #recovery(Callback, boolean)}.
      *
      * @param force As {@link #shutdown(Callback, boolean)}'s <code>force</code>.
+     * @since 1.0.10
      */
     public static void recovery(boolean force) {
         recovery(null, force);
@@ -179,6 +184,7 @@ public class PowerActX {
      * Go to see {@link #bootloader(Callback, boolean)}.
      *
      * @param force As {@link #shutdown(Callback, boolean)}'s <code>force</code>.
+     * @since 1.0.10
      */
     public static void bootloader(boolean force) {
         bootloader(null, force);
@@ -215,6 +221,7 @@ public class PowerActX {
      * Go to see {@link #safeMode(Callback, boolean)}.
      *
      * @param force As {@link #shutdown(Callback, boolean)}'s <code>force</code>.
+     * @since 1.0.10
      */
     public static void safeMode(boolean force) {
         safeMode(null, force);

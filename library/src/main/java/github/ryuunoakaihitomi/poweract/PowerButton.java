@@ -25,6 +25,7 @@ import androidx.annotation.NonNull;
  *
  * @see PowerAct#lockScreen(Activity)
  * @see PowerAct#showPowerDialog(Activity)
+ * @since 1.0.0
  */
 public final class PowerButton extends Button {
 
@@ -86,6 +87,8 @@ public final class PowerButton extends Button {
      * Make the size mutable.
      * <p>
      * The size of {@link PowerButton} is immutable in default.
+     *
+     * @since 1.1.2
      */
     public void unlockSize() {
         mHasCustomMeasure = false;

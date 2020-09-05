@@ -25,6 +25,8 @@ import java.lang.annotation.Target;
  * Provide the main functions of the library.
  * <p>
  * Hello! I am <b>PowerAct</b>.
+ *
+ * @since 1.0.0
  */
 @MainThread
 @SuppressWarnings("WeakerAccess")
@@ -93,6 +95,7 @@ public class PowerAct {
      * Go to see {@link #reboot(Activity, Callback)}.
      *
      * @param activity As {@link #lockScreen(Activity, Callback)}'s <code>activity</code>.
+     * @since 1.0.18
      */
     public static void reboot(@NonNull Activity activity) {
         reboot(activity, null);
@@ -117,6 +120,7 @@ public class PowerAct {
      * @see <a href="https://source.android.com/devices/tech/admin/testing-setup#set_up_the_device_owner_for_testing">Set up device owner for testing</a>
      * @see <a href="https://developer.android.com/work/dpc/device-management#remotely_reboot_an_android_device">Remotely reboot an Android device</a>
      * @see <a href="https://stackoverflow.com/questions/21183328/how-to-make-my-app-a-device-owner">How to make my app a device owner?</a>
+     * @since 1.0.18
      */
     public static void reboot(@NonNull Activity activity, @Nullable Callback callback) {
         requestAction(activity, callback, ACTION_REBOOT);
