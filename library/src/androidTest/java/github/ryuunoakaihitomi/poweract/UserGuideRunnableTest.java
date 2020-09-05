@@ -4,7 +4,6 @@ import android.util.Log;
 
 import androidx.test.filters.LargeTest;
 
-import org.awaitility.Durations;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
@@ -13,6 +12,7 @@ import java.time.Duration;
 import github.ryuunoakaihitomi.poweract.test.BaseTest;
 
 import static org.awaitility.Awaitility.await;
+import static org.awaitility.Durations.ONE_SECOND;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
@@ -52,7 +52,7 @@ public final class UserGuideRunnableTest extends BaseTest {
         final Runnable r = () -> b[0] = true;
         UserGuideRunnable.set(r);
         UserGuideRunnable.run();
-        await().atMost(Durations.ONE_SECOND).until(() -> b[0]);
+        await().atMost(ONE_SECOND).until(() -> b[0]);
     }
 
     @Test
