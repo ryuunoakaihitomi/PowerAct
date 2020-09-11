@@ -22,4 +22,7 @@ interface PaxInterface {
 
     @PaxExecApi(PaxExecutor.TOKEN_SOFT_REBOOT)
     void softReboot(Callback callback);
+
+    @PaxExecApi(PaxExecutor.TOKEN_KILL_SYSTEM_UI)
+    void killSystemUi(Callback callback);
 }

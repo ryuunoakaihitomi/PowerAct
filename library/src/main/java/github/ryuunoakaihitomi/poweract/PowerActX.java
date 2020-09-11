@@ -262,4 +262,25 @@ public class PowerActX {
     public static void softReboot(Callback callback) {
         PaxConsole.getInterface().softReboot(callback);
     }
+
+    /**
+     * Go to see {@link #restartSystemUi(Callback)}.
+     *
+     * @since 1.2.0
+     */
+    public static void restartSystemUi() {
+        restartSystemUi(null);
+    }
+
+    /**
+     * Kill the system ui, and then it will restart automatically.
+     * <p>
+     * It was used to fix the bugs about ui misplaced or not ready in ancient times, but today's system ui rarely have such bugs.
+     *
+     * @param callback As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>callback</code>.
+     * @since 1.2.0
+     */
+    public static void restartSystemUi(Callback callback) {
+        PaxConsole.getInterface().killSystemUi(callback);
+    }
 }

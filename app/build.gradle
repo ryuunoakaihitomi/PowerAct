@@ -1,13 +1,16 @@
+import java.nio.charset.StandardCharsets
+import java.time.LocalDateTime
+
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion rootProject.ext.compileSdkVersion
 
 
     defaultConfig {
         applicationId "demo.power_act"
-        minSdkVersion 14
-        targetSdkVersion 29
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
 
@@ -40,4 +43,15 @@ dependencies {
 
     // debugImplementation because LeakCanary should only run in debug builds.
 //    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.4'
+
+    /* Optional dependencies, we can use these to make PowerActX faster. */
+    implementation "com.github.topjohnwu.libsu:core:3.0.2"
+    implementation 'moe.shizuku.privilege:api:4.2.1'
+}
+
+// Format APK filename
+android.applicationVariants.all { variant ->
+    variant.outputs.all {
+        outputFileName = "PowerActDemo_${Base64.encoder.encodeToString(LocalDateTime.now().toString().getBytes(StandardCharsets.UTF_8))}_${variant.buildType.name}.apk"
+    }
 }

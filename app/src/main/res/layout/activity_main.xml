@@ -107,6 +107,13 @@
                 android:layout_height="wrap_content"
                 android:text="Soft Reboot" />
 
+            <Button
+                android:id="@+id/rsu_btn"
+                style="?android:attr/buttonBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Restart System UI" />
+
         </LinearLayout>
 
     </HorizontalScrollView>

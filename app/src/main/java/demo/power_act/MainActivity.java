@@ -15,6 +15,7 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Process;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -39,11 +40,14 @@ import github.ryuunoakaihitomi.poweract.ExternalUtils;
 import github.ryuunoakaihitomi.poweract.PowerAct;
 import github.ryuunoakaihitomi.poweract.PowerActX;
 import github.ryuunoakaihitomi.poweract.PowerButton;
+import moe.shizuku.api.ShizukuApiConstants;
 
 
 public class MainActivity extends Activity {
 
     private static final String TAG = "MainActivity";
+
+    private static final int REQUEST_CODE_PERMISSION_SHIZUKU = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +122,7 @@ public class MainActivity extends Activity {
         setXButtonAction(R.id.bl_btn, () -> PowerActX.bootloader(callback), () -> PowerActX.bootloader(callback, true));
         setXButtonAction(R.id.sm_btn, () -> PowerActX.safeMode(callback), () -> PowerActX.safeMode(callback, true));
         setXButtonAction(R.id.srb_btn, () -> PowerActX.softReboot(callback), null);
+        setXButtonAction(R.id.rsu_btn, () -> PowerActX.restartSystemUi(callback), null);
 
         findViewById(R.id.disComBtn).setOnClickListener(v ->
                 // Disable exposed components manually.
@@ -130,11 +135,14 @@ public class MainActivity extends Activity {
     private void setXButtonAction(int btnResId, Runnable action, Runnable longClickAction) {
         Button button = findViewById(btnResId);
         button.setOnClickListener(v -> {
+            // We must request the permission manually if we want to "PowerActX" with Shizuku.
+            requestShizukuPermission();
             tipForRootAccess();
             action.run();
         });
         if (longClickAction != null) {
             button.setOnLongClickListener(v -> {
+                requestShizukuPermission();
                 tipForRootAccess();
                 longClickAction.run();
                 return true;
@@ -149,6 +157,14 @@ public class MainActivity extends Activity {
 
     private void tipForRootAccess() {
         ExternalUtils.setUserGuideRunnable(() -> Toast.makeText(this, "Please grant the root permission.", Toast.LENGTH_SHORT).show());
+    }
+
+    private void requestShizukuPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                checkPermission(ShizukuApiConstants.PERMISSION, Process.myPid(), Process.myUid())
+                        != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{ShizukuApiConstants.PERMISSION}, REQUEST_CODE_PERMISSION_SHIZUKU);
+        }
     }
 
     //<editor-fold desc="This part is not important for showing the library's usage.">

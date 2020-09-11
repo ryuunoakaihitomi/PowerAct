@@ -11,6 +11,8 @@ import android.os.Build;
 
 import androidx.annotation.NonNull;
 
+import com.topjohnwu.superuser.Shell;
+
 import java.util.Arrays;
 
 /**
@@ -84,6 +86,10 @@ public final class ExternalUtils {
      */
     public static void enableLog(boolean isEnabled) {
         DebugLog.enabled = isEnabled;
+        /* Enabling other dependencies' logcat */
+        if (LibraryCompat.isLibsuAvailable()) {
+            Shell.enableVerboseLogging = isEnabled;
+        }
     }
 
     /**
@@ -94,6 +100,8 @@ public final class ExternalUtils {
      * <p>
      * After setting up the {@link Runnable} is done, <b>we must use the library AS SOON AS POSSIBLE!</b>
      * it will be null to recycle memory after 5 seconds.
+     * <p>
+     * It doesn't work in Shizuku permission request. We can treat users using Shizuku Manager as advanced users, so we don't have to guide them.
      *
      * @param runnable How do you want to guide the user?
      * @see UserGuideRunnable#RELEASE_DELAY_TIME_MILLIS

@@ -8,19 +8,27 @@ import android.content.ComponentCallbacks2;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.provider.Settings;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
 
 import java.util.Arrays;
 import java.util.Random;
+
+import moe.shizuku.api.ShizukuApiConstants;
+import moe.shizuku.api.ShizukuBinderWrapper;
+import moe.shizuku.api.SystemServiceHelper;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 @SuppressWarnings("deprecation")
 public final class PaFragment extends Fragment {
 
     private static final String TAG = "PaFragment";
+
+    private static final int REQUEST_CODE_SHIZUKU_PERMISSION = 1;
 
     // For DevicePolicyManager
     private int mRequestCode;
@@ -65,6 +73,24 @@ public final class PaFragment extends Fragment {
             return;
         }
         initialize();
+
+        /* Use Shizuku instead of DPM before 28 to avoid "secure unlock" and "complex uninstalling". */
+        if (mAction == PowerAct.ACTION_LOCK_SCREEN &&
+                Build.VERSION.SDK_INT < Build.VERSION_CODES.P &&
+                LibraryCompat.isShizukuPrepared(activity)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (activity.checkSelfPermission(ShizukuApiConstants.PERMISSION) != PackageManager.PERMISSION_GRANTED) {
+                    // The users of Shizuku Manager can be treated as advanced users. So it's unnecessary to guide them.
+                    //UserGuideRunnable.run();
+                    requestPermissions(new String[]{ShizukuApiConstants.PERMISSION}, REQUEST_CODE_SHIZUKU_PERMISSION);
+                } else {
+                    lockScreenByShizuku();
+                }
+            }
+            UserGuideRunnable.release();
+            return;
+        }
+
         boolean isAdminActive = mDevicePolicyManager.isAdminActive(mAdminReceiverComponentName);
         boolean isDeviceOwner = false;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
@@ -184,6 +210,40 @@ public final class PaFragment extends Fragment {
         } else {
             // mRequestCode != requestCode
             failed("mRequestCode != requestCode " + Arrays.asList(mRequestCode, requestCode));
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (permissions.length == 0 || grantResults.length == 0) {
+            // SHOULD NEVER HAPPEN! ( M I U I )
+            failed("Empty permissions / grantResults.");
+            return;
+        }
+        if (requestCode == REQUEST_CODE_SHIZUKU_PERMISSION &&
+                ShizukuApiConstants.PERMISSION.equals(permissions[0]) &&
+                grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            lockScreenByShizuku();
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !shouldShowRequestPermissionRationale(ShizukuApiConstants.PERMISSION)) {
+                DebugLog.e(TAG, "onRequestPermissionsResult: Shizuku permission denied forever!");
+            }
+            failed("requestCode(REQUEST_CODE_SHIZUKU_PERMISSION=" + REQUEST_CODE_SHIZUKU_PERMISSION + "),permissions,grantResults -> " +
+                    Arrays.asList(requestCode, Arrays.toString(permissions), Arrays.toString(grantResults)));
+        }
+    }
+
+    //@RequiresPermission(ShizukuApiConstants.PERMISSION)
+    private void lockScreenByShizuku() {
+        try {
+            PaxCompat.setPowerBinder(new ShizukuBinderWrapper(SystemServiceHelper.getSystemService(Context.POWER_SERVICE)));
+            PaxCompat.goToSleep();
+            // Update DPM state in time.
+            mDevicePolicyManager.removeActiveAdmin(mAdminReceiverComponentName);
+            done();
+        } catch (Throwable t) {
+            DebugLog.e(TAG, "lockScreenByShizuku", t);
+            failed("Shizuku: " + t.getMessage());
         }
     }
 

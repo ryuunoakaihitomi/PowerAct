@@ -1,15 +1,12 @@
 apply plugin: 'com.android.library'
-// We no longer use it on Android Studio 4.0,
-// but still keep the relevant code for reference.
-//apply plugin: 'com.novoda.bintray-release'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
 
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 29
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
 
         consumerProguardFiles 'consumer-rules.pro'
 
@@ -75,25 +72,16 @@ dependencies {
         exclude group: 'org.hamcrest'
     }
     androidTestImplementation project(':test-resource')
-    testImplementation 'junit:junit:4.12'
+    // https://stackoverflow.com/a/7878281
     testImplementation 'org.hamcrest:hamcrest:2.2'
+    testImplementation 'junit:junit:4.13'
 
     compileOnly 'androidx.annotation:annotation:1.1.0'
     compileOnly project(':hidden-api')
+
+    /* ------- OPTIONAL DEPENDENCIES ------- */
+    compileOnly "com.github.topjohnwu.libsu:core:3.0.2"
+    compileOnly 'moe.shizuku.privilege:api:4.2.1'
 }
-
-// gradlew clean build bintrayUpload -PbintrayUser=BINTRAY_USERNAME -PbintrayKey=BINTRAY_KEY -PdryRun=false
-//publish {
-//    userOrg = 'ryuunoakaihitomi'
-//    groupId = 'github.ryuunoakaihitomi.poweract'
-//    artifactId = 'poweract'
-//    publishVersion = '1.0.5'
-//    desc = 'An Android library that can manipulate power-related actions with just few lines of code.'
-//    website = 'https://github.com/ryuunoakaihitomi/PowerAct'
-//}
-
-// ------- Generate javadoc manually.
-// Upload Files: Rename: poweract-<ver>-javadoc.jar -> Target Path: /github/ryuunoakaihitomi/poweract/poweract/<ver>
-// Enable javadoc task in project's build.gradle before run task.
 
 apply from: 'bintray-release.gradle'

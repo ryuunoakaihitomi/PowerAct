@@ -4,7 +4,7 @@
 
 An Android library that can manipulate power-related actions with just few lines of code.
 
-(Using `AccessibilityService` and `DevicePolicyManager` or root)
+(Using [`Shizuku`](https://shizuku.rikka.app/), `AccessibilityService`, `DevicePolicyManager`, and root)
 
 ## Usage
 
@@ -20,6 +20,12 @@ repositories {
 
 dependencies {
     implementation 'github.ryuunoakaihitomi.poweract:poweract:<latest-version>'
+    /* Optional dependencies, we can use these to make PowerActX faster. */
+    // https://github.com/topjohnwu/libsu
+    implementation "com.github.topjohnwu.libsu:core:3.0.2"
+    // Need more steps to integrate it.
+    // https://github.com/RikkaApps/Shizuku/blob/master/README.md
+    implementation 'moe.shizuku.privilege:api:4.2.1'
 }
     
 ```
@@ -90,10 +96,12 @@ If you want to know more...
 API level|Lock screen|Show system power dialog
 :-|-|-
 14 ~ 20 |√|×
-21 ~ 27 |√|√
+21 ~ 22 |√|√
+23 ~ 27 |R|√
 28+|√+|√
 
 > √+ `Can be unlocked by fingerprint`
+> R `Like √+, but depends on Shizuku`
 
 ### PowerActX
 

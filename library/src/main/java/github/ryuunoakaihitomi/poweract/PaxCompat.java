@@ -1,9 +1,8 @@
 package github.ryuunoakaihitomi.poweract;
 
-import android.content.Context;
 import android.os.Build;
+import android.os.IBinder;
 import android.os.IPowerManager;
-import android.os.ServiceManager;
 import android.os.SystemClock;
 
 import androidx.annotation.RequiresApi;
@@ -12,9 +11,13 @@ import com.android.internal.os.Zygote;
 
 class PaxCompat {
 
-    private static final IPowerManager power = IPowerManager.Stub.asInterface(ServiceManager.getService(Context.POWER_SERVICE));
+    private static IPowerManager power;
 
     private PaxCompat() {
+    }
+
+    static void setPowerBinder(IBinder binder) {
+        power = IPowerManager.Stub.asInterface(binder);
     }
 
     static void goToSleep() {

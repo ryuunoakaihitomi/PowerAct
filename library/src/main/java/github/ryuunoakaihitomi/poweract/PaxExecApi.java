@@ -21,7 +21,8 @@ import java.lang.annotation.Target;
             PaxExecutor.TOKEN_RECOVERY,
             PaxExecutor.TOKEN_BOOTLOADER,
             PaxExecutor.TOKEN_SAFE_MODE,
-            PaxExecutor.TOKEN_SOFT_REBOOT
+            PaxExecutor.TOKEN_SOFT_REBOOT,
+            PaxExecutor.TOKEN_KILL_SYSTEM_UI
     })
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.SOURCE)

@@ -17,7 +17,7 @@ import org.junit.BeforeClass;
 
 public class BaseTest {
 
-    public static Context targetContext;
+    protected static Context targetContext;
 
     @BeforeClass
     public static void prepareTargetContext() {

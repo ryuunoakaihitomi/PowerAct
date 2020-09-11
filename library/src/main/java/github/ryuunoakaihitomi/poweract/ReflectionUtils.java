@@ -28,6 +28,18 @@ class ReflectionUtils {
         }
     }
 
+    public static boolean allClassesExist(String... classNames) {
+        boolean checked = false;
+        for (String className : classNames) {
+            if (!checked) checked = true;
+            if (findClass(className) == null) {
+                DebugLog.d(TAG, "allClassesExist: " + className + " not exists!");
+                return false;
+            }
+        }
+        return checked;
+    }
+
     public static Method findMethod(String clazzName, String methodName, Class<?>... paramTypes) {
         return findMethod(findClass(clazzName), methodName, paramTypes);
     }

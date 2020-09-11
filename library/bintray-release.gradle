@@ -1,22 +1,15 @@
-// From https://www.cnblogs.com/mingfeng002/p/10255486.html
-// gradlew (install -> bintrayUpload)
+// gradle task: bintrayUpload
 
+apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
-// WARNING: Abandoned.
-apply plugin: 'com.github.dcendents.android-maven'
-
 
 group = PROJ_GROUP
 version = PROJ_VERSION
 project.archivesBaseName = PROJ_ARTIFACT_ID
 
 
-// ------- Generate javadoc manually.
-
 task javadoc(type: Javadoc) {
-
     delete(destinationDir)
-
     options {
         locale 'en_US'
         encoding 'UTF-8'
@@ -35,7 +28,9 @@ task javadoc(type: Javadoc) {
     options.addBooleanOption('nonavbar', true)
 
     source = android.sourceSets.main.java.sourceFiles
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    // https://stackoverflow.com/a/49172753
+    configurations.implementation.setCanBeResolved(true)
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator)) + configurations.implementation
 
     exclude '**/PaFragment.java', 'android**', '**/BuildConfig.java'
 
@@ -43,61 +38,71 @@ task javadoc(type: Javadoc) {
     failOnError = false
 }
 
-// I don't know why the javadoc jar's locale can't be changed when I use install task.
-// Execute this task and upload the jar manually.
 task javadocJar(type: Jar, dependsOn: 'javadoc') {
     archiveClassifier.set('javadoc')
     from javadoc.destinationDir
 }
-
-afterEvaluate {
-    javadoc.classpath += files(android.libraryVariants.collect { variant ->
-        variant.getJavaCompileProvider().get().classpath.files
-    })
-}
-
-// -------
 
 task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
     archiveClassifier.set('sources')
 }
 
-artifacts {
-    archives sourcesJar
-    archives javadocJar
-}
+afterEvaluate {
+    javadoc.classpath += files(android.libraryVariants.collect { variant ->
+        variant.getJavaCompileProvider().get().classpath.files
+    })
 
-install {
-    repositories.mavenInstaller {
-        pom.project {
-            name PROJ_NAME
-            description PROJ_DESCRIPTION
-            url PROJ_WEBSITE_URL
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId = PROJ_GROUP
+                artifactId = PROJ_ARTIFACT_ID
+                version = PROJ_VERSION
 
-            packaging 'aar'
-            groupId PROJ_GROUP
-            artifactId PROJ_ARTIFACT_ID
-            version PROJ_VERSION
+                artifact javadocJar
+                artifact sourcesJar
 
-            licenses {
-                // ['Apache-2.0']
-                license {
-                    name 'The Apache Software License, Version 2.0'
-                    url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    distribution 'repo'
+                pom {
+                    description = PROJ_DESCRIPTION
+                    name = PROJ_NAME
+                    url = PROJ_WEBSITE_URL
+
+                    licenses {
+                        // ['Apache-2.0']
+                        license {
+                            name = 'The Apache Software License, Version 2.0'
+                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                            distribution = 'repo'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id = DEVELOPER_ID
+                            name = DEVELOPER_NAME
+                            email = DEVELOPER_EMAIL
+                        }
+                    }
+                    scm {
+                        connection = PROJ_VCS_URL
+                        url = PROJ_WEBSITE_URL
+                    }
                 }
-            }
-            scm {
-                connection PROJ_VCS_URL
-                url PROJ_WEBSITE_URL
 
-            }
-            developers {
-                developer {
-                    id DEVELOPER_ID
-                    name DEVELOPER_NAME
-                    email DEVELOPER_EMAIL
+                pom.withXml {
+                    def dependenciesNode = asNode().getAt('dependencies')[0] ?: asNode().appendNode('dependencies')
+
+                    // Iterate over the implementation dependencies (we don't want the test ones), adding a <dependency> node for each
+                    configurations.implementation.allDependencies.each {
+                        // Ensure dependencies such as fileTree are not included.
+                        if (it.name != 'unspecified') {
+                            def dependencyNode = dependenciesNode.appendNode('dependency')
+                            dependencyNode.appendNode('groupId', it.group)
+                            dependencyNode.appendNode('artifactId', it.name)
+                            dependencyNode.appendNode('version', it.version)
+                        }
+                    }
                 }
             }
         }
@@ -110,10 +115,11 @@ bintray {
     properties.load(project.rootProject.file('local.properties').newDataInputStream())
     user = properties.getProperty('BINTRAY_USER')
     key = properties.getProperty('BINTRAY_KEY')
-    configurations = ['archives']
+    publications = ['release']
 
     dryRun = false
     publish = true
+//    override = true
 
     pkg {
         repo = 'maven'
@@ -127,9 +133,10 @@ bintray {
             name = PROJ_VERSION
             desc = PROJ_DESCRIPTION
             vcsTag = PROJ_VERSION
+            released = new Date()
 
             gpg {
-                sign = false // *.asc
+                sign = true // *.asc
             }
         }
     }

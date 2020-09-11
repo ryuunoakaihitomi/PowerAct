@@ -23,9 +23,14 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.WorkerThread;
 
+import com.topjohnwu.superuser.Shell;
+
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
@@ -75,13 +80,32 @@ class Utils {
         final String argLine = TextUtils.join(" ", args);
 //        final String cmdDir = "/system/bin";
         final String cmdDir = File.separator;
+        final String
+                shellExportClassPath = "export CLASSPATH=" + packageResourcePath,
+                shellExecAppProcess = "app_process " + cmdDir + " " + className + " " + argLine;
+        if (LibraryCompat.isLibsuAvailable()) {
+            final Shell.Result result = Shell.su(shellExportClassPath, shellExecAppProcess).exec();
+            final boolean success = result.isSuccess();
+            if (BuildConfig.DEBUG) {
+                // It's weird, can't get stderr.
+                DebugLog.d(TAG, "runSuJavaWithAppProcess: result from libsu: code = "
+                        + result.getCode() + ", err = " + result.getErr() + ", out = " + result.getOut());
+            }
+            DebugLog.i(TAG, "runSuJavaWithAppProcess: success = " + success +
+                    ", blocked in " + (SystemClock.elapsedRealtime() - start) + " ms.");
+            return success;
+        }
+
+        DebugLog.w(TAG, "runSuJavaWithAppProcess: Use legacy solution. Please import libsu to get better performance.");
+        DebugLog.d(TAG, "runSuJavaWithAppProcess: commands: " + Arrays.asList(shellExportClassPath, shellExecAppProcess));
         Process suProcess = null;
         int exitCode = Integer.MIN_VALUE;
         try {
             suProcess = Runtime.getRuntime().exec("su");
             DataOutputStream stream = new DataOutputStream(suProcess.getOutputStream());
-            stream.writeBytes("export CLASSPATH=" + packageResourcePath + '\n');
-            stream.writeBytes("exec app_process " + cmdDir + " " + className + " " + argLine + '\n');
+            stream.writeBytes(shellExportClassPath + '\n');
+            stream.writeBytes(shellExecAppProcess + '\n');
+            stream.writeBytes("exit\n");
             stream.flush();
         } catch (IOException e) {
             DebugLog.e(TAG, "runSuJavaWithAppProcess: " +
@@ -89,10 +113,22 @@ class Utils {
             return false;
         } finally {
             if (suProcess != null) {
-                try {
+                try (InputStream errorStream = suProcess.getErrorStream();
+                     InputStreamReader isr = new InputStreamReader(errorStream);
+                     BufferedReader br = new BufferedReader(isr)) {
+                    StringBuilder sb = new StringBuilder();
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        sb.append(line).append('\n');
+                    }
+                    String stderr = sb.toString();
+                    if (!TextUtils.isEmpty(stderr)) {
+                        // "Killed" means "An exception threw out from privileged class".
+                        DebugLog.i(TAG, "runSuJavaWithAppProcess: stderr = " + stderr);
+                    }
                     exitCode = suProcess.waitFor();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                } catch (InterruptedException | IOException e) {
+                    DebugLog.e(TAG, "runSuJavaWithAppProcess: finally", e);
                 }
             }
         }

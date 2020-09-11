@@ -14,8 +14,8 @@ import github.ryuunoakaihitomi.poweract.test.BaseTest;
 
 import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 public class PowerActXTest extends BaseTest {
@@ -33,7 +33,7 @@ public class PowerActXTest extends BaseTest {
         final List<Method> allApiMethods = new ArrayList<>();
         for (Method m : sDeclaredMethods) if (isApiForUser(m)) allApiMethods.add(m);
         final int currentCount = allApiMethods.size();
-        assertEquals("Illegal method count. Is there a new user api? ", sMethodCount, currentCount);
+        assertEquals("Illegal method count. Are there any new public APIs? ", sMethodCount, currentCount);
     }
 
     private static boolean isApiForUser(final Method method) {
@@ -74,6 +74,11 @@ public class PowerActXTest extends BaseTest {
     @Test
     public void softReboot() {
         checkAndCount("softReboot", false);
+    }
+
+    @Test
+    public void restartSystemUi() {
+        checkAndCount("restartSystemUi", false);
     }
 
     private void checkAndCount(final String methodName, final boolean force) {

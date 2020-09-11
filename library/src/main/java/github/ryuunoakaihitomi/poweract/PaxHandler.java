@@ -2,9 +2,11 @@ package github.ryuunoakaihitomi.poweract;
 
 import android.app.ActivityThread;
 import android.app.Application;
+import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Process;
 
 import androidx.annotation.VisibleForTesting;
 
@@ -14,6 +16,10 @@ import java.util.Arrays;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import moe.shizuku.api.ShizukuBinderWrapper;
+import moe.shizuku.api.ShizukuService;
+import moe.shizuku.api.SystemServiceHelper;
 
 final class PaxHandler implements InvocationHandler {
 
@@ -42,27 +48,59 @@ final class PaxHandler implements InvocationHandler {
         if (args.length == 2) force = (boolean) args[1];
         final String forceString = Boolean.toString(force);
         PaxExecApi cmdList = method.getAnnotation(PaxExecApi.class);
-        Executors.newSingleThreadExecutor().execute(() -> {
-            if (cmdList != null) {
-                DebugLog.d(TAG, "invoke: cmd " + Arrays.asList(cmdList, forceString));
-                final ScheduledExecutorService guideExecutor = Executors.newSingleThreadScheduledExecutor();
-                guideExecutor.schedule(UserGuideRunnable::run, USER_GUIDE_DELAY_TIME_MILLIS, TimeUnit.MILLISECONDS);
-                boolean returnValue =
-                        Utils.runSuJavaWithAppProcess(sApplication,
-                                PaxExecutor.class,
-                                cmdList.value(), forceString);
-                if (returnValue) mainHandler.post(() -> {
-                    cancelUserGuide(guideExecutor);
-                    ExternalUtils.disableExposedComponents(sApplication);
-                    callbackHelper.done();
-                });
-                else mainHandler.post(() -> {
-                    cancelUserGuide(guideExecutor);
-                    callbackHelper.failed();
-                });
-            } else {
-                mainHandler.post(callbackHelper::failed);
+        // Should not happen!
+        if (cmdList == null) {
+            DebugLog.e(TAG, "invoke: annotation?");
+            mainHandler.post(callbackHelper::failed);
+            return null;
+        }
+        final String cmd = cmdList.value();
+
+        boolean shizukuSuccess = false;
+        int shizukuServiceUid = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ? Process.INVALID_UID : Integer.MIN_VALUE;
+        if (LibraryCompat.isShizukuPrepared(sApplication)) {
+            try {
+                shizukuServiceUid = ShizukuService.getUid();
+                // Must be called in root env! Using adb can only lock screen, it doesn't make sense in PowerActX. (svc)
+                // Force mode uses shell, not PowerManager.
+                if (shizukuServiceUid == Process.ROOT_UID && !force) {
+                    PaxCompat.setPowerBinder(new ShizukuBinderWrapper(SystemServiceHelper.getSystemService(Context.POWER_SERVICE)));
+                    // Exception: kill sys ui.
+                    if (PaxExecutor.TOKEN_KILL_SYSTEM_UI.equals(cmd)) {
+                        DebugLog.i(TAG, "invoke: Cannot kill SysUi without root shell!");
+                    } else {
+                        PaxExecutor.main(new String[]{cmd, forceString});
+                        shizukuSuccess = true;
+                    }
+                }
+            } catch (Throwable e) {
+                // Exception from ShizukuService | PaxExecutor
+                DebugLog.e(TAG, "invoke: by Shizuku", e);
             }
+        }
+        if (shizukuSuccess) {
+            mainHandler.post(() -> {
+                callbackHelper.done();
+                UserGuideRunnable.release();
+            });
+            return null;
+        }
+
+        DebugLog.w(TAG, "invoke: Use alternative solution without Shizuku. args = " + Arrays.asList(shizukuServiceUid, force, cmd));
+        Executors.newSingleThreadExecutor().execute(() -> {
+            DebugLog.d(TAG, "invoke: cmd " + Arrays.asList(cmdList, forceString));
+            final ScheduledExecutorService guideExecutor = Executors.newSingleThreadScheduledExecutor();
+            guideExecutor.schedule(UserGuideRunnable::run, USER_GUIDE_DELAY_TIME_MILLIS, TimeUnit.MILLISECONDS);
+            boolean returnValue = Utils.runSuJavaWithAppProcess(sApplication, PaxExecutor.class, cmd, forceString);
+            if (returnValue) mainHandler.post(() -> {
+                cancelUserGuide(guideExecutor);
+                ExternalUtils.disableExposedComponents(sApplication);
+                callbackHelper.done();
+            });
+            else mainHandler.post(() -> {
+                cancelUserGuide(guideExecutor);
+                callbackHelper.failed();
+            });
         });
         // void
         return null;

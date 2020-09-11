@@ -6,12 +6,13 @@ buildscript {
 
     }
     dependencies {
-        // Cannot use bintray-release since Android Studio 4.0.
-        // https://github.com/novoda/bintray-release/issues/298#issuecomment-635845436
         classpath 'com.android.tools.build:gradle:4.0.1'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
     }
+}
+
+plugins {
+    id 'maven-publish'
+    id "com.jfrog.bintray" version "1.8.5"
 }
 
 allprojects {
@@ -19,9 +20,9 @@ allprojects {
         google()
         jcenter()
 
+        // For libsu
+        maven { url 'https://jitpack.io' }
     }
-    //  Wait for fix: https://github.com/novoda/bintray-release/issues/310
-//    tasks.withType(Javadoc).all { enabled = false }
 
     // javac param
     gradle.projectsEvaluated {
@@ -37,5 +38,7 @@ task clean(type: Delete) {
 
 
 ext {
-    compileSdkVersion = 29
+    minSdkVersion = 14
+    compileSdkVersion = 30
+    targetSdkVersion = compileSdkVersion
 }

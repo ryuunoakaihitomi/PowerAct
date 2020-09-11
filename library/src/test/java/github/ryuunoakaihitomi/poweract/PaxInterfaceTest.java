@@ -13,6 +13,8 @@ import java.util.Set;
 
 import github.ryuunoakaihitomi.poweract.test.BaseTest;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -43,6 +45,7 @@ public class PaxInterfaceTest extends BaseTest {
                 case 2:
                     /* force */
                     assertEquals(boolean.class, parameters[1].getType());
+                    assertThat(parameters[1].getName(), is("force"));
                     i(method.getName() + "() has force mode.");
                 case 1:
                     assertEquals(Callback.class, parameters[0].getType());

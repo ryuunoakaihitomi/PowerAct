@@ -2,8 +2,8 @@ package github.ryuunoakaihitomi.poweract;
 
 import org.junit.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.lessThan;
-import static org.junit.Assert.assertThat;
 
 
 public class PaxHandlerTest {

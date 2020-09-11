@@ -219,9 +219,11 @@ public final class PaService extends AccessibilityService {
                     final String op = AppOpsManager.permissionToOp(Manifest.permission.FOREGROUND_SERVICE);
                     final int uid = Os.getuid();
                     final String packageName = getPackageName();
-                    mode = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ?
-                            appOps.unsafeCheckOpNoThrow(op, uid, packageName) :
-                            appOps.checkOpNoThrow(op, uid, packageName);
+                    if (op != null) {
+                        mode = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ?
+                                appOps.unsafeCheckOpNoThrow(op, uid, packageName) :
+                                appOps.checkOpNoThrow(op, uid, packageName);
+                    }
                 } catch (IllegalArgumentException e) {
                     // "Unknown operation string: "
                     DebugLog.e(TAG, "loadForegroundNotification: " + e.getMessage(), e);

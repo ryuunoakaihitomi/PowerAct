@@ -58,6 +58,7 @@ class ToastBugFix {
                                         final class HandlerProxy extends Handler {
                                             private final Handler mHandler;
 
+                                            @SuppressWarnings("deprecation") // since 30
                                             public HandlerProxy(Handler handler) {
                                                 mHandler = handler;
                                             }
