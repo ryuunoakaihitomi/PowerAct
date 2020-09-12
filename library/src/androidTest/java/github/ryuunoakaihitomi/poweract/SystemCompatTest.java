@@ -1,10 +1,13 @@
 package github.ryuunoakaihitomi.poweract;
 
+import android.os.Build;
+
 import androidx.test.filters.FlakyTest;
 import androidx.test.filters.SdkSuppress;
 import androidx.test.filters.SmallTest;
 import androidx.test.filters.Suppress;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import github.ryuunoakaihitomi.poweract.test.BaseTest;
@@ -21,11 +24,19 @@ import static android.os.Build.VERSION_CODES.O_MR1;
  */
 @FlakyTest(detail = "Only for testing available hidden API.")
 @SmallTest
-@SdkSuppress(maxSdkVersion = O_MR1)
+//@SdkSuppress(maxSdkVersion = O_MR1)
+@SdkSuppress(maxSdkVersion = Build.VERSION_CODES.R)
 public final class SystemCompatTest extends BaseTest {
+
+    @BeforeClass
+    public static void removeReflectionRestriction() throws ClassNotFoundException {
+        // Only for loading static initializer.
+        Class.forName("github.ryuunoakaihitomi.poweract.ReflectionUtils");
+    }
 
     @Test(expected = SecurityException.class)
     public void goToSleep() {
+        // Accessing hidden method Landroid/os/IPowerManager;->goToSleep(JII)V (greylist, linking, allowed)
         SystemCompat.goToSleep();
     }
 

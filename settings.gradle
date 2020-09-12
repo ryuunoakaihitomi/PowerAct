@@ -3,3 +3,4 @@ include ':app'
 include ':library'
 include ':hidden-api'
 include ':test-resource'
+include ':local-tool'   // Only for compiling.
