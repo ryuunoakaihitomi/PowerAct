@@ -53,33 +53,33 @@ class PaxExecutor {
             boolean force = Boolean.parseBoolean(args[1]);
             if (Process.myUid() == Process.ROOT_UID) {
                 DebugLog.i(TAG, "main0: Run in root env.");
-                PaxCompat.setPowerBinder(ServiceManager.getService(Context.POWER_SERVICE));
+                SystemCompat.setPowerBinder(ServiceManager.getService(Context.POWER_SERVICE));
             }
             switch (token) {
 
                 case TOKEN_LOCK_SCREEN:
-                    PaxCompat.goToSleep();
+                    SystemCompat.goToSleep();
                     break;
 
                 case TOKEN_REBOOT:
                     if (force) {
-                        PaxCompat.execShell("reboot");
+                        SystemCompat.execShell("reboot");
                     } else {
-                        PaxCompat.reboot(null);
+                        SystemCompat.reboot(null);
                     }
                     break;
 
                 case TOKEN_SHUTDOWN:
                     final String shutdownCmd = "reboot -p";
                     if (force) {
-                        PaxCompat.execShell(shutdownCmd);
+                        SystemCompat.execShell(shutdownCmd);
                     } else {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                            PaxCompat.shutdown();
+                            SystemCompat.shutdown();
                         } else {
                             // Keep for test.
                             DebugLog.w(TAG, "main0: Cannot use PowerManager to shutdown before 17! Forcing...");
-                            PaxCompat.execShell(shutdownCmd);
+                            SystemCompat.execShell(shutdownCmd);
                         }
                     }
                     break;
@@ -88,17 +88,17 @@ class PaxExecutor {
 
                 case TOKEN_RECOVERY:
                     if (force) {
-                        PaxCompat.execShell("reboot recovery");
+                        SystemCompat.execShell("reboot recovery");
                     } else {
-                        PaxCompat.reboot("recovery");
+                        SystemCompat.reboot("recovery");
                     }
                     break;
 
                 case TOKEN_BOOTLOADER:
                     if (force) {
-                        PaxCompat.execShell("reboot bootloader");
+                        SystemCompat.execShell("reboot bootloader");
                     } else {
-                        PaxCompat.reboot("bootloader");
+                        SystemCompat.reboot("bootloader");
                     }
                     break;
 
@@ -109,10 +109,10 @@ class PaxExecutor {
                     final String one = "1";
                     if (force) {
                         SystemProperties.set(REBOOT_SAFEMODE_PROPERTY, one);
-                        PaxCompat.execShell("reboot");
+                        SystemCompat.execShell("reboot");
                     } else {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                            PaxCompat.rebootSafeMode();
+                            SystemCompat.rebootSafeMode();
                         } else {
                             if (Process.myUid() != Process.ROOT_UID) {
                                 // Test: Shizuku?
@@ -129,7 +129,7 @@ class PaxExecutor {
                             } else {
                                 SystemProperties.set(REBOOT_SAFEMODE_PROPERTY, one);
                             }
-                            PaxCompat.reboot(null);
+                            SystemCompat.reboot(null);
                         }
                     }
                     break;
@@ -140,7 +140,7 @@ class PaxExecutor {
                             // Seems a feasible solution of soft-rebooting by Shizuku.
                             LibraryCompat.isShizukuAvailable()) {
                         DebugLog.d(TAG, "main0: Testing... PowerManagerService.crash() == \"soft reboot\" ?");
-                        PaxCompat.crash();
+                        SystemCompat.crash();
                         return;
                     }
                     SystemService.restart("zygote");

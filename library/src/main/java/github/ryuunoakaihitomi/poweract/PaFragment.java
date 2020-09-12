@@ -236,8 +236,8 @@ public final class PaFragment extends Fragment {
     //@RequiresPermission(ShizukuApiConstants.PERMISSION)
     private void lockScreenByShizuku() {
         try {
-            PaxCompat.setPowerBinder(new ShizukuBinderWrapper(SystemServiceHelper.getSystemService(Context.POWER_SERVICE)));
-            PaxCompat.goToSleep();
+            SystemCompat.setPowerBinder(new ShizukuBinderWrapper(SystemServiceHelper.getSystemService(Context.POWER_SERVICE)));
+            SystemCompat.goToSleep();
             // Update DPM state in time.
             mDevicePolicyManager.removeActiveAdmin(mAdminReceiverComponentName);
             done();

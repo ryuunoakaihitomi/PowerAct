@@ -64,7 +64,7 @@ final class PaxHandler implements InvocationHandler {
                 // Must be called in root env! Using adb can only lock screen, it doesn't make sense in PowerActX. (svc)
                 // Force mode uses shell, not PowerManager.
                 if (shizukuServiceUid == Process.ROOT_UID && !force) {
-                    PaxCompat.setPowerBinder(new ShizukuBinderWrapper(SystemServiceHelper.getSystemService(Context.POWER_SERVICE)));
+                    SystemCompat.setPowerBinder(new ShizukuBinderWrapper(SystemServiceHelper.getSystemService(Context.POWER_SERVICE)));
                     // Exception: kill sys ui.
                     if (PaxExecutor.TOKEN_KILL_SYSTEM_UI.equals(cmd)) {
                         DebugLog.i(TAG, "invoke: Cannot kill SysUi without root shell!");

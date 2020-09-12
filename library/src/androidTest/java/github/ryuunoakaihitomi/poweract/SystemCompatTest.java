@@ -22,37 +22,37 @@ import static android.os.Build.VERSION_CODES.O_MR1;
 @FlakyTest(detail = "Only for testing available hidden API.")
 @SmallTest
 @SdkSuppress(maxSdkVersion = O_MR1)
-public final class PaxCompatTest extends BaseTest {
+public final class SystemCompatTest extends BaseTest {
 
     @Test(expected = SecurityException.class)
     public void goToSleep() {
-        PaxCompat.goToSleep();
+        SystemCompat.goToSleep();
     }
 
     @Test(expected = SecurityException.class)
     public void reboot() {
-        PaxCompat.reboot(null);
+        SystemCompat.reboot(null);
     }
 
     @Test(expected = SecurityException.class)
     public void shutdown() {
-        PaxCompat.shutdown();
+        SystemCompat.shutdown();
     }
 
     @SdkSuppress(minSdkVersion = N, maxSdkVersion = O_MR1)
     @Test(expected = SecurityException.class)
     public void rebootSafeMode() {
-        PaxCompat.rebootSafeMode();
+        SystemCompat.rebootSafeMode();
     }
 
     @Suppress // The case will crash the app.
     @Test(expected = SecurityException.class)
     public void execShell() {
-        PaxCompat.execShell("echo test");
+        SystemCompat.execShell("echo test");
     }
 
     @Test(expected = SecurityException.class)
     public void crash() {
-        PaxCompat.crash();
+        SystemCompat.crash();
     }
 }

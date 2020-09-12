@@ -9,11 +9,11 @@ import androidx.annotation.RequiresApi;
 
 import com.android.internal.os.Zygote;
 
-class PaxCompat {
+class SystemCompat {
 
     private static IPowerManager power;
 
-    private PaxCompat() {
+    private SystemCompat() {
     }
 
     static void setPowerBinder(IBinder binder) {
