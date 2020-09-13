@@ -13,12 +13,12 @@ public class ExecuteItManually {
 
     public static void main(String[] args) {
         String filePath = "***";
-        base64Encoder(filePath);
+        file2CompressedBase64(filePath);
     }
 
-    private static void base64Encoder(String filePath) {
+    private static void file2CompressedBase64(String filePath) {
         try {
-            String base64 = Base64.getEncoder().encodeToString(Files.readAllBytes(Paths.get(filePath)));
+            String base64 = Base64.getEncoder().encodeToString(Utils.compress(Files.readAllBytes(Paths.get(filePath))));
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(base64), null);
             JOptionPane.showMessageDialog(null, "base64Encoder: Copied. len=" + base64.length());
         } catch (IOException e) {

@@ -26,6 +26,7 @@ import androidx.annotation.WorkerThread;
 import com.topjohnwu.superuser.Shell;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -35,6 +36,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.zip.DataFormatException;
+import java.util.zip.Inflater;
 
 class Utils {
 
@@ -213,5 +216,25 @@ class Utils {
         paint.setColorFilter(new PorterDuffColorFilter(tintColor, PorterDuff.Mode.SRC_IN));
         canvas.drawBitmap(inputBitmap, 0, 0, paint);
         return outputBitmap;
+    }
+
+    /**
+     * @see <a href="https://docs.oracle.com/javase/8/docs/api/java/util/zip/Inflater.html">Inflater</a>
+     */
+    public static byte[] decompress(byte[] src) {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        Inflater decompressor = new Inflater();
+        try {
+            decompressor.setInput(src);
+            byte[] result = new byte[src.length];
+            while (!decompressor.finished()) {
+                int resultLength = decompressor.inflate(result);
+                out.write(result, 0, resultLength);
+            }
+            decompressor.end();
+        } catch (DataFormatException e) {
+            e.printStackTrace();
+        }
+        return out.toByteArray();
     }
 }

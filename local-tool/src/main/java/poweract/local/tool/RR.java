@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 /**
  * This class isn't used to execute directly.
  * It's used to compile to dex file and load in ReflectionUtils.
+ * We'd better minimize the size of final product.
  * <p>
  * Steps:
  * <p>
@@ -28,17 +29,10 @@ public class RR {
                     .invoke(null, "dalvik.system.VMRuntime");
             Method getRuntime = (Method) getDeclaredMethod.invoke(VMRuntimeClazz, "getRuntime", null);
             Method setHiddenApiExemptions = (Method) getDeclaredMethod.invoke(VMRuntimeClazz, "setHiddenApiExemptions", new Class[]{String[].class});
-
-            if (getRuntime != null && setHiddenApiExemptions != null) {
-                Object sVmRuntime = getRuntime.invoke(null);
-                setHiddenApiExemptions.invoke(sVmRuntime, (Object) new String[]{"L"});
-            }
+            Object sVmRuntime = getRuntime.invoke(null);
+            setHiddenApiExemptions.invoke(sVmRuntime, (Object) new String[]{""});
         } catch (Throwable e) {
             e.printStackTrace();
         }
-    }
-
-    // load
-    public static void l() {
     }
 }
