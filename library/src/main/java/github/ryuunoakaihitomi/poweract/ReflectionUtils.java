@@ -122,7 +122,7 @@ class ReflectionUtils {
     private static void removeRestriction() {
         switch (Build.VERSION.SDK_INT) {
             case R:
-                // Convert compress Reflection4R class to base64.
+                // Convert compressed Reflection4R class to base64.
                 @SuppressWarnings("SpellCheckingInspection") final String compressDexBase64 = "eNptlM9PE0EUx9/Mzm6hVGiHX1qb8KMHiTFAAnop0aCYGNOKKcgFDy7tAgvttmkXxOgBSEw08WS8mPA3ePJkNBxMDP+BF2M8ePDgwZMx8aDfmdkKqJv97Jv9vpk3b2Yyr+xtxccnzlP47mC6enb35e7Em+Krxx/76s8/395PnRkZsYnqRLS1MCkpep4JotNk9AT4AIRqMyK8NIVPDHYm+n+AzxOLaA/2Oyf6ATj+46AL9IJz4BKYAyvgPngKXoDXYB+8Be/BV8AwYRpkwQVwGVwHs+AO8IXJCemTQyafNtAO4qADnABdIAlSwIr4xI1VY75w068tWntn1P7GVWxG/Vrlep3KQkbbolOR2qNjGt3B92QUty+Kx6I51fMLj7I7wvy3aZ+J/BAsgTRLUDDIkXMG0dKsh+RwdridpJURggqCW7I7I9p1Kxi3KMkT3PTsJtmdnUBPkbHR07aE9lsJkkx54vCkbRl5HO0ZwEg5lE3BZ6VFL6IyxJdCWdWHswQbYDGS2db4tB4ve2Rv9hbmcjKxDirEbKcVleuoGMGlpcYobchKMCmzw2oW2ZOd6SBpp3FoBUfYZh3IhnfiHIKkOs+Rn2YPt7A3jDnbTO8ji3bKnHs9KfRpcb2HcW0FTp9F/rapUsUP/PAiOVPGWvl8nkS+WMxRb37N3XTH/NrYzYYfhHNhw3OrOUoZueIGK2NXKm6zmSN5RJpdWvNK4XENQ/1g5S/tXjP0qn9m0dr8aqN2112qeDlKH5Eb3nIFMccKXrhaK+coUTSCXwsmi8QWiC/kSS7+m1f34n8SOya2Musvu5VNf320qbMaXSgUN4LQr3oUW641brhopFa8cMYrVdyGVzaJUBxSq5/jB5u1dY+s2kZIXXWzYW5pfb7hlhBFC5WA+ppeeM0vl71guu5f3fKqdbWKpr4m9Ghb7FlsZ1sc2FFNad2Nlm3VG36k5lhH6o6gw9pj02H9ceiwBrFBM17VIZY8vOt80MRXtYkGTX99B5Omrerdb41eypo=";
                 DebugLog.v(TAG, "removeRestriction: compressed dex length = " + compressDexBase64.length());
                 byte[] bytes = Utils.decompress(Base64.decode(compressDexBase64, Base64.NO_WRAP));
