@@ -132,8 +132,26 @@ class ReflectionUtils {
                 try (FileOutputStream fos = new FileOutputStream(code)) {
                     fos.write(bytes);
                     // DexFile will be removed in a future Android release.
+                    // -----------------------------------------------------------------------------
                     // "Opening an oat file without a class loader. Are you using the deprecated DexFile APIs?"
+                    // platform/art/runtime/oat_file_manager.cc
+                    //  If the class_loader is null there's not much we can do. This happens if a dex files is loaded
+                    //  // directly with DexFile APIs instead of using class loaders.
+                    //  if (class_loader == nullptr) {
+                    //    LOG(WARNING) << "Opening an oat file without a class loader. "
+                    //                 << "Are you using the deprecated DexFile APIs?";
+                    //  }
+                    // -----------------------------------------------------------------------------
                     // "DexFile * is in boot class path but is not in a known location"
+                    // platform/art/master/runtime/hidden_api.cc
+                    //  if (class_loader.IsNull()) {
+                    //    if (kIsTargetBuild && !kIsTargetLinux) {
+                    //      // This is unexpected only when running on Android.
+                    //      LOG(WARNING) << "DexFile " << dex_location
+                    //          << " is in boot class path but is not in a known location";
+                    //    }
+                    //    return Domain::kPlatform;
+                    //  }
                     DexFile dexFile = new DexFile(code);
                     Class<?> reflection4RClazz = dexFile.loadClass("RR", null);
                     reflection4RClazz.getConstructor().newInstance();

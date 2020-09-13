@@ -19,13 +19,19 @@ public class BaseTest {
 
     protected static Context targetContext;
 
+    protected static boolean autoUninstall = true;
+
     @BeforeClass
     public static void prepareTargetContext() {
         targetContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
     }
 
     @AfterClass
-    public static void requestUninstall() throws UiObjectNotFoundException, RemoteException {
+    public static void lastOrder() throws Throwable {
+        if (autoUninstall) requestUninstall();
+    }
+
+    private static void requestUninstall() throws UiObjectNotFoundException, RemoteException {
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
         Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE,
                 Uri.fromParts("package", context.getPackageName(), null))
