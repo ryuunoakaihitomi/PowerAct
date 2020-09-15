@@ -35,10 +35,9 @@ public class PowerActX {
      * the user can unlock by biometric sensors before 28.
      * Since 28, We don't need to keep the {@link android.accessibilityservice.AccessibilityService} alive in the background.
      * <p>
-     * But it's very <b>slow</b>.
-     * In some environments, the user may need to wait a second or longer.
-     * If we use {@link PowerAct#lockScreen(Activity, Callback)} instead,
-     * as long as the relative component is enabled, the effect is almost instant.
+     * Although it's very <b>slow</b> (In some environments, the user may need to wait a second or longer) in most cases,
+     * but we can integrate with <a href="https://shizuku.rikka.app/">Shizuku</a>
+     * to make it as fast as {@link PowerAct#lockScreen(Activity, Callback)}.
      *
      * @param callback As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>callback</code>.
      */

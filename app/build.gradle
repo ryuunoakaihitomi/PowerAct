@@ -1,5 +1,7 @@
 import java.nio.charset.StandardCharsets
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 
 apply plugin: 'com.android.application'
 
@@ -11,8 +13,8 @@ android {
         applicationId "demo.power_act"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode Integer.valueOf(LocalDate.now().toString().replaceAll('[^0-9]', '') + LocalTime.now().hour)
+        versionName PROJ_VERSION
 
         buildConfigField "long", "BUILD_TIME", String.valueOf(System.currentTimeMillis() + "L")
     }

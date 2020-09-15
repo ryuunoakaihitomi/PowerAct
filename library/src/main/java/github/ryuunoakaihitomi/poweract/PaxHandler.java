@@ -80,6 +80,7 @@ final class PaxHandler implements InvocationHandler {
         }
         if (shizukuSuccess) {
             mainHandler.post(() -> {
+                ExternalUtils.disableExposedComponents(sApplication);
                 callbackHelper.done();
                 UserGuideRunnable.release();
             });
