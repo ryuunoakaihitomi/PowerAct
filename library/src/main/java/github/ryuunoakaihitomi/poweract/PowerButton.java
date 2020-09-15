@@ -38,6 +38,10 @@ public final class PowerButton extends Button {
     private boolean mHasCustomMeasure;
     private int mSize;
 
+    static {
+        Initializer.notify(TAG);
+    }
+
     public PowerButton(Context context, AttributeSet attrs) {
         super(context, attrs);
         initNormalStyles();

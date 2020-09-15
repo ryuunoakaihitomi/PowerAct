@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.provider.Settings;
+import android.util.AndroidRuntimeException;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
@@ -170,6 +171,10 @@ public final class PaFragment extends Fragment {
                     startActivityForResult(intent, mRequestCode);
                 } catch (ActivityNotFoundException e) {
                     // ActivityNotFoundException: DevicePolicyManager.EXTRA_DEVICE_ADMIN
+                    failed(e.getMessage());
+                } catch (AndroidRuntimeException e) {
+                    // Special env: Xiaomi DuoKan E-reader (Allwinner EPD106)
+                    // Unknown error code -1 when starting Intent { act=android.app.action.ADD_DEVICE_ADMIN (has extras) }
                     failed(e.getMessage());
                 }
             }

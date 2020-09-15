@@ -43,6 +43,10 @@ public class PowerAct {
     private PowerAct() {
     }
 
+    static {
+        Initializer.notify(TAG);
+    }
+
     /**
      * Go to see {@link #lockScreen(Activity, Callback)}.
      *

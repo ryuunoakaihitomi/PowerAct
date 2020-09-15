@@ -27,6 +27,10 @@ public final class ExternalUtils {
     private ExternalUtils() {
     }
 
+    static {
+        Initializer.notify(TAG);
+    }
+
     /**
      * {@link PowerAct} depends on {@link AccessibilityService}
      * or/and {@link DeviceAdminReceiver} for providing permissions to perform actions.

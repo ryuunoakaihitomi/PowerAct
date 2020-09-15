@@ -19,6 +19,7 @@ public class BaseTest {
 
     protected static Context targetContext;
 
+    @SuppressWarnings("CanBeFinal") // May be used in sub test.
     protected static boolean autoUninstall = true;
 
     @BeforeClass

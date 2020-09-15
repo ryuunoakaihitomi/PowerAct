@@ -23,6 +23,10 @@ public class PowerActX {
     private PowerActX() {
     }
 
+    static {
+        Initializer.notify(TAG);
+    }
+
     /**
      * Go to see {@link #lockScreen(Callback)}.
      */
