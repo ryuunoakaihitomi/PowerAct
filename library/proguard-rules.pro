@@ -61,6 +61,9 @@
 -keep class github.ryuunoakaihitomi.poweract.PowerButton {public *;}
 -keep class github.ryuunoakaihitomi.poweract.ExternalUtils {public *;}
 
+# Define internal logic
+-flattenpackagehierarchy github.ryuunoakaihitomi.poweract.internal
+
 # Keep parameters name
 # https://www.guardsquare.com/en/products/proguard/manual/usage
 # https://www.guardsquare.com/en/products/proguard/manual/usage/attributes
