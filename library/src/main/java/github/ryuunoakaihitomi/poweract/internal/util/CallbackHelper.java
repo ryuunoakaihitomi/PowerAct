@@ -1,8 +1,10 @@
-package github.ryuunoakaihitomi.poweract;
+package github.ryuunoakaihitomi.poweract.internal.util;
 
 import androidx.annotation.Nullable;
 
-class CallbackHelper implements Callback {
+import github.ryuunoakaihitomi.poweract.Callback;
+
+public final class CallbackHelper implements Callback {
 
     private final Callback mCallback;
 
@@ -10,7 +12,7 @@ class CallbackHelper implements Callback {
         mCallback = callback;
     }
 
-    static CallbackHelper of(@Nullable Callback callback) {
+    public static CallbackHelper of(@Nullable Callback callback) {
         return new CallbackHelper(callback);
     }
 

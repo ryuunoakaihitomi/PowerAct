@@ -1,4 +1,4 @@
-package github.ryuunoakaihitomi.poweract;
+package github.ryuunoakaihitomi.poweract.internal.pa;
 
 import android.Manifest;
 import android.accessibilityservice.AccessibilityService;
@@ -29,6 +29,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Arrays;
 import java.util.UUID;
+
+import github.ryuunoakaihitomi.poweract.BuildConfig;
+import github.ryuunoakaihitomi.poweract.Callback;
+import github.ryuunoakaihitomi.poweract.R;
+import github.ryuunoakaihitomi.poweract.internal.util.CallbackHelper;
+import github.ryuunoakaihitomi.poweract.internal.util.DebugLog;
+import github.ryuunoakaihitomi.poweract.internal.util.Utils;
 
 /**
  * <b>NOT FOR EXTERNAL USE!</b> It has to be public in order for system to call.
@@ -115,7 +122,7 @@ public final class PaService extends AccessibilityService {
         sGlobalActionMap = globalActionMap;
     }
 
-    static boolean sendAction(Context context, @Action String action, @Nullable Callback callback) {
+    public static boolean sendAction(Context context, @Action String action, @Nullable Callback callback) {
         if (sIsBroadcastRegistered) {
             Intent intent = new Intent(action);
             intent.setPackage(context.getPackageName());

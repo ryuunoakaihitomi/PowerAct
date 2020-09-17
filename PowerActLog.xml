@@ -10,7 +10,7 @@
 <templateSet group="PowerActLog">
     <template name="palgd" description="Output debug level logcat in PowerAct." toReformat="false"
         toShortenFQNames="true"
-        value="github.ryuunoakaihitomi.poweract.DebugLog.d(TAG, &quot;$method$: $input$&quot;);">
+        value="github.ryuunoakaihitomi.poweract.internal.util.DebugLog.d(TAG, &quot;$method$: $input$&quot;);">
         <variable name="method" alwaysStopAt="false" defaultValue="" expression="methodName()" />
         <variable name="input" alwaysStopAt="true" defaultValue="" expression="" />
         <context>
@@ -19,7 +19,7 @@
     </template>
     <template name="palgi" description="Output info level logcat in PowerAct." toReformat="false"
         toShortenFQNames="true"
-        value="github.ryuunoakaihitomi.poweract.DebugLog.i(TAG, &quot;$method$: $input$&quot;);">
+        value="github.ryuunoakaihitomi.poweract.internal.util.DebugLog.i(TAG, &quot;$method$: $input$&quot;);">
         <variable name="method" alwaysStopAt="false" defaultValue="" expression="methodName()" />
         <variable name="input" alwaysStopAt="true" defaultValue="" expression="" />
         <context>
@@ -28,7 +28,7 @@
     </template>
     <template name="palgw" description="Output warn level logcat in PowerAct." toReformat="false"
         toShortenFQNames="true"
-        value="github.ryuunoakaihitomi.poweract.DebugLog.w(TAG, &quot;$method$: $input$&quot;);">
+        value="github.ryuunoakaihitomi.poweract.internal.util.DebugLog.w(TAG, &quot;$method$: $input$&quot;);">
         <variable name="method" alwaysStopAt="false" defaultValue="" expression="methodName()" />
         <variable name="input" alwaysStopAt="true" defaultValue="" expression="" />
         <context>
@@ -37,7 +37,7 @@
     </template>
     <template name="palge" description="Output error level logcat in PowerAct." toReformat="false"
         toShortenFQNames="true"
-        value="github.ryuunoakaihitomi.poweract.DebugLog.e(TAG, &quot;$method$: $input$&quot;);">
+        value="github.ryuunoakaihitomi.poweract.internal.util.DebugLog.e(TAG, &quot;$method$: $input$&quot;);">
         <variable name="method" alwaysStopAt="false" defaultValue="" expression="methodName()" />
         <variable name="input" alwaysStopAt="true" defaultValue="" expression="" />
         <context>

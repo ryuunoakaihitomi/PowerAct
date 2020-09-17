@@ -1,4 +1,4 @@
-package github.ryuunoakaihitomi.poweract;
+package github.ryuunoakaihitomi.poweract.internal.util;
 
 import android.os.Build;
 
@@ -31,7 +31,7 @@ public final class SystemCompatTest extends BaseTest {
     @BeforeClass
     public static void removeReflectionRestriction() throws ClassNotFoundException {
         // Only for loading static initializer.
-        Class.forName("github.ryuunoakaihitomi.poweract.ReflectionUtils");
+        Class.forName("github.ryuunoakaihitomi.poweract.internal.ReflectionUtils");
     }
 
     @Test(expected = SecurityException.class)

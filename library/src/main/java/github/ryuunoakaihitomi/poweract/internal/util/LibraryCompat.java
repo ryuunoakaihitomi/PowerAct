@@ -1,4 +1,4 @@
-package github.ryuunoakaihitomi.poweract;
+package github.ryuunoakaihitomi.poweract.internal.util;
 
 import android.content.Context;
 import android.os.Build;
@@ -6,6 +6,7 @@ import android.os.RemoteException;
 
 import androidx.annotation.NonNull;
 
+import github.ryuunoakaihitomi.poweract.BuildConfig;
 import moe.shizuku.api.ShizukuApiConstants;
 import moe.shizuku.api.ShizukuProvider;
 import moe.shizuku.api.ShizukuService;
@@ -14,7 +15,7 @@ import moe.shizuku.api.ShizukuService;
  * Developer Note:
  * Must keep library entries in proguard.
  */
-final class LibraryCompat {
+public final class LibraryCompat {
 
     private static final String TAG = "LibraryCompat";
 

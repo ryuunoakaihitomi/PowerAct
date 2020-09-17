@@ -6,6 +6,9 @@ import androidx.test.filters.LargeTest;
 import org.junit.After;
 import org.junit.Test;
 
+import github.ryuunoakaihitomi.poweract.internal.pa.PaReceiver;
+import github.ryuunoakaihitomi.poweract.internal.pa.PaService;
+import github.ryuunoakaihitomi.poweract.internal.util.Utils;
 import github.ryuunoakaihitomi.poweract.test.BaseTest;
 import github.ryuunoakaihitomi.poweract.test.LockScreenTest;
 

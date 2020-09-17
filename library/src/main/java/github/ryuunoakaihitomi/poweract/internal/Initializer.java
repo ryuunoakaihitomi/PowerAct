@@ -1,4 +1,4 @@
-package github.ryuunoakaihitomi.poweract;
+package github.ryuunoakaihitomi.poweract.internal;
 
 import android.os.Build;
 import android.text.TextUtils;
@@ -8,13 +8,18 @@ import android.util.LogPrinter;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 
-final class Initializer {
+import github.ryuunoakaihitomi.poweract.internal.util.DebugLog;
+import github.ryuunoakaihitomi.poweract.internal.util.ReflectionUtils;
+
+public final class Initializer {
 
     private static final String TAG = "Initializer";
 
     static {
         // For copyright protection.
         new LogPrinter(Log.WARN, "PowerAct").println("http://www.apache.org/licenses/LICENSE-2.0.html");
+        // To load {@link ReflectionUtils#removeRestriction()} asap.
+        ReflectionUtils.findClass(null);
         /* Debug special models' environment. */
         printAllPublicConstants("build:", Build.class);
         printAllPublicConstants("version:", Build.VERSION.class);
@@ -24,7 +29,7 @@ final class Initializer {
     }
 
     public static void notify(String entry) {
-        DebugLog.d(TAG, "notify: Calling " + entry);
+        DebugLog.d(TAG, "notify: Starting to call " + entry);
     }
 
     private static void printAllPublicConstants(String namePrefix, Class<?> clazz) {
@@ -44,11 +49,10 @@ final class Initializer {
                     }
                     final String tag = namePrefix == null ? name : namePrefix + name;
                     if (!TextUtils.isEmpty(printableValue)) {
-                        DebugLog.i(TAG, "printAllPublicConstants: " +
-                                (f.isAnnotationPresent(Deprecated.class) ? "Deprecated " : "") +
+                        DebugLog.i(TAG, (f.isAnnotationPresent(Deprecated.class) ? "! DEPRECATED " : "") +
                                 Arrays.asList(tag, printableValue));
                     } else {
-                        DebugLog.i(TAG, "printAllPublicConstants: Empty " + tag);
+                        DebugLog.i(TAG, "! EMPTY " + tag);
                     }
                 }
             } catch (IllegalAccessException e) {

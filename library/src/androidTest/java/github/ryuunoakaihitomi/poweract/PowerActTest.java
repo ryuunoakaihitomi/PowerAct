@@ -31,6 +31,7 @@ import org.junit.Test;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import github.ryuunoakaihitomi.poweract.internal.pa.PaReceiver;
 import github.ryuunoakaihitomi.poweract.test.BaseTest;
 import github.ryuunoakaihitomi.poweract.test.LockScreenTest;
 import poweract.test.res.PlaygroundActivity;

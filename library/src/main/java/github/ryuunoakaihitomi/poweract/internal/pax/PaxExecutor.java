@@ -1,4 +1,4 @@
-package github.ryuunoakaihitomi.poweract;
+package github.ryuunoakaihitomi.poweract.internal.pax;
 
 import android.app.ActivityManager;
 import android.app.ActivityManagerNative;
@@ -17,6 +17,11 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
 
+import github.ryuunoakaihitomi.poweract.BuildConfig;
+import github.ryuunoakaihitomi.poweract.internal.util.DebugLog;
+import github.ryuunoakaihitomi.poweract.internal.util.LibraryCompat;
+import github.ryuunoakaihitomi.poweract.internal.util.SystemCompat;
+import github.ryuunoakaihitomi.poweract.internal.util.Utils;
 import moe.shizuku.api.ShizukuSystemProperties;
 
 class PaxExecutor {

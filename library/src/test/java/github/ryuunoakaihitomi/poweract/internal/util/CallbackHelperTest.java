@@ -1,7 +1,8 @@
-package github.ryuunoakaihitomi.poweract;
+package github.ryuunoakaihitomi.poweract.internal.util;
 
 import org.junit.Test;
 
+import github.ryuunoakaihitomi.poweract.Callback;
 import github.ryuunoakaihitomi.poweract.test.BaseTest;
 
 import static org.awaitility.Awaitility.await;

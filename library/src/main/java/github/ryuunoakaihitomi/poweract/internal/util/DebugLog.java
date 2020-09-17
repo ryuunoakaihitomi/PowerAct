@@ -1,4 +1,4 @@
-package github.ryuunoakaihitomi.poweract;
+package github.ryuunoakaihitomi.poweract.internal.util;
 
 import android.os.Build;
 import android.util.Log;
@@ -6,11 +6,12 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-@SuppressWarnings("unused")
-final class DebugLog {
+import github.ryuunoakaihitomi.poweract.BuildConfig;
+
+public final class DebugLog {
 
     private static final String MAIN_TAG = "PowerAct";
-    static boolean enabled = true;
+    public static boolean enabled = true;
 
     private DebugLog() {
     }

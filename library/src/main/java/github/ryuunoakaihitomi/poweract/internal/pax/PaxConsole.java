@@ -1,11 +1,13 @@
-package github.ryuunoakaihitomi.poweract;
+package github.ryuunoakaihitomi.poweract.internal.pax;
 
 import androidx.annotation.CheckResult;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 
-class PaxConsole {
+import github.ryuunoakaihitomi.poweract.internal.util.DebugLog;
+
+public final class PaxConsole {
 
     private static final String TAG = "PaxConsole";
 

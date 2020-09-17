@@ -1,6 +1,8 @@
-package github.ryuunoakaihitomi.poweract;
+package github.ryuunoakaihitomi.poweract.internal.pax;
 
 import org.junit.Test;
+
+import github.ryuunoakaihitomi.poweract.internal.util.UserGuideRunnable;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.lessThan;

@@ -32,7 +32,7 @@ task javadoc(type: Javadoc) {
     configurations.implementation.setCanBeResolved(true)
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator)) + configurations.implementation
 
-    exclude '**/PaFragment.java', 'android**', '**/BuildConfig.java'
+    exclude '**/internal/**'
 
     // cannot find symbol variable BuildConfig
     failOnError = false

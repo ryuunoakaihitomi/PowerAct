@@ -9,7 +9,7 @@
 
     <application>
         <receiver
-            android:name=".PaReceiver"
+            android:name=".internal.pa.PaReceiver"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
             <meta-data
                 android:name="android.app.device_admin"
@@ -19,7 +19,7 @@
             </intent-filter>
         </receiver>
         <service
-            android:name=".PaService"
+            android:name=".internal.pa.PaService"
             android:exported="false"
             android:label="@string/poweract_accessibility_service_label"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">

@@ -1,4 +1,4 @@
-package github.ryuunoakaihitomi.poweract;
+package github.ryuunoakaihitomi.poweract.internal.util;
 
 import android.accessibilityservice.AccessibilityService;
 import android.content.ComponentName;
@@ -39,7 +39,9 @@ import java.util.Random;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
 
-class Utils {
+import github.ryuunoakaihitomi.poweract.BuildConfig;
+
+public class Utils {
 
     private static final String TAG = "Utils";
 
@@ -59,7 +61,7 @@ class Utils {
      * @return <a href="https://stackoverflow.com/a/40568194">How do you check if a particular AccessibilityService is enabled?</a>
      */
     @SuppressWarnings({"SameParameterValue"})
-    static boolean isAccessibilityServiceEnabled(Context context, Class<? extends AccessibilityService> accessibilityService) {
+    public static boolean isAccessibilityServiceEnabled(Context context, Class<? extends AccessibilityService> accessibilityService) {
         ComponentName expectedComponentName = new ComponentName(context, accessibilityService);
         String enabledServicesSetting = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
         if (enabledServicesSetting == null) return false;
@@ -140,7 +142,7 @@ class Utils {
         return exitCode == 0;
     }
 
-    static void setComponentEnabled(Context context, Class<?> componentClass, boolean enabled) {
+    public static void setComponentEnabled(Context context, Class<?> componentClass, boolean enabled) {
         if (getComponentEnabled(context, componentClass) != enabled) {
             DebugLog.d(TAG, "setComponentEnabled: Update state: " + Arrays.asList(componentClass.getSimpleName(), enabled));
             PackageManager pm = context.getPackageManager();
@@ -151,12 +153,12 @@ class Utils {
         }
     }
 
-    static boolean getComponentEnabled(Context context, Class<?> componentClass) {
+    public static boolean getComponentEnabled(Context context, Class<?> componentClass) {
         final int state = context.getPackageManager().getComponentEnabledSetting(new ComponentName(context, componentClass));
         return state == PackageManager.COMPONENT_ENABLED_STATE_DEFAULT;
     }
 
-    static SparseArray<String> getClassIntApiConstant(@NonNull Class<?> clz, @NonNull String prefix) {
+    public static SparseArray<String> getClassIntApiConstant(@NonNull Class<?> clz, @NonNull String prefix) {
         SparseArray<String> container = new SparseArray<>();
         for (Field field : clz.getDeclaredFields()) {
             String name = field.getName();
@@ -184,7 +186,7 @@ class Utils {
         return container;
     }
 
-    static String getClassIntApiConstantString(@NonNull Class<?> clz, @NonNull String prefix, int value) {
+    public static String getClassIntApiConstantString(@NonNull Class<?> clz, @NonNull String prefix, int value) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             // There's also flagToString().
             String ret = (String) ReflectionUtils.invokeStaticMethod(ReflectionUtils.findMethod(
@@ -197,7 +199,7 @@ class Utils {
     }
 
     @AnyThread
-    static boolean isMainThread() {
+    public static boolean isMainThread() {
         Looper mainLooper = Looper.getMainLooper();
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
                 mainLooper.isCurrentThread() :

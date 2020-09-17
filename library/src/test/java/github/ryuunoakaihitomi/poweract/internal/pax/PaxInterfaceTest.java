@@ -1,4 +1,4 @@
-package github.ryuunoakaihitomi.poweract;
+package github.ryuunoakaihitomi.poweract.internal.pax;
 
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import github.ryuunoakaihitomi.poweract.Callback;
 import github.ryuunoakaihitomi.poweract.test.BaseTest;
 
 import static org.hamcrest.CoreMatchers.is;

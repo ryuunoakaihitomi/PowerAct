@@ -4,6 +4,11 @@ import android.app.Activity;
 import android.os.Build;
 import android.util.Log;
 
+import github.ryuunoakaihitomi.poweract.internal.Initializer;
+import github.ryuunoakaihitomi.poweract.internal.pax.PaxConsole;
+import github.ryuunoakaihitomi.poweract.internal.pax.PaxInterface;
+import github.ryuunoakaihitomi.poweract.internal.util.CallbackHelper;
+
 /**
  * Advanced PowerAct to control the device's power state more directly,
  * and can be invoked everywhere without {@link Activity},

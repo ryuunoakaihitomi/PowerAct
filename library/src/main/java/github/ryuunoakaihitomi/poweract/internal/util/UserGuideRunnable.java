@@ -1,4 +1,4 @@
-package github.ryuunoakaihitomi.poweract;
+package github.ryuunoakaihitomi.poweract.internal.util;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -9,7 +9,7 @@ import androidx.annotation.VisibleForTesting;
 import java.util.Timer;
 import java.util.TimerTask;
 
-class UserGuideRunnable {
+public class UserGuideRunnable {
 
     public static final int RELEASE_DELAY_TIME_MILLIS = 5000;
     private static final String TAG = "UserGuideRunnable";
@@ -19,7 +19,7 @@ class UserGuideRunnable {
     private UserGuideRunnable() {
     }
 
-    static void set(@NonNull Runnable runnable) {
+    public static void set(@NonNull Runnable runnable) {
         sUserGuideRunnable = runnable;
         new Timer().schedule(new TimerTask() {
             @Override
@@ -29,7 +29,7 @@ class UserGuideRunnable {
         }, RELEASE_DELAY_TIME_MILLIS);
     }
 
-    static void run() {
+    public static void run() {
         if (!Utils.isMainThread()) {
             DebugLog.i(TAG, "run: Not main thread. " + Thread.currentThread());
             new Handler(Looper.getMainLooper()).post(UserGuideRunnable::runInternal);
@@ -48,7 +48,7 @@ class UserGuideRunnable {
         }
     }
 
-    static void release() {
+    public static void release() {
         DebugLog.d(TAG, "release: " + sUserGuideRunnable);
         sUserGuideRunnable = null;
     }

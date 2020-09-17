@@ -9,17 +9,19 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.os.Build;
 
-import androidx.annotation.IntDef;
-import androidx.annotation.Keep;
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.io.PrintWriter;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+
+import github.ryuunoakaihitomi.poweract.internal.Initializer;
+import github.ryuunoakaihitomi.poweract.internal.pa.PaConstants;
+import github.ryuunoakaihitomi.poweract.internal.pa.PaFragment;
+import github.ryuunoakaihitomi.poweract.internal.pa.PaReceiver;
+import github.ryuunoakaihitomi.poweract.internal.util.CallbackHelper;
+import github.ryuunoakaihitomi.poweract.internal.util.DebugLog;
+import github.ryuunoakaihitomi.poweract.internal.util.Utils;
 
 /**
  * Provide the main functions of the library.
@@ -33,12 +35,6 @@ import java.lang.annotation.Target;
 public class PowerAct {
 
     private static final String TAG = "PowerAct";
-
-    @Keep
-    static final int
-            ACTION_LOCK_SCREEN = 1,
-            ACTION_POWER_DIALOG = 2,
-            ACTION_REBOOT = 3;
 
     private PowerAct() {
     }
@@ -71,7 +67,7 @@ public class PowerAct {
      * @see android.accessibilityservice.AccessibilityService#GLOBAL_ACTION_LOCK_SCREEN
      */
     public static void lockScreen(@NonNull Activity activity, @Nullable Callback callback) {
-        requestAction(activity, callback, ACTION_LOCK_SCREEN);
+        requestAction(activity, callback, PaConstants.ACTION_LOCK_SCREEN);
     }
 
     /**
@@ -92,7 +88,7 @@ public class PowerAct {
      * @see android.accessibilityservice.AccessibilityService#GLOBAL_ACTION_POWER_DIALOG
      */
     public static void showPowerDialog(@NonNull Activity activity, @Nullable Callback callback) {
-        requestAction(activity, callback, ACTION_POWER_DIALOG);
+        requestAction(activity, callback, PaConstants.ACTION_POWER_DIALOG);
     }
 
     /**
@@ -127,10 +123,10 @@ public class PowerAct {
      * @since 1.0.18
      */
     public static void reboot(@NonNull Activity activity, @Nullable Callback callback) {
-        requestAction(activity, callback, ACTION_REBOOT);
+        requestAction(activity, callback, PaConstants.ACTION_REBOOT);
     }
 
-    private static void requestAction(final Activity activity, final Callback callback, final @ActionType int action) {
+    private static void requestAction(final Activity activity, final Callback callback, final @PaConstants.ActionType int action) {
         if (!Utils.isMainThread()) {
             DebugLog.e(TAG, "requestAction: Must be called from main thread!");
             CallbackHelper.of(callback).failed();
@@ -141,12 +137,12 @@ public class PowerAct {
             CallbackHelper.of(callback).failed();
             return;
         }
-        if (action == ACTION_POWER_DIALOG && Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+        if (action == PaConstants.ACTION_POWER_DIALOG && Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             DebugLog.e(TAG, "requestAction: Cannot show power dialog before API level 21!");
             CallbackHelper.of(callback).failed();
             return;
         }
-        if (action == ACTION_REBOOT && Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+        if (action == PaConstants.ACTION_REBOOT && Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             DebugLog.e(TAG, "requestAction: Cannot reboot before API level 24!");
             CallbackHelper.of(callback).failed();
             return;
@@ -179,15 +175,5 @@ public class PowerAct {
         } else {
             fragment.requestAction(callback, action);
         }
-    }
-
-    @IntDef({
-            ACTION_LOCK_SCREEN,
-            ACTION_POWER_DIALOG,
-            ACTION_REBOOT
-    })
-    @Target({ElementType.PARAMETER, ElementType.FIELD})
-    @Retention(RetentionPolicy.SOURCE)
-    @interface ActionType {
     }
 }

@@ -17,6 +17,10 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 
+import github.ryuunoakaihitomi.poweract.internal.Initializer;
+import github.ryuunoakaihitomi.poweract.internal.util.DebugLog;
+import github.ryuunoakaihitomi.poweract.internal.util.Utils;
+
 /**
  * A {@link Button} acts like a real power button.
  * <p>

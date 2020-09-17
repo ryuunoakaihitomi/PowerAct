@@ -1,4 +1,4 @@
-package github.ryuunoakaihitomi.poweract;
+package github.ryuunoakaihitomi.poweract.internal.pa;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -19,6 +19,15 @@ import androidx.annotation.RestrictTo;
 import java.util.Arrays;
 import java.util.Random;
 
+import github.ryuunoakaihitomi.poweract.BuildConfig;
+import github.ryuunoakaihitomi.poweract.Callback;
+import github.ryuunoakaihitomi.poweract.PowerAct;
+import github.ryuunoakaihitomi.poweract.internal.util.CallbackHelper;
+import github.ryuunoakaihitomi.poweract.internal.util.DebugLog;
+import github.ryuunoakaihitomi.poweract.internal.util.LibraryCompat;
+import github.ryuunoakaihitomi.poweract.internal.util.SystemCompat;
+import github.ryuunoakaihitomi.poweract.internal.util.UserGuideRunnable;
+import github.ryuunoakaihitomi.poweract.internal.util.Utils;
 import moe.shizuku.api.ShizukuApiConstants;
 import moe.shizuku.api.ShizukuBinderWrapper;
 import moe.shizuku.api.SystemServiceHelper;
@@ -34,7 +43,7 @@ public final class PaFragment extends Fragment {
     // For DevicePolicyManager
     private int mRequestCode;
 
-    @PowerAct.ActionType
+    @PaConstants.ActionType
     private int mAction;
 
     // Check the status returned from the Accessibility settings.
@@ -64,7 +73,7 @@ public final class PaFragment extends Fragment {
         }
     }
 
-    void requestAction(Callback callback, @PowerAct.ActionType int action) {
+    public void requestAction(Callback callback, @PaConstants.ActionType int action) {
         mAction = action;
         Activity activity = getActivity();
         mCallback = callback;
@@ -76,7 +85,7 @@ public final class PaFragment extends Fragment {
         initialize();
 
         /* Use Shizuku instead of DPM before 28 to avoid "secure unlock" and "complex uninstalling". */
-        if (mAction == PowerAct.ACTION_LOCK_SCREEN &&
+        if (mAction == PaConstants.ACTION_LOCK_SCREEN &&
                 Build.VERSION.SDK_INT < Build.VERSION_CODES.P &&
                 LibraryCompat.isShizukuPrepared(activity)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -99,9 +108,9 @@ public final class PaFragment extends Fragment {
         }
         /* The action AccessibilityService must be used.
            Show power dialog and lock screen by it. (>=28) */
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && mAction != PowerAct.ACTION_REBOOT || mAction == PowerAct.ACTION_POWER_DIALOG) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && mAction != PaConstants.ACTION_REBOOT || mAction == PaConstants.ACTION_POWER_DIALOG) {
             // The device admin is no longer useful.
-            if (isAdminActive && mAction == PowerAct.ACTION_LOCK_SCREEN) {
+            if (isAdminActive && mAction == PaConstants.ACTION_LOCK_SCREEN) {
                 // lockScreen & adminActive, remove admin automatically.
                 mDevicePolicyManager.removeActiveAdmin(mAdminReceiverComponentName);
             }
@@ -141,7 +150,7 @@ public final class PaFragment extends Fragment {
         /* The action DevicePolicyManager be used.
            reboot and lock screen by it. (<28) */
         else {
-            if (action == PowerAct.ACTION_REBOOT) {
+            if (action == PaConstants.ACTION_REBOOT) {
                 if (isDeviceOwner) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         try {
@@ -175,6 +184,7 @@ public final class PaFragment extends Fragment {
                 } catch (AndroidRuntimeException e) {
                     // Special env: Xiaomi DuoKan E-reader (Allwinner EPD106)
                     // Unknown error code -1 when starting Intent { act=android.app.action.ADD_DEVICE_ADMIN (has extras) }
+                    DebugLog.w(TAG, e);
                     failed(e.getMessage());
                 }
             }
@@ -256,7 +266,7 @@ public final class PaFragment extends Fragment {
         UserGuideRunnable.release();
         // Send broadcast to show power dialog (21+) or to lock screen (28+).
         boolean receiverState = PaService.sendAction(mAssociatedActivity,
-                mAction == PowerAct.ACTION_POWER_DIALOG ? PaService.POWER_DIALOG_ACTION : PaService.LOCK_SCREEN_ACTION,
+                mAction == PaConstants.ACTION_POWER_DIALOG ? PaService.POWER_DIALOG_ACTION : PaService.LOCK_SCREEN_ACTION,
                 mCallback);
         if (!receiverState) {
             failed("Unregistered BroadcastReceiver.");

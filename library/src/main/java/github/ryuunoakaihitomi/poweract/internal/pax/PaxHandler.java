@@ -1,4 +1,4 @@
-package github.ryuunoakaihitomi.poweract;
+package github.ryuunoakaihitomi.poweract.internal.pax;
 
 import android.app.ActivityThread;
 import android.app.Application;
@@ -17,6 +17,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import github.ryuunoakaihitomi.poweract.Callback;
+import github.ryuunoakaihitomi.poweract.ExternalUtils;
+import github.ryuunoakaihitomi.poweract.internal.util.CallbackHelper;
+import github.ryuunoakaihitomi.poweract.internal.util.DebugLog;
+import github.ryuunoakaihitomi.poweract.internal.util.LibraryCompat;
+import github.ryuunoakaihitomi.poweract.internal.util.SystemCompat;
+import github.ryuunoakaihitomi.poweract.internal.util.UserGuideRunnable;
+import github.ryuunoakaihitomi.poweract.internal.util.Utils;
 import moe.shizuku.api.ShizukuBinderWrapper;
 import moe.shizuku.api.ShizukuService;
 import moe.shizuku.api.SystemServiceHelper;

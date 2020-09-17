@@ -1,4 +1,4 @@
-package github.ryuunoakaihitomi.poweract;
+package github.ryuunoakaihitomi.poweract.internal.pa;
 
 import android.app.admin.DeviceAdminReceiver;
 import android.app.admin.DevicePolicyManager;
@@ -8,6 +8,9 @@ import android.content.Intent;
 import android.os.Build;
 
 import androidx.annotation.NonNull;
+
+import github.ryuunoakaihitomi.poweract.internal.util.DebugLog;
+import github.ryuunoakaihitomi.poweract.internal.util.LibraryCompat;
 
 /**
  * <b>NOT FOR EXTERNAL USE!</b> It has to be public in order for system to call.

@@ -1,6 +1,8 @@
-package github.ryuunoakaihitomi.poweract;
+package github.ryuunoakaihitomi.poweract.internal.pax;
 
-interface PaxInterface {
+import github.ryuunoakaihitomi.poweract.Callback;
+
+public interface PaxInterface {
 
     @PaxExecApi(PaxExecutor.TOKEN_LOCK_SCREEN)
     void lockScreen(Callback callback);
