@@ -8,6 +8,7 @@ import android.util.LogPrinter;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 
+import github.ryuunoakaihitomi.poweract.BuildConfig;
 import github.ryuunoakaihitomi.poweract.internal.util.DebugLog;
 import github.ryuunoakaihitomi.poweract.internal.util.ReflectionUtils;
 
@@ -20,9 +21,11 @@ public final class Initializer {
         new LogPrinter(Log.WARN, "PowerAct").println("http://www.apache.org/licenses/LICENSE-2.0.html");
         // To load {@link ReflectionUtils#removeRestriction()} asap.
         ReflectionUtils.findClass(null);
-        /* Debug special models' environment. */
-        printAllPublicConstants("build:", Build.class);
-        printAllPublicConstants("version:", Build.VERSION.class);
+        /* Debug special models' environment. Must be disabled in release version to avoid flooding log without ExternalUtils#enableLog()'s control. */
+        if (BuildConfig.DEBUG) {
+            printAllPublicConstants("build:", Build.class);
+            printAllPublicConstants("version:", Build.VERSION.class);
+        }
     }
 
     private Initializer() {
