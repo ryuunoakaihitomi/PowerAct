@@ -105,6 +105,11 @@ public class MainActivity extends Activity {
         Log.d(TAG, "onCreate: The size of PowerButton is " + customSize);
         powerButton.setHeight(customSize);
         powerButton.setWidth(customSize);
+        // ExternalUtils.isExposedComponentsAvailable
+        if (!ExternalUtils.isExposedComponentAvailable(this)) {
+            Log.w(TAG, "onCreate: Disabled component(s)");
+            powerButton.setVisibility(View.GONE);
+        }
 
         // PowerActX examples
         /*

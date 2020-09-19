@@ -1,6 +1,5 @@
 package github.ryuunoakaihitomi.poweract;
 
-
 import android.accessibilityservice.AccessibilityService;
 import android.app.admin.DeviceAdminReceiver;
 import android.app.admin.DevicePolicyManager;
@@ -121,5 +120,29 @@ public final class ExternalUtils {
      */
     public static void setUserGuideRunnable(@NonNull Runnable runnable) {
         UserGuideRunnable.set(runnable);
+    }
+
+    /**
+     * Whether the exposed component(s) is/are available or not.
+     *
+     * @param context {@link Utils#getComponentEnabled(Context, Class)}
+     * @return Should be false after calling {{@link #disableExposedComponents(Context)}}
+     * @since 1.2.2
+     */
+    public static boolean isExposedComponentAvailable(@NonNull Context context) {
+        final boolean
+                receiverEnabled = Utils.getComponentEnabled(context, PaReceiver.class),
+                serviceEnabled = Utils.getComponentEnabled(context, PaService.class),
+                result;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            result = receiverEnabled;
+        } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+            result = receiverEnabled && serviceEnabled;
+        } else {
+            result = serviceEnabled;
+        }
+        DebugLog.d(TAG, "isExposedComponentsAvailable: " +
+                "ret = " + result + ", rcv = " + receiverEnabled + ", srv = " + serviceEnabled);
+        return result;
     }
 }
