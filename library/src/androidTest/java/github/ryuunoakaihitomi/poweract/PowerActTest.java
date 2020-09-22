@@ -32,6 +32,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import github.ryuunoakaihitomi.poweract.internal.pa.PaReceiver;
+import github.ryuunoakaihitomi.poweract.internal.util.LibraryCompat;
 import github.ryuunoakaihitomi.poweract.test.BaseTest;
 import github.ryuunoakaihitomi.poweract.test.LockScreenTest;
 import poweract.test.res.PlaygroundActivity;
@@ -71,15 +72,18 @@ public final class PowerActTest extends BaseTest {
         LockScreenTest test = new LockScreenTest(callback -> {
             rule.getScenario().onActivity(activity -> activity.runOnUiThread(() -> PowerAct.lockScreen(activity, callback)));
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-                final String settingsPkgName = "com.android.settings";
-                final Resources settingsRes = targetContext.getPackageManager().getResourcesForApplication(settingsPkgName);
-                final int identifier = settingsRes.getIdentifier("add_device_admin", "string", settingsPkgName);
-                final String addDevAdminBtnText = settingsRes.getString(identifier);
-                Log.i(TAG, "lockScreen: addDevAdminBtnText = " + addDevAdminBtnText);
-                final UiObject addAdminActionBtn = mUiDevice.findObject(new UiSelector().text(addDevAdminBtnText));
-                if (addAdminActionBtn.exists()) {
-                    Log.d(TAG, "lockScreen: Click add device admin action button.");
-                    addAdminActionBtn.click();
+                if (LibraryCompat.isShizukuPrepared(targetContext)) {
+                    Log.d(TAG, "lockScreen: Shizuku running...");
+                    final String allow = getStringResource(PKG_NAME_PACKAGE_INSTALLER, "grant_dialog_button_allow");
+                    mUiDevice.findObject(By.text(allow)).click();
+                } else {
+                    final String addDevAdminBtnText = getStringResource(PKG_NAME_SETTINGS, "add_device_admin");
+                    Log.i(TAG, "lockScreen: addDevAdminBtnText = " + addDevAdminBtnText);
+                    final UiObject addAdminActionBtn = mUiDevice.findObject(new UiSelector().text(addDevAdminBtnText));
+                    if (addAdminActionBtn.exists()) {
+                        Log.d(TAG, "lockScreen: Click add device admin action button.");
+                        addAdminActionBtn.click();
+                    }
                 }
             } else {
                 Log.d(TAG, "lockScreen: Enable accessibility service by uiautomator.");
