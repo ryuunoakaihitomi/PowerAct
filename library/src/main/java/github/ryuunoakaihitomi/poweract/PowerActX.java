@@ -2,12 +2,12 @@ package github.ryuunoakaihitomi.poweract;
 
 import android.app.Activity;
 import android.os.Build;
-import android.util.Log;
 
 import github.ryuunoakaihitomi.poweract.internal.Initializer;
 import github.ryuunoakaihitomi.poweract.internal.pax.PaxConsole;
 import github.ryuunoakaihitomi.poweract.internal.pax.PaxInterface;
 import github.ryuunoakaihitomi.poweract.internal.util.CallbackHelper;
+import github.ryuunoakaihitomi.poweract.internal.util.DebugLog;
 
 /**
  * Advanced PowerAct to control the device's power state more directly,
@@ -93,7 +93,7 @@ public class PowerActX {
     public static void shutdown(Callback callback, boolean force) {
         PaxInterface pi = PaxConsole.getInterface();
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            Log.w(TAG, "shutdown: Can only be forced before 17. BE CAREFUL!");
+            DebugLog.w(TAG, "shutdown: Can only be forced before 17. BE CAREFUL!");
             pi.shutdown(callback, true);
         } else {
             pi.shutdown(callback, force);
@@ -249,7 +249,7 @@ public class PowerActX {
             PaxConsole.getInterface().safeMode(callback, force);
         } else {
             // Tried on AVD (Android 4.0.3).
-            Log.e(TAG, "safeMode: Does not support before 16.");
+            DebugLog.e(TAG, "safeMode: Does not support before 16.");
             CallbackHelper.of(callback).failed();
         }
     }
