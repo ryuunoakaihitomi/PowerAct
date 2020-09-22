@@ -29,6 +29,7 @@ import android.view.View;
 import android.view.ViewDebug;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import java.util.HashMap;
@@ -134,7 +135,8 @@ public class MainActivity extends Activity {
                 ExternalUtils.disableExposedComponents(getApplicationContext()));
 
         // Control logcat output.
-        ExternalUtils.enableLog(true);
+        Switch enableLogSwitch = findViewById(R.id.enableLog);
+        enableLogSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> ExternalUtils.enableLog(isChecked));
     }
 
     private void setXButtonAction(int btnResId, Runnable action, Runnable longClickAction) {

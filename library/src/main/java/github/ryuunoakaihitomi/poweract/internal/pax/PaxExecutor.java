@@ -41,6 +41,9 @@ class PaxExecutor {
     private PaxExecutor() {
     }
 
+    /**
+     * @param args actionToken, forceMode, debugLog
+     */
     public static void main(String[] args) {
         try {
             main0(args);
@@ -53,10 +56,11 @@ class PaxExecutor {
     }
 
     private static void main0(String[] args) {
-        if (args != null && args.length == 2 && !TextUtils.isEmpty(args[0])) {
+        if (args != null && args.length == 3 && !TextUtils.isEmpty(args[0])) {
             String token = args[0];
             boolean force = Boolean.parseBoolean(args[1]);
             if (Process.myUid() == Process.ROOT_UID) {
+                DebugLog.enabled = Boolean.parseBoolean(args[2]);
                 DebugLog.i(TAG, "main0: Run in root env.");
                 SystemCompat.setPowerBinder(ServiceManager.getService(Context.POWER_SERVICE));
             }

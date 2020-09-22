@@ -21,7 +21,6 @@ import java.util.Random;
 
 import github.ryuunoakaihitomi.poweract.BuildConfig;
 import github.ryuunoakaihitomi.poweract.Callback;
-import github.ryuunoakaihitomi.poweract.PowerAct;
 import github.ryuunoakaihitomi.poweract.internal.util.CallbackHelper;
 import github.ryuunoakaihitomi.poweract.internal.util.DebugLog;
 import github.ryuunoakaihitomi.poweract.internal.util.LibraryCompat;
@@ -281,7 +280,7 @@ public final class PaFragment extends Fragment {
 
     private void failed(String reason) {
         DebugLog.i(TAG, "failed... Action:" +
-                Utils.getClassIntApiConstantString(PowerAct.class, "ACTION", mAction) +
+                Utils.getClassIntApiConstantString(PaConstants.class, "ACTION", mAction) +
                 " Reason:" + reason);
         CallbackHelper.of(mCallback).failed();
         detach();

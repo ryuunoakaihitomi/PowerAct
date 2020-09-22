@@ -77,7 +77,7 @@ final class PaxHandler implements InvocationHandler {
                     if (PaxExecutor.TOKEN_KILL_SYSTEM_UI.equals(cmd)) {
                         DebugLog.i(TAG, "invoke: Cannot kill SysUi without root shell!");
                     } else {
-                        PaxExecutor.main(new String[]{cmd, forceString});
+                        PaxExecutor.main(new String[]{cmd, forceString, String.valueOf(DebugLog.enabled)});
                         shizukuSuccess = true;
                     }
                 }
@@ -100,7 +100,7 @@ final class PaxHandler implements InvocationHandler {
             DebugLog.d(TAG, "invoke: cmd " + Arrays.asList(cmdList, forceString));
             final ScheduledExecutorService guideExecutor = Executors.newSingleThreadScheduledExecutor();
             guideExecutor.schedule(UserGuideRunnable::run, USER_GUIDE_DELAY_TIME_MILLIS, TimeUnit.MILLISECONDS);
-            boolean returnValue = Utils.runSuJavaWithAppProcess(sApplication, PaxExecutor.class, cmd, forceString);
+            boolean returnValue = Utils.runSuJavaWithAppProcess(sApplication, PaxExecutor.class, cmd, forceString, String.valueOf(DebugLog.enabled));
             if (returnValue) mainHandler.post(() -> {
                 cancelUserGuide(guideExecutor);
                 ExternalUtils.disableExposedComponents(sApplication);
