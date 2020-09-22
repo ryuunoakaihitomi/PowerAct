@@ -65,6 +65,7 @@ android {
 
 dependencies {
     final def awaitility_version = '4.0.3'
+    final def libsu_version = '3.0.2'
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test:runner:1.3.0'
@@ -74,6 +75,7 @@ dependencies {
         exclude group: 'org.hamcrest'
     }
     androidTestImplementation project(':test-resource')
+    androidTestImplementation "com.github.topjohnwu.libsu:core:${libsu_version}"
     // https://stackoverflow.com/a/7878281
     testImplementation 'org.hamcrest:hamcrest:2.2'
     testImplementation 'junit:junit:4.13'
@@ -83,7 +85,7 @@ dependencies {
     compileOnly project(':hidden-api')
 
     /* ------- OPTIONAL DEPENDENCIES ------- */
-    compileOnly "com.github.topjohnwu.libsu:core:3.0.2"
+    compileOnly "com.github.topjohnwu.libsu:core:${libsu_version}"
     compileOnly 'moe.shizuku.privilege:api:4.2.1'
 }
 
