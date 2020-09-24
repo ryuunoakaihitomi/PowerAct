@@ -16,6 +16,7 @@ import org.junit.Test;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import github.ryuunoakaihitomi.poweract.test.BaseTest;
+import github.ryuunoakaihitomi.poweract.test.CommonUtils;
 import github.ryuunoakaihitomi.poweract.test.R;
 import moe.shizuku.api.ShizukuService;
 import poweract.test.res.PlaygroundActivity;
@@ -95,8 +96,8 @@ public class PowerButtonTest extends BaseTest {
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ShizukuService.pingBinder()) {
                 // Switched to com.android.permissioncontroller after 29.
-                assertEquals(PKG_NAME_PACKAGE_INSTALLER, sUiDevice.getCurrentPackageName());
-                final String deny = getStringResource(PKG_NAME_PACKAGE_INSTALLER, "grant_dialog_button_deny");
+                assertEquals(CommonUtils.PKG_NAME_PACKAGE_INSTALLER, sUiDevice.getCurrentPackageName());
+                final String deny = CommonUtils.getStringResource(targetContext, CommonUtils.PKG_NAME_PACKAGE_INSTALLER, "grant_dialog_button_deny");
                 sUiDevice.findObject(By.text(deny)).click();
             } else {
                 verifySettingsUiTitle("add_device_admin_msg");
@@ -111,7 +112,7 @@ public class PowerButtonTest extends BaseTest {
     }
 
     private void verifySettingsUiTitle(String resName) {
-        final String title = getStringResource(PKG_NAME_SETTINGS, resName);
+        final String title = CommonUtils.getStringResource(targetContext, CommonUtils.PKG_NAME_SETTINGS, resName);
         Log.i(TAG, "verifySettingsUi: title = " + title);
         // Out of the app, doesn't work.
         //onView(withText(title)).check(matches(isDisplayed()));

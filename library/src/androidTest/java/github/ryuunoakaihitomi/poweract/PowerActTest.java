@@ -34,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 import github.ryuunoakaihitomi.poweract.internal.pa.PaReceiver;
 import github.ryuunoakaihitomi.poweract.internal.util.LibraryCompat;
 import github.ryuunoakaihitomi.poweract.test.BaseTest;
+import github.ryuunoakaihitomi.poweract.test.CommonUtils;
 import github.ryuunoakaihitomi.poweract.test.LockScreenTest;
 import poweract.test.res.PlaygroundActivity;
 
@@ -74,10 +75,10 @@ public final class PowerActTest extends BaseTest {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
                 if (LibraryCompat.isShizukuPrepared(targetContext)) {
                     Log.d(TAG, "lockScreen: Shizuku running...");
-                    final String allow = getStringResource(PKG_NAME_PACKAGE_INSTALLER, "grant_dialog_button_allow");
+                    final String allow = CommonUtils.getStringResource(targetContext, CommonUtils.PKG_NAME_PACKAGE_INSTALLER, "grant_dialog_button_allow");
                     mUiDevice.findObject(By.text(allow)).click();
                 } else {
-                    final String addDevAdminBtnText = getStringResource(PKG_NAME_SETTINGS, "add_device_admin");
+                    final String addDevAdminBtnText = CommonUtils.getStringResource(targetContext, CommonUtils.PKG_NAME_SETTINGS, "add_device_admin");
                     Log.i(TAG, "lockScreen: addDevAdminBtnText = " + addDevAdminBtnText);
                     final UiObject addAdminActionBtn = mUiDevice.findObject(new UiSelector().text(addDevAdminBtnText));
                     if (addAdminActionBtn.exists()) {
