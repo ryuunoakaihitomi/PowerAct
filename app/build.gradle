@@ -47,8 +47,8 @@ dependencies {
 //    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.4'
 
     /* Optional dependencies, we can use these to make PowerActX faster. */
-    implementation "com.github.topjohnwu.libsu:core:3.0.2"
-    implementation 'moe.shizuku.privilege:api:4.2.1'
+    implementation "com.github.topjohnwu.libsu:core:$libsu_version"
+    implementation "moe.shizuku.privilege:api:$shizuku_version"
 }
 
 // Format APK filename
