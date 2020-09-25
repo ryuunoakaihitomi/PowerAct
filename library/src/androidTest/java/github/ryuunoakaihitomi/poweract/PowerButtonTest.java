@@ -38,7 +38,7 @@ public class PowerButtonTest extends BaseTest {
 
     private static final String TAG = "PowerButtonTest";
 
-    private static final UiDevice sUiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+    private final UiDevice mUiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
 
     @Rule
     public final ActivityScenarioRule<PlaygroundActivity> rule = new ActivityScenarioRule<>(PlaygroundActivity.class);
@@ -96,19 +96,19 @@ public class PowerButtonTest extends BaseTest {
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ShizukuService.pingBinder()) {
                 // Switched to com.android.permissioncontroller after 29.
-                assertEquals(CommonUtils.PKG_NAME_PACKAGE_INSTALLER, sUiDevice.getCurrentPackageName());
+                assertEquals(CommonUtils.PKG_NAME_PACKAGE_INSTALLER, mUiDevice.getCurrentPackageName());
                 final String deny = CommonUtils.getStringResource(targetContext, CommonUtils.PKG_NAME_PACKAGE_INSTALLER, "grant_dialog_button_deny");
-                sUiDevice.findObject(By.text(deny)).click();
+                mUiDevice.findObject(By.text(deny)).click();
             } else {
                 verifySettingsUiTitle("add_device_admin_msg");
-                sUiDevice.pressBack();
+                mUiDevice.pressBack();
             }
         }
     }
 
     private void attemptPowerDialogRequestUi() {
         verifySettingsUiTitle("accessibility_settings");
-        sUiDevice.pressBack();
+        mUiDevice.pressBack();
     }
 
     private void verifySettingsUiTitle(String resName) {
@@ -116,6 +116,6 @@ public class PowerButtonTest extends BaseTest {
         Log.i(TAG, "verifySettingsUi: title = " + title);
         // Out of the app, doesn't work.
         //onView(withText(title)).check(matches(isDisplayed()));
-        assertTrue(sUiDevice.hasObject(By.text(title)));
+        assertTrue(mUiDevice.hasObject(By.text(title)));
     }
 }
