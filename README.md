@@ -10,7 +10,7 @@ An Android library that can manipulate power-related actions with just few lines
 
 ### Download
 
-[ ![Download](https://api.bintray.com/packages/ryuunoakaihitomi/maven/poweract/images/download.svg) ](https://bintray.com/ryuunoakaihitomi/maven/poweract/_latestVersion)
+[ ![If the badge is not shown, click here to check the latest version.](https://api.bintray.com/packages/ryuunoakaihitomi/maven/poweract/images/download.svg) ](https://bintray.com/ryuunoakaihitomi/maven/poweract/_latestVersion)
 
 ```groovy
 repositories {
