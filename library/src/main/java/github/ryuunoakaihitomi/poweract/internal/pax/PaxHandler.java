@@ -63,6 +63,7 @@ final class PaxHandler implements InvocationHandler {
             return null;
         }
         final String cmd = cmdList.value();
+        final String enableLog = String.valueOf(DebugLog.enabled);
 
         boolean shizukuSuccess = false;
         int shizukuServiceUid = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ? Process.INVALID_UID : Integer.MIN_VALUE;
@@ -77,7 +78,8 @@ final class PaxHandler implements InvocationHandler {
                     if (PaxExecutor.TOKEN_KILL_SYSTEM_UI.equals(cmd)) {
                         DebugLog.i(TAG, "invoke: Cannot kill SysUi without root shell!");
                     } else {
-                        PaxExecutor.main(new String[]{cmd, forceString, String.valueOf(DebugLog.enabled)});
+                        // "enableLog" is useless here, only as a placeholder.
+                        PaxExecutor.main(new String[]{cmd, forceString, enableLog});
                         shizukuSuccess = true;
                     }
                 }
@@ -95,12 +97,12 @@ final class PaxHandler implements InvocationHandler {
             return null;
         }
 
-        DebugLog.w(TAG, "invoke: Use alternative solution without Shizuku. args = " + Arrays.asList(shizukuServiceUid, force, cmd));
+        DebugLog.w(TAG, "invoke: Use alternative solution without Shizuku. args = " + Arrays.asList(shizukuServiceUid, force, cmd, enableLog));
         Executors.newSingleThreadExecutor().execute(() -> {
-            DebugLog.d(TAG, "invoke: cmd " + Arrays.asList(cmdList, forceString));
+            DebugLog.d(TAG, "invoke: cmd " + Arrays.asList(cmdList, forceString, enableLog));
             final ScheduledExecutorService guideExecutor = Executors.newSingleThreadScheduledExecutor();
             guideExecutor.schedule(UserGuideRunnable::run, USER_GUIDE_DELAY_TIME_MILLIS, TimeUnit.MILLISECONDS);
-            boolean returnValue = Utils.runSuJavaWithAppProcess(sApplication, PaxExecutor.class, cmd, forceString, String.valueOf(DebugLog.enabled));
+            boolean returnValue = Utils.runSuJavaWithAppProcess(sApplication, PaxExecutor.class, cmd, forceString, enableLog);
             if (returnValue) mainHandler.post(() -> {
                 cancelUserGuide(guideExecutor);
                 ExternalUtils.disableExposedComponents(sApplication);
