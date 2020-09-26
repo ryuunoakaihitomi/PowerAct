@@ -3,6 +3,8 @@ package demo.power_act;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.UiModeManager;
+import android.app.WallpaperColors;
+import android.app.WallpaperManager;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,6 +18,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Process;
+import android.provider.Browser;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -31,6 +34,8 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.Switch;
 import android.widget.Toast;
+
+import androidx.annotation.ColorInt;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -242,12 +247,43 @@ public class MainActivity extends Activity {
                 SpannableString content = new SpannableString(contentText);
                 content.setSpan(new ForegroundColorSpan(Color.GRAY), 0, contentText.length(), flag);
 
+                /* PALETTE: Change the color styles of About Dialog by wallpaper and dark mode. (just for curiosity) */
+                @ColorInt int
+                        logoColor = Color.GREEN,
+                        textColor = Color.WHITE,
+                        bgColor = Color.RED;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+                    UiModeManager uiModeManager = getSystemService(UiModeManager.class);
+                    final boolean nightMode = uiModeManager.getNightMode() == UiModeManager.MODE_NIGHT_YES;
+                    Log.d(TAG, "onOptionsItemSelected: night mode = " + nightMode);
+                    WallpaperColors colors = WallpaperManager.getInstance(this).getWallpaperColors(
+                            nightMode ? WallpaperManager.FLAG_LOCK : WallpaperManager.FLAG_SYSTEM);
+                    if (colors != null) {
+                        final Color
+                                pri = colors.getPrimaryColor(),
+                                sec = colors.getSecondaryColor(),
+                                ter = colors.getTertiaryColor();
+                        Log.d(TAG, "onOptionsItemSelected: text (pri) " + pri);
+                        textColor = pri.toArgb();
+                        if (sec != null) {
+                            Log.d(TAG, "onOptionsItemSelected: background (sec) " + sec);
+                            bgColor = sec.toArgb();
+                        }
+                        if (ter != null) {
+                            Log.d(TAG, "onOptionsItemSelected: logo (ter) " + ter);
+                            logoColor = ter.toArgb();
+                        }
+                    }
+                } else {
+                    Log.d(TAG, "onOptionsItemSelected: normal colors below 27");
+                }
+
                 /* logo */
                 final int
                         logoStart = contentText.indexOf(logo),
                         logoEnd = contentText.indexOf(logo) + logo.length();
                 content.setSpan(new StyleSpan(Typeface.BOLD), logoStart, logoEnd, flag);
-                content.setSpan(new ForegroundColorSpan(Color.GREEN), logoStart, logoEnd, flag);
+                content.setSpan(new ForegroundColorSpan(logoColor), logoStart, logoEnd, flag);
                 TypefaceSpan monospaceSpan = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P ?
                         new TypefaceSpan(Typeface.MONOSPACE) :
                         new TypefaceSpan("monospace");
@@ -261,6 +297,7 @@ public class MainActivity extends Activity {
                                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(link)));
                             } catch (ActivityNotFoundException e) {
                                 Log.e(TAG, "onClick: " + link, e);
+                                Browser.sendString(this, link);
                             }
                         })
                         .create();
@@ -270,8 +307,8 @@ public class MainActivity extends Activity {
                 /* button */
                 Button linkBtn = aboutDialog.getButton(DialogInterface.BUTTON_POSITIVE);
                 linkBtn.setAllCaps(false);
-                linkBtn.setTextColor(Color.WHITE);
-                linkBtn.setBackgroundColor(Color.RED);
+                linkBtn.setTextColor(textColor);
+                linkBtn.setBackgroundColor(bgColor);
                 linkBtn.setTypeface(Typeface.DEFAULT_BOLD);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     linkBtn.setTooltipText(link);
