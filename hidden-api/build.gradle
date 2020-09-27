@@ -1,6 +1,7 @@
 apply plugin: 'java-library'
 apply from: "androidJarRef.gradle"
 
+// (Fixed, keep as reference)
 // Transform's input file does not exist: E:\Android\Project\PowerAct\hidden-api\build\libs\hidden-api.jar. (See https://issuetracker.google.com/issues/158753935)
 // Before use it, create hidden-api.jar in <hidden-api>\build\libs manually at first.
 // Windows cmd:
@@ -11,6 +12,11 @@ apply from: "androidJarRef.gradle"
 // After changing the hidden api, rebuild the jar.
 
 dependencies {
+
+    /* Fix "Transform's input file does not exist" */
+    file("$buildDir\\libs").mkdirs()
+    file("$buildDir\\libs\\${project.name}.jar").createNewFile()
+
     compileOnly 'androidx.annotation:annotation:1.1.0'
     compileOnly files("${androidJarPath}")
 
