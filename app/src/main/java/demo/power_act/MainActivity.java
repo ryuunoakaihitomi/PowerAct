@@ -17,7 +17,6 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Process;
 import android.provider.Browser;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -173,7 +172,7 @@ public class MainActivity extends Activity {
 
     private void requestShizukuPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                checkPermission(ShizukuApiConstants.PERMISSION, Process.myPid(), Process.myUid())
+                checkSelfPermission(ShizukuApiConstants.PERMISSION)
                         != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{ShizukuApiConstants.PERMISSION}, REQUEST_CODE_PERMISSION_SHIZUKU);
         }

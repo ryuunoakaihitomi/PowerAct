@@ -1,16 +1,21 @@
 package github.ryuunoakaihitomi.poweract.internal;
 
 import android.os.Build;
+import android.system.Os;
+import android.system.OsConstants;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.LogPrinter;
+import android.util.SparseArray;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.Map;
 
 import github.ryuunoakaihitomi.poweract.BuildConfig;
 import github.ryuunoakaihitomi.poweract.internal.util.DebugLog;
 import github.ryuunoakaihitomi.poweract.internal.util.ReflectionUtils;
+import github.ryuunoakaihitomi.poweract.internal.util.Utils;
 
 public final class Initializer {
 
@@ -25,6 +30,14 @@ public final class Initializer {
         if (BuildConfig.DEBUG) {
             printAllPublicConstants("build:", Build.class);
             printAllPublicConstants("version:", Build.VERSION.class);
+            for (Map.Entry<String, String> entry : System.getenv().entrySet())
+                DebugLog.i(TAG, "env:" + Arrays.asList(entry.getKey(), entry.getValue()));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                DebugLog.i(TAG, "uname:" + Os.uname());
+                SparseArray<String> sc = Utils.getClassIntApiConstant(OsConstants.class, "_SC");
+                for (int i = 0; i < sc.size(); i++)
+                    DebugLog.i(TAG, "sysconf:" + Arrays.asList(sc.valueAt(i), Os.sysconf(sc.keyAt(i))));
+            }
         }
     }
 

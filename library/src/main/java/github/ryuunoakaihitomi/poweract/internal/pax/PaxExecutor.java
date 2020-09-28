@@ -180,9 +180,9 @@ class PaxExecutor {
                     if (am != null) {
                         for (ActivityManager.RunningAppProcessInfo info : am.getRunningAppProcesses()) {
                             if (info.processName.equals(sysUiPkgName)) {
-                                int pid = info.pid;
+                                final int pid = info.pid;
                                 DebugLog.i(TAG, "main0: Kill system ui. The process id is " + pid);
-                                Process.killProcess(info.pid);
+                                Process.killProcess(pid);
                                 if (!BuildConfig.DEBUG) break;
                             }
 
