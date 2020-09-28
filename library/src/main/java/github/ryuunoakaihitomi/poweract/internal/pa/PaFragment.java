@@ -27,6 +27,7 @@ import github.ryuunoakaihitomi.poweract.internal.util.LibraryCompat;
 import github.ryuunoakaihitomi.poweract.internal.util.SystemCompat;
 import github.ryuunoakaihitomi.poweract.internal.util.UserGuideRunnable;
 import github.ryuunoakaihitomi.poweract.internal.util.Utils;
+import github.ryuunoakaihitomi.poweract.internal.util.VerboseTimingLogger;
 import moe.shizuku.api.ShizukuApiConstants;
 import moe.shizuku.api.ShizukuBinderWrapper;
 import moe.shizuku.api.SystemServiceHelper;
@@ -53,6 +54,12 @@ public final class PaFragment extends Fragment {
     private DevicePolicyManager mDevicePolicyManager;
     private ComponentName mAdminReceiverComponentName;
     private Activity mAssociatedActivity;
+
+    /**
+     * Measure the time user spends on the "next steps".
+     * There're some custom environments that seem to delay user from doing it on purpose.
+     */
+    private VerboseTimingLogger mUserDelayLogger = new VerboseTimingLogger(TAG, "user delay");
 
     @Override
     public void onAttach(Context context) {
@@ -92,6 +99,7 @@ public final class PaFragment extends Fragment {
                     // The users of Shizuku Manager can be treated as advanced users. So it's unnecessary to guide them.
                     //UserGuideRunnable.run();
                     requestPermissions(new String[]{ShizukuApiConstants.PERMISSION}, REQUEST_CODE_SHIZUKU_PERMISSION);
+                    mUserDelayLogger.addSplit("shizuku permission");
                 } else {
                     lockScreenByShizuku();
                 }
@@ -135,6 +143,7 @@ public final class PaFragment extends Fragment {
                     Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
                     startActivity(intent);
                     mHasRequestedAccessibility = true;
+                    mUserDelayLogger.addSplit("accessibility service");
                 } catch (ActivityNotFoundException e) {
                     // ActivityNotFoundException: Settings.ACTION_ACCESSIBILITY_SETTINGS
                     failed(e.getMessage());
@@ -177,6 +186,7 @@ public final class PaFragment extends Fragment {
                 mRequestCode = Math.abs(new Random().nextInt());
                 try {
                     startActivityForResult(intent, mRequestCode);
+                    mUserDelayLogger.addSplit("device admin");
                 } catch (ActivityNotFoundException e) {
                     // ActivityNotFoundException: DevicePolicyManager.EXTRA_DEVICE_ADMIN
                     failed(e.getMessage());
@@ -199,6 +209,7 @@ public final class PaFragment extends Fragment {
             mFirstRun = true;
         } else if (mHasRequestedAccessibility) {
             mHasRequestedAccessibility = false;
+            mUserDelayLogger.addSplit("return from accessibility service");
             if (Utils.isAccessibilityServiceEnabled(mAssociatedActivity, PaService.class)) {
                 requireAccessibilityAction();
             } else {
@@ -209,9 +220,9 @@ public final class PaFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
         DebugLog.d(TAG, "onActivityResult");
         if (mRequestCode == requestCode) {
+            mUserDelayLogger.addSplit("return from device admin");
             if (resultCode == Activity.RESULT_OK) {
                 if (mDevicePolicyManager.isAdminActive(mAdminReceiverComponentName)) {
                     mDevicePolicyManager.lockNow();
@@ -237,6 +248,7 @@ public final class PaFragment extends Fragment {
         if (requestCode == REQUEST_CODE_SHIZUKU_PERMISSION &&
                 ShizukuApiConstants.PERMISSION.equals(permissions[0]) &&
                 grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            mUserDelayLogger.addSplit("return from shizuku permission (granted)");
             lockScreenByShizuku();
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !shouldShowRequestPermissionRationale(ShizukuApiConstants.PERMISSION)) {
@@ -294,6 +306,11 @@ public final class PaFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         DebugLog.v(TAG, "onDetach");
+
+        /* Logging user delay */
+        mUserDelayLogger.addSplit("detach");
+        mUserDelayLogger.setDisabled(!BuildConfig.DEBUG);
+        mUserDelayLogger.dumpToLog();
     }
 
     /**

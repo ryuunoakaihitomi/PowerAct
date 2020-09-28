@@ -8,6 +8,7 @@ import android.util.Base64;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.UUID;
@@ -50,6 +51,40 @@ public class ReflectionUtils {
             }
         }
         return checked;
+    }
+
+    public static Field findField(Class<?> clazz, String name) {
+        if (clazz == null) return null;
+        Field field;
+        try {
+            field = clazz.getDeclaredField(name);
+        } catch (NoSuchFieldException e) {
+            try {
+                field = clazz.getField(name);
+            } catch (NoSuchFieldException ex) {
+                return null;
+            }
+        }
+        setAccessible(field);
+        return field;
+    }
+
+    public static Object fetchField(Field field, Object instance) {
+        if (field == null) return null;
+        try {
+            return field.get(instance);
+        } catch (IllegalAccessException e) {
+            return null;
+        }
+    }
+
+    public static void setField(Field field, Object instance, Object value) {
+        if (field == null) return;
+        try {
+            field.set(instance, value);
+        } catch (IllegalAccessException e) {
+            DebugLog.e(TAG, "setFieldNullInstance: ", e);
+        }
     }
 
     public static Method findMethod(String clazzName, String methodName, Class<?>... paramTypes) {
