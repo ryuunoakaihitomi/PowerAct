@@ -1,6 +1,7 @@
 package github.ryuunoakaihitomi.poweract.internal;
 
 import android.os.Build;
+import android.os.Debug;
 import android.system.Os;
 import android.system.OsConstants;
 import android.text.TextUtils;
@@ -30,8 +31,7 @@ public final class Initializer {
         if (BuildConfig.DEBUG) {
             printAllPublicConstants("build:", Build.class);
             printAllPublicConstants("version:", Build.VERSION.class);
-            for (Map.Entry<String, String> entry : System.getenv().entrySet())
-                DebugLog.i(TAG, "env:" + Arrays.asList(entry.getKey(), entry.getValue()));
+            printMap("env", System.getenv());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 DebugLog.i(TAG, "uname:" + Os.uname());
                 SparseArray<String> sc = Utils.getClassIntApiConstant(OsConstants.class, "_SC");
@@ -42,6 +42,9 @@ public final class Initializer {
                         DebugLog.e(TAG, "static initializer: " + e.getMessage() + " " + sc.valueAt(i));
                     }
                 }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    printMap("art_stat", Debug.getRuntimeStats());
+                }
             }
         }
     }
@@ -51,6 +54,11 @@ public final class Initializer {
 
     public static void notify(String entry) {
         DebugLog.d(TAG, "notify: Starting to call " + entry);
+    }
+
+    private static void printMap(String tag, Map<?, ?> map) {
+        for (Map.Entry<?, ?> entry : map.entrySet())
+            DebugLog.i(TAG, tag + Arrays.asList(entry.getKey(), entry.getValue()));
     }
 
     private static void printAllPublicConstants(String namePrefix, Class<?> clazz) {

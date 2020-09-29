@@ -131,6 +131,13 @@ public final class PaService extends AccessibilityService {
             PaService.token = token;
             PaService.callback = callback;
             intent.putExtra(PaService.EXTRA_TOKEN, token);
+            intent.addFlags(Intent.FLAG_RECEIVER_REGISTERED_ONLY);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+            }
+            if (BuildConfig.DEBUG) {
+                intent.addFlags(Intent.FLAG_DEBUG_LOG_RESOLUTION);
+            }
             context.sendBroadcast(intent);
         }
         return sIsBroadcastRegistered;
