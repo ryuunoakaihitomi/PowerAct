@@ -35,8 +35,13 @@ public final class Initializer {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 DebugLog.i(TAG, "uname:" + Os.uname());
                 SparseArray<String> sc = Utils.getClassIntApiConstant(OsConstants.class, "_SC");
-                for (int i = 0; i < sc.size(); i++)
-                    DebugLog.i(TAG, "sysconf:" + Arrays.asList(sc.valueAt(i), Os.sysconf(sc.keyAt(i))));
+                for (int i = 0; i < sc.size(); i++) {
+                    try {
+                        DebugLog.i(TAG, "sysconf:" + Arrays.asList(sc.valueAt(i), Os.sysconf(sc.keyAt(i))));
+                    } /* ErrnoException */ catch (Exception e) {
+                        DebugLog.e(TAG, "static initializer: " + e.getMessage() + " " + sc.valueAt(i));
+                    }
+                }
             }
         }
     }

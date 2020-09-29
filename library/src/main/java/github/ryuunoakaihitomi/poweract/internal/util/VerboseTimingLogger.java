@@ -7,8 +7,6 @@ import java.util.ArrayList;
 
 public class VerboseTimingLogger {
 
-    private static final String TAG = "VerboseTimingLogger";
-
     private Field mDisabledField, mSplitsField, mSplitLabelsField, mTagField, mLabelField;
 
     /**
@@ -38,12 +36,8 @@ public class VerboseTimingLogger {
             set(mSplitsField, new ArrayList<Long>());
             set(mSplitLabelsField, new ArrayList<String>());
         } else {
-            try {
-                ((ArrayList) get(mSplitsField)).clear();
-                ((ArrayList) get(mSplitLabelsField)).clear();
-            } catch (NullPointerException e) {
-                DebugLog.w(TAG, "reset: ", e);
-            }
+            ((ArrayList) get(mSplitsField)).clear();
+            ((ArrayList) get(mSplitLabelsField)).clear();
         }
         addSplit(null);
     }

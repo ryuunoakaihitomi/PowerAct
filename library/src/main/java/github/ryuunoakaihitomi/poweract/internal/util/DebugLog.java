@@ -60,7 +60,7 @@ public final class DebugLog {
         if (enabled) Log.e(formatTag(tag), msg, tr);
     }
 
-    private static String formatTag(String baseTag) {
+    public static String formatTag(String baseTag) {
         if (MAIN_TAG.equals(baseTag)) return baseTag;
         final int maxTagLength = 23;
         String tag = MAIN_TAG + '_' + baseTag;
