@@ -17,7 +17,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
 
 import java.util.Arrays;
-import java.util.Random;
 
 import github.ryuunoakaihitomi.poweract.BuildConfig;
 import github.ryuunoakaihitomi.poweract.Callback;
@@ -38,9 +37,7 @@ public final class PaFragment extends Fragment {
 
     private static final String TAG = "PaFragment";
 
-    private static final int REQUEST_CODE_SHIZUKU_PERMISSION = 1;
-
-    // For DevicePolicyManager
+    // For DevicePolicyManager / Shizuku (>=0)
     private int mRequestCode;
 
     @PaConstants.ActionType
@@ -98,7 +95,8 @@ public final class PaFragment extends Fragment {
                 if (activity.checkSelfPermission(ShizukuApiConstants.PERMISSION) != PackageManager.PERMISSION_GRANTED) {
                     // The users of Shizuku Manager can be treated as advanced users. So it's unnecessary to guide them.
                     //UserGuideRunnable.run();
-                    requestPermissions(new String[]{ShizukuApiConstants.PERMISSION}, REQUEST_CODE_SHIZUKU_PERMISSION);
+                    mRequestCode = Utils.randomNaturalNumber();
+                    requestPermissions(new String[]{ShizukuApiConstants.PERMISSION}, mRequestCode);
                     mUserDelayLogger.addSplit("shizuku permission");
                 } else {
                     lockScreenByShizuku();
@@ -183,7 +181,7 @@ public final class PaFragment extends Fragment {
             } else {
                 Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
                 intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, mAdminReceiverComponentName);
-                mRequestCode = Math.abs(new Random().nextInt());
+                mRequestCode = Utils.randomNaturalNumber();
                 try {
                     startActivityForResult(intent, mRequestCode);
                     mUserDelayLogger.addSplit("device admin");
@@ -245,7 +243,7 @@ public final class PaFragment extends Fragment {
             failed("Empty permissions / grantResults.");
             return;
         }
-        if (requestCode == REQUEST_CODE_SHIZUKU_PERMISSION &&
+        if (requestCode == mRequestCode &&
                 ShizukuApiConstants.PERMISSION.equals(permissions[0]) &&
                 grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             mUserDelayLogger.addSplit("return from shizuku permission (granted)");
@@ -254,7 +252,7 @@ public final class PaFragment extends Fragment {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !shouldShowRequestPermissionRationale(ShizukuApiConstants.PERMISSION)) {
                 DebugLog.e(TAG, "onRequestPermissionsResult: Shizuku permission denied forever!");
             }
-            failed("requestCode(REQUEST_CODE_SHIZUKU_PERMISSION=" + REQUEST_CODE_SHIZUKU_PERMISSION + "),permissions,grantResults -> " +
+            failed("requestCode(REQUEST_CODE_SHIZUKU_PERMISSION=" + mRequestCode + "),permissions,grantResults -> " +
                     Arrays.asList(requestCode, Arrays.toString(permissions), Arrays.toString(grantResults)));
         }
     }

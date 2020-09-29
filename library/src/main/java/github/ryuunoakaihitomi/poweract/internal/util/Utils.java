@@ -211,6 +211,10 @@ public class Utils {
         return ret == 0 ? randomNonZero() : ret;
     }
 
+    public static int randomNaturalNumber() {
+        return Math.abs(new Random().nextInt());
+    }
+
     public static Bitmap makeTintBitmap(@NonNull Bitmap inputBitmap, @ColorInt int tintColor) {
         Bitmap outputBitmap = Bitmap.createBitmap(inputBitmap.getWidth(), inputBitmap.getHeight(), inputBitmap.getConfig());
         Canvas canvas = new Canvas(outputBitmap);
