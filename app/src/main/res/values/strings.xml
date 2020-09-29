@@ -2,4 +2,18 @@
     <string name="app_name">PowerAct Demo</string>
     <string name="accessibility_service_description">To demonstrate that the app can have its own accessibility service, no practical use.</string>
     <string name="device_admin_receiver_description">To demonstrate that the app can have its own device admin receiver, no practical use.</string>
+
+    <!-- UI String Resources -->
+    <string name="lock_screen">Lock Screen</string>
+    <string name="system_power_dialog">System Power Dialog</string>
+    <string name="reboot">Reboot</string>
+    <string name="disable_component">Disable\nComponent</string>
+    <string name="enabled_log">Enabled Log</string>
+    <string name="lock_screen_x">Lock Screen X</string>
+    <string name="shutdown">Shutdown</string>
+    <string name="recovery">Recovery</string>
+    <string name="bootloader">Bootloader</string>
+    <string name="safe_mode">Safe Mode</string>
+    <string name="soft_reboot">Soft Reboot</string>
+    <string name="restart_system_ui">Restart System UI</string>
 </resources>

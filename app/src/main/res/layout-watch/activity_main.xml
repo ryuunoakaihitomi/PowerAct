@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:ignore="HardcodedText">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,26 +13,26 @@
             android:id="@+id/lockScreenBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Lock Screen" />
+            android:text="@string/lock_screen" />
 
         <Button
             android:id="@+id/powerDialogBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="System Power Dialog" />
+            android:text="@string/system_power_dialog" />
 
         <Button
             android:id="@+id/rebootBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Reboot" />
+            android:text="@string/reboot" />
 
         <Switch
             android:id="@+id/enableLog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
-            android:text="Enabled Log" />
+            android:text="@string/enabled_log" />
 
         <github.ryuunoakaihitomi.poweract.PowerButton
             android:id="@+id/pwrBtn"
@@ -45,7 +43,7 @@
             android:id="@+id/disComBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Disable Component"
+            android:text="@string/disable_component"
             android:textAllCaps="true"
             android:textColor="@android:color/holo_orange_light" />
 
@@ -54,7 +52,7 @@
             style="?android:attr/buttonBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Lock Screen X"
+            android:text="@string/lock_screen_x"
             android:textColor="@android:color/holo_red_dark" />
 
         <Button
@@ -62,49 +60,49 @@
             style="?android:attr/buttonBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Reboot" />
+            android:text="@string/reboot" />
 
         <Button
             android:id="@+id/sd_btn"
             style="?android:attr/buttonBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Shutdown" />
+            android:text="@string/shutdown" />
 
         <Button
             android:id="@+id/rec_btn"
             style="?android:attr/buttonBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Recovery" />
+            android:text="@string/recovery" />
 
         <Button
             android:id="@+id/bl_btn"
             style="?android:attr/buttonBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Bootloader" />
+            android:text="@string/bootloader" />
 
         <Button
             android:id="@+id/sm_btn"
             style="?android:attr/buttonBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Safe Mode" />
+            android:text="@string/safe_mode" />
 
         <Button
             android:id="@+id/srb_btn"
             style="?android:attr/buttonBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Soft Reboot" />
+            android:text="@string/soft_reboot" />
 
         <Button
             android:id="@+id/rsu_btn"
             style="?android:attr/buttonBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Restart System UI" />
+            android:text="@string/restart_system_ui" />
 
     </LinearLayout>
 
