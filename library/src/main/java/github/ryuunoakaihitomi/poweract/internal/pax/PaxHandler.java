@@ -1,5 +1,6 @@
 package github.ryuunoakaihitomi.poweract.internal.pax;
 
+import android.app.ActivityManager;
 import android.app.ActivityThread;
 import android.app.Application;
 import android.content.Context;
@@ -64,6 +65,11 @@ final class PaxHandler implements InvocationHandler {
         }
         final String cmd = cmdList.value();
         final String enableLog = String.valueOf(DebugLog.enabled);
+        if (ActivityManager.isUserAMonkey() && !PaxExecutor.TOKEN_LOCK_SCREEN.equals(cmd)) {
+            DebugLog.e(TAG, "invoke: Reject monkey except for lock screen.");
+            mainHandler.post(callbackHelper::failed);
+            return null;
+        }
 
         boolean shizukuSuccess = false;
         int shizukuServiceUid = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ? Process.INVALID_UID : Integer.MIN_VALUE;

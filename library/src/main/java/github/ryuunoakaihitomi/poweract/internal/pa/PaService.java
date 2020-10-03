@@ -3,6 +3,7 @@ package github.ryuunoakaihitomi.poweract.internal.pa;
 import android.Manifest;
 import android.accessibilityservice.AccessibilityService;
 import android.annotation.TargetApi;
+import android.app.ActivityManager;
 import android.app.AppOpsManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -78,6 +79,11 @@ public final class PaService extends AccessibilityService {
             switch (action) {
                 case POWER_DIALOG_ACTION:
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        if (ActivityManager.isUserAMonkey()) {
+                            DebugLog.e(TAG, "onReceive: Prevent monkey from showing power dialog.");
+                            CallbackHelper.of(callback).failed();
+                            break;
+                        }
                         // On Wear OS before 28, it will call out the voice assistant
                         // instead of the system power dialog.
                         perform(AccessibilityService.GLOBAL_ACTION_POWER_DIALOG);
@@ -163,7 +169,7 @@ public final class PaService extends AccessibilityService {
         // GLOBAL_ACTION_POWER_DIALOG = 6
         // GLOBAL_ACTION_LOCK_SCREEN = 8
         /*
-         * @see {@code frameworks/base/services/accessibility/java/com/android/server/accessibility/GlobalActionPerformer.java}.
+         * @see {@code frameworks/base/services/accessibility/java/com/android/server/accessibility/SystemActionPerformer.java}.
          */
         DebugLog.i(TAG, "perform: Action " + sGlobalActionMap.get(action) + " returned " + result);
         if (result) {
