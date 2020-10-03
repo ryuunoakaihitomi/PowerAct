@@ -1,6 +1,7 @@
 package github.ryuunoakaihitomi.poweract.internal.pa;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Fragment;
 import android.app.admin.DevicePolicyManager;
 import android.content.ActivityNotFoundException;
@@ -157,6 +158,16 @@ public final class PaFragment extends Fragment {
            reboot and lock screen by it. (<28) */
         else {
             if (action == PaConstants.ACTION_REBOOT) {
+                /*
+                 * Prevent monkey from performing some of the functions to interrupt test or make the other blunders.
+                 * In fact, such a protection mechanism has been implemented within the system.
+                 * {ADB, OemUnlock, bug report, AddUser, AutoSyncData, [MasterClearConfirm(Car), ResetConfirm(Tv)],
+                 * resetNetwork(Car), showDeveloperOptions(Car), Storage, FlashlightTile, RemoveAccount(Tv)}
+                 */
+                if (ActivityManager.isUserAMonkey()) {
+                    failed("Monkey is performing reboot.");
+                    return;
+                }
                 if (isDeviceOwner) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         try {
