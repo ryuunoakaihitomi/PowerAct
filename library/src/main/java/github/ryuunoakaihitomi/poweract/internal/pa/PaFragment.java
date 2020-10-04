@@ -115,6 +115,11 @@ public final class PaFragment extends Fragment {
         /* The action AccessibilityService must be used.
            Show power dialog and lock screen by it. (>=28) */
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && mAction != PaConstants.ACTION_REBOOT || mAction == PaConstants.ACTION_POWER_DIALOG) {
+            // Attempt to launch accessibility settings, the services in work profile are not shown. So we have no way to enable it.
+            if (Utils.isInWorkProfile(activity)) {
+                failed("Cannot enable accessibility service in work profile!");
+                return;
+            }
             // The device admin is no longer useful.
             if (isAdminActive && mAction == PaConstants.ACTION_LOCK_SCREEN) {
                 // lockScreen & adminActive, remove admin automatically.

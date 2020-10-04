@@ -1,6 +1,7 @@
 package github.ryuunoakaihitomi.poweract.internal.util;
 
 import android.accessibilityservice.AccessibilityService;
+import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -35,6 +36,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
@@ -242,5 +244,27 @@ public class Utils {
             e.printStackTrace();
         }
         return out.toByteArray();
+    }
+
+    /**
+     * @param context {@link Context}
+     * @return Check if is running in the work profile.
+     * @author <a href="https://stackoverflow.com/a/33801131">earlypearl</a>
+     */
+    public static boolean isInWorkProfile(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            DevicePolicyManager dpm = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
+            List<ComponentName> activeAdmins = dpm.getActiveAdmins();
+            if (activeAdmins != null) {
+                for (ComponentName admin : activeAdmins) {
+                    String packageName = admin.getPackageName();
+                    if (dpm.isProfileOwnerApp(packageName)) {
+                        DebugLog.i(TAG, "isInWorkProfile: Managed by " + packageName);
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }
