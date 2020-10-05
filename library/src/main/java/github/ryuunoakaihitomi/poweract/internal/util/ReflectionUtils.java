@@ -38,6 +38,9 @@ public class ReflectionUtils {
             return null;
         } catch (NullPointerException e) {
             return null;
+        } /* Unknown env-specific throwable */ catch (Throwable t) {
+            DebugLog.d(TAG, "findClass: ", t);
+            return null;
         }
     }
 
