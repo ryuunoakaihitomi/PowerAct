@@ -170,7 +170,7 @@ public final class PaFragment extends Fragment {
                  * resetNetwork(Car), showDeveloperOptions(Car), Storage, FlashlightTile, RemoveAccount(Tv)}
                  */
                 if (ActivityManager.isUserAMonkey()) {
-                    failed("Monkey is performing reboot.");
+                    failed("monkey");
                     return;
                 }
                 if (isDeviceOwner) {
