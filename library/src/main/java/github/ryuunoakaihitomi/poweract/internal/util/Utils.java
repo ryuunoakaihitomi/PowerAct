@@ -13,6 +13,7 @@ import android.graphics.PorterDuffColorFilter;
 import android.os.Build;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.os.UserManager;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.DebugUtils;
@@ -260,7 +261,16 @@ public class Utils {
                     String packageName = admin.getPackageName();
                     if (dpm.isProfileOwnerApp(packageName)) {
                         DebugLog.i(TAG, "isInWorkProfile: Managed by " + packageName);
-                        return true;
+                        // It can be deceived by the other profile owners. (dpm set-profile-owner [component])
+                        //return true;
+                        // So we must ensure the current user is NOT system user.
+                        UserManager userManager = (UserManager) context.getSystemService(Context.USER_SERVICE);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            return !userManager.isSystemUser();
+                        } else {
+                            // The owner cannot be changed or removed.
+                            return userManager.getSerialNumberForUser(android.os.Process.myUserHandle()) > 0;
+                        }
                     }
                 }
             }
