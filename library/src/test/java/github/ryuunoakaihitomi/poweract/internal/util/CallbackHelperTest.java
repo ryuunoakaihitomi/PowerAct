@@ -9,6 +9,9 @@ import static org.awaitility.Awaitility.await;
 import static org.awaitility.Durations.ONE_SECOND;
 import static org.junit.Assert.assertNotNull;
 
+/**
+ * Test for behavior, not in <code>androidTest</code>
+ */
 public class CallbackHelperTest extends BaseTest {
 
     private static final int
