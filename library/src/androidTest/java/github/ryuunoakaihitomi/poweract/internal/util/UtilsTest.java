@@ -59,4 +59,10 @@ public final class UtilsTest extends BaseTest {
                         "uiUfgzQpxw2bg/WcWA+UhbSKVlAqa83ioZalU+76BweRZzk=";
         assertArrayEquals(source.getBytes(), Utils.decompress(Base64.decode(base64, Base64.NO_WRAP)));
     }
+
+    @Test
+    public void isInWorkProfile() {
+        // Keep it false in most cases.
+        assertFalse(Utils.isInWorkProfile(targetContext));
+    }
 }
