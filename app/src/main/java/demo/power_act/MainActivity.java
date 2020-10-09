@@ -17,6 +17,7 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.provider.Browser;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -251,7 +252,13 @@ public class MainActivity extends Activity {
                         logoColor = Color.GREEN,
                         textColor = Color.WHITE,
                         bgColor = Color.RED;
+                //noinspection TextLabelInSwitchStatement
+                palette:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+                    if (getSystemService(PowerManager.class).isPowerSaveMode()) {
+                        Log.i(TAG, "onOptionsItemSelected: Using default colors in power save mode.");
+                        break palette;
+                    }
                     UiModeManager uiModeManager = getSystemService(UiModeManager.class);
                     final boolean nightMode = uiModeManager.getNightMode() == UiModeManager.MODE_NIGHT_YES;
                     Log.d(TAG, "onOptionsItemSelected: night mode = " + nightMode);
