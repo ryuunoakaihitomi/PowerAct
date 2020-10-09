@@ -88,6 +88,11 @@ public class PowerAct {
      * @see android.accessibilityservice.AccessibilityService#GLOBAL_ACTION_POWER_DIALOG
      */
     public static void showPowerDialog(@NonNull Activity activity, @Nullable Callback callback) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            DebugLog.e(TAG, "showPowerDialog: Cannot show power dialog before API level 21!");
+            CallbackHelper.of(callback).failed();
+            return;
+        }
         requestAction(activity, callback, PaConstants.ACTION_POWER_DIALOG);
     }
 
@@ -123,6 +128,11 @@ public class PowerAct {
      * @since 1.0.18
      */
     public static void reboot(@NonNull Activity activity, @Nullable Callback callback) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            DebugLog.e(TAG, "reboot: Cannot reboot before API level 24!");
+            CallbackHelper.of(callback).failed();
+            return;
+        }
         requestAction(activity, callback, PaConstants.ACTION_REBOOT);
     }
 
@@ -134,16 +144,6 @@ public class PowerAct {
         }
         if (activity == null) {
             DebugLog.e(TAG, "requestAction: Activity is null!");
-            CallbackHelper.of(callback).failed();
-            return;
-        }
-        if (action == PaConstants.ACTION_POWER_DIALOG && Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            DebugLog.e(TAG, "requestAction: Cannot show power dialog before API level 21!");
-            CallbackHelper.of(callback).failed();
-            return;
-        }
-        if (action == PaConstants.ACTION_REBOOT && Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-            DebugLog.e(TAG, "requestAction: Cannot reboot before API level 24!");
             CallbackHelper.of(callback).failed();
             return;
         }
