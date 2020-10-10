@@ -61,7 +61,7 @@ public final class PaFragment extends Fragment {
 
     @Override
     public void onAttach(Context context) {
-        DebugLog.v(TAG, "onAttach");
+        DebugLog.v(TAG, "onAttach @" + Integer.toHexString(System.identityHashCode(this)));
         super.onAttach(context);
         initialize();
     }
@@ -325,6 +325,22 @@ public final class PaFragment extends Fragment {
         mUserDelayLogger.addSplit("detach");
         mUserDelayLogger.setDisabled(!BuildConfig.DEBUG);
         mUserDelayLogger.dumpToLog();
+
+        // Enable "Don't keep activities" in Developer options to debug this case.
+        if (isAdded()) {
+            DebugLog.w(TAG, "onDetach: The associated activity was recycled by system. " +
+                    "Some unexpected behaviours may trigger!");
+            /* Caused by low memory? */
+            ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
+            ActivityManager am = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
+            am.getMemoryInfo(memoryInfo);
+            DebugLog.i(TAG, "onDetach: mem info: [" + memoryInfo.availMem +
+                    (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN ? "/" + memoryInfo.totalMem : "") +
+                    "], threshold=" + memoryInfo.threshold +
+                    ", lowMemory=" + memoryInfo.lowMemory +
+                    ", isLowMemoryDevice=" + (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && am.isLowRamDevice()) +
+                    ", isBackgroundRestricted=" + (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && am.isBackgroundRestricted()));
+        }
     }
 
     /**
