@@ -160,7 +160,7 @@ class PaxExecutor {
                         throw new IllegalStateException("TOKEN_KILL_SYSTEM_UI must be called in root env!");
                     }
 
-                    final String sysUiPkgName = "com.android.systemui";
+                    @SuppressWarnings("SpellCheckingInspection") final String sysUiPkgName = "com.android.systemui";
 
                     /* Provide IActivityManager */
                     IActivityManager am = null;
