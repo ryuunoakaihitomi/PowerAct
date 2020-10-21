@@ -37,7 +37,7 @@ public final class PowerButton extends Button {
 
     private OnClickListener mOnClickListener;
     private OnLongClickListener mOnLongClickListener;
-    @SuppressWarnings("CanBeFinal")
+    @SuppressWarnings({"CanBeFinal", "FieldMayBeFinal"})
     private boolean mPrepareToUse;
     private boolean mHasCustomMeasure;
     private int mSize;

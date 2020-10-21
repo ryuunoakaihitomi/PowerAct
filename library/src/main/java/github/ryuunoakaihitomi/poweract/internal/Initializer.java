@@ -1,5 +1,11 @@
 package github.ryuunoakaihitomi.poweract.internal;
 
+import android.app.ActivityManager;
+import android.app.ActivityThread;
+import android.app.Application;
+import android.content.Context;
+import android.content.pm.ConfigurationInfo;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Debug;
 import android.system.Os;
@@ -45,6 +51,16 @@ public final class Initializer {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     printMap("art_stat", Debug.getRuntimeStats());
                 }
+            }
+            Application application = ActivityThread.currentApplication();
+            if (application != null) {
+                ActivityManager am = (ActivityManager) application.getSystemService(Context.ACTIVITY_SERVICE);
+                ConfigurationInfo info = am.getDeviceConfigurationInfo();
+                DebugLog.i(TAG, "getDeviceConfigurationInfo: getGlEsVersion(): " + info.getGlEsVersion());
+                DebugLog.i(TAG, "getDeviceConfigurationInfo: reqTouchScreen: " + Utils.getClassIntApiConstantString(Configuration.class, "TOUCHSCREEN_", info.reqTouchScreen));
+                DebugLog.i(TAG, "getDeviceConfigurationInfo: reqKeyboardType: " + Utils.getClassIntApiConstantString(Configuration.class, "KEYBOARD_", info.reqKeyboardType));
+                DebugLog.i(TAG, "getDeviceConfigurationInfo: reqNavigation: " + Utils.getClassIntApiConstantString(Configuration.class, "NAVIGATION_", info.reqNavigation));
+                DebugLog.i(TAG, "getDeviceConfigurationInfo: reqInputFeatures: " + Utils.flagsToString(ConfigurationInfo.class, "INPUT_FEATURE", info.reqInputFeatures));
             }
         }
     }

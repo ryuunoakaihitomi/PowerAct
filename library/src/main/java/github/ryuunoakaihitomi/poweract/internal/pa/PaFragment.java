@@ -57,7 +57,7 @@ public final class PaFragment extends Fragment {
      * Measure the time user spends on the "next steps".
      * There're some custom environments that seem to delay user from doing it on purpose.
      */
-    private VerboseTimingLogger mUserDelayLogger = new VerboseTimingLogger(DebugLog.formatTag(TAG), "user delay");
+    private final VerboseTimingLogger mUserDelayLogger = new VerboseTimingLogger(DebugLog.formatTag(TAG), "user delay");
 
     @Override
     public void onAttach(Context context) {

@@ -203,132 +203,130 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            /* For debugging */
-            case R.id.info:
-                StringBuilder info = new StringBuilder();
-                final String timeFormat = "yyyy-MM-dd HH:mm:ss:SSS";
-                PackageInfo myPkgInfo = new PackageInfo();
-                try {
-                    myPkgInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-                } catch (PackageManager.NameNotFoundException ignored) {
-                }
-                Map<String, String> infoMap = new HashMap<>();
-                infoMap.put("Build Type", BuildConfig.BUILD_TYPE);
-                infoMap.put("Build Time", Utils.timestamp2String(timeFormat, BuildConfig.BUILD_TIME));
-                infoMap.put("First Install Time", Utils.timestamp2String(timeFormat, myPkgInfo.firstInstallTime));
-                infoMap.put("Last Update Time", Utils.timestamp2String(timeFormat, myPkgInfo.lastUpdateTime));
-                for (Map.Entry<String, String> entry : infoMap.entrySet()) {
-                    info.append(entry.getKey())
-                            .append(":\n\t")
-                            .append(entry.getValue())
-                            .append("\n\n");
-                }
-                new AlertDialog.Builder(this)
-                        .setMessage(info.toString())
-                        .show();
-                Toast.makeText(this, Build.FINGERPRINT, Toast.LENGTH_LONG).show();
-                break;
+        int itemId = item.getItemId();
+        /* For debugging */
+        // Resource IDs will be non-final in Android Gradle Plugin version 5.0, avoid using them in switch case statements.
+        if (itemId == R.id.info) {
+            StringBuilder info = new StringBuilder();
+            final String timeFormat = "yyyy-MM-dd HH:mm:ss:SSS";
+            PackageInfo myPkgInfo = new PackageInfo();
+            try {
+                myPkgInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            } catch (PackageManager.NameNotFoundException ignored) {
+            }
+            Map<String, String> infoMap = new HashMap<>();
+            infoMap.put("Build Type", BuildConfig.BUILD_TYPE);
+            infoMap.put("Build Time", Utils.timestamp2String(timeFormat, BuildConfig.BUILD_TIME));
+            infoMap.put("First Install Time", Utils.timestamp2String(timeFormat, myPkgInfo.firstInstallTime));
+            infoMap.put("Last Update Time", Utils.timestamp2String(timeFormat, myPkgInfo.lastUpdateTime));
+            for (Map.Entry<String, String> entry : infoMap.entrySet()) {
+                info.append(entry.getKey())
+                        .append(":\n\t")
+                        .append(entry.getValue())
+                        .append("\n\n");
+            }
+            new AlertDialog.Builder(this)
+                    .setMessage(info.toString())
+                    .show();
+            Toast.makeText(this, Build.FINGERPRINT, Toast.LENGTH_LONG).show();
             /* Readme inside */
-            case R.id.about:
-                final int flag = Spanned.SPAN_INCLUSIVE_INCLUSIVE;
+        } else if (itemId == R.id.about) {
+            final int flag = Spanned.SPAN_INCLUSIVE_INCLUSIVE;
 
-                /* title */
-                final String titleText = "What's this?";
-                SpannableString title = new SpannableString(titleText);
-                title.setSpan(new ForegroundColorSpan(Color.WHITE), 0, titleText.length(), flag);
-                title.setSpan(new StyleSpan(Typeface.BOLD_ITALIC), 0, titleText.length(), flag);
+            /* title */
+            final String titleText = "What's this?";
+            SpannableString title = new SpannableString(titleText);
+            title.setSpan(new ForegroundColorSpan(Color.WHITE), 0, titleText.length(), flag);
+            title.setSpan(new StyleSpan(Typeface.BOLD_ITALIC), 0, titleText.length(), flag);
 
-                /* content */
-                final String
-                        logo = "PowerAct",
-                        link = "https://github.com/ryuunoakaihitomi/PowerAct",
-                        contentText = "A demo app of the android library " + logo + ".";
-                SpannableString content = new SpannableString(contentText);
-                content.setSpan(new ForegroundColorSpan(Color.GRAY), 0, contentText.length(), flag);
+            /* content */
+            final String
+                    logo = "PowerAct",
+                    link = "https://github.com/ryuunoakaihitomi/PowerAct",
+                    contentText = "A demo app of the android library " + logo + ".";
+            SpannableString content = new SpannableString(contentText);
+            content.setSpan(new ForegroundColorSpan(Color.GRAY), 0, contentText.length(), flag);
 
-                /* PALETTE: Change the color styles of About Dialog by wallpaper and dark mode. (just for curiosity) */
-                @ColorInt int
-                        logoColor = Color.GREEN,
-                        textColor = Color.WHITE,
-                        bgColor = Color.RED;
-                //noinspection TextLabelInSwitchStatement
-                palette:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
-                    if (getSystemService(PowerManager.class).isPowerSaveMode()) {
-                        Log.i(TAG, "onOptionsItemSelected: Using default colors in power save mode.");
-                        break palette;
+            /* PALETTE: Change the color styles of About Dialog by wallpaper and dark mode. (just for curiosity) */
+            @ColorInt int
+                    logoColor = Color.GREEN,
+                    textColor = Color.WHITE,
+                    bgColor = Color.RED;
+            palette:
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+                if (getSystemService(PowerManager.class).isPowerSaveMode()) {
+                    Log.i(TAG, "onOptionsItemSelected: Using default colors in power save mode.");
+                    break palette;
+                }
+                UiModeManager uiModeManager = getSystemService(UiModeManager.class);
+                final boolean nightMode = uiModeManager.getNightMode() == UiModeManager.MODE_NIGHT_YES;
+                Log.d(TAG, "onOptionsItemSelected: night mode = " + nightMode);
+                WallpaperColors colors = WallpaperManager.getInstance(this).getWallpaperColors(
+                        nightMode ? WallpaperManager.FLAG_LOCK : WallpaperManager.FLAG_SYSTEM);
+                if (colors != null) {
+                    final Color
+                            pri = colors.getPrimaryColor(),
+                            sec = colors.getSecondaryColor(),
+                            ter = colors.getTertiaryColor();
+                    Log.d(TAG, "onOptionsItemSelected: text (pri) " + pri);
+                    textColor = pri.toArgb();
+                    if (sec != null) {
+                        Log.d(TAG, "onOptionsItemSelected: background (sec) " + sec);
+                        bgColor = sec.toArgb();
                     }
-                    UiModeManager uiModeManager = getSystemService(UiModeManager.class);
-                    final boolean nightMode = uiModeManager.getNightMode() == UiModeManager.MODE_NIGHT_YES;
-                    Log.d(TAG, "onOptionsItemSelected: night mode = " + nightMode);
-                    WallpaperColors colors = WallpaperManager.getInstance(this).getWallpaperColors(
-                            nightMode ? WallpaperManager.FLAG_LOCK : WallpaperManager.FLAG_SYSTEM);
-                    if (colors != null) {
-                        final Color
-                                pri = colors.getPrimaryColor(),
-                                sec = colors.getSecondaryColor(),
-                                ter = colors.getTertiaryColor();
-                        Log.d(TAG, "onOptionsItemSelected: text (pri) " + pri);
-                        textColor = pri.toArgb();
-                        if (sec != null) {
-                            Log.d(TAG, "onOptionsItemSelected: background (sec) " + sec);
-                            bgColor = sec.toArgb();
-                        }
-                        if (ter != null) {
-                            Log.d(TAG, "onOptionsItemSelected: logo (ter) " + ter);
-                            logoColor = ter.toArgb();
-                        }
+                    if (ter != null) {
+                        Log.d(TAG, "onOptionsItemSelected: logo (ter) " + ter);
+                        logoColor = ter.toArgb();
                     }
-                } else {
-                    Log.d(TAG, "onOptionsItemSelected: normal colors below 27");
                 }
+            } else {
+                Log.d(TAG, "onOptionsItemSelected: normal colors below 27");
+            }
 
-                /* logo */
-                final int
-                        logoStart = contentText.indexOf(logo),
-                        logoEnd = contentText.indexOf(logo) + logo.length();
-                content.setSpan(new StyleSpan(Typeface.BOLD), logoStart, logoEnd, flag);
-                content.setSpan(new ForegroundColorSpan(logoColor), logoStart, logoEnd, flag);
-                TypefaceSpan monospaceSpan = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P ?
-                        new TypefaceSpan(Typeface.MONOSPACE) :
-                        new TypefaceSpan("monospace");
-                content.setSpan(monospaceSpan, logoStart, logoEnd, flag);
+            /* logo */
+            final int
+                    logoStart = contentText.indexOf(logo),
+                    logoEnd = contentText.indexOf(logo) + logo.length();
+            content.setSpan(new StyleSpan(Typeface.BOLD), logoStart, logoEnd, flag);
+            content.setSpan(new ForegroundColorSpan(logoColor), logoStart, logoEnd, flag);
+            TypefaceSpan monospaceSpan = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P ?
+                    new TypefaceSpan(Typeface.MONOSPACE) :
+                    new TypefaceSpan("monospace");
+            content.setSpan(monospaceSpan, logoStart, logoEnd, flag);
 
-                AlertDialog aboutDialog = new AlertDialog.Builder(this)
-                        .setTitle(title)
-                        .setMessage(content)
-                        .setPositiveButton("Link", (dialog, which) -> {
-                            try {
-                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(link)));
-                            } catch (ActivityNotFoundException e) {
-                                Log.e(TAG, "onClick: " + link, e);
-                                Browser.sendString(this, link);
-                            }
-                        })
-                        .create();
+            AlertDialog aboutDialog = new AlertDialog.Builder(this)
+                    .setTitle(title)
+                    .setMessage(content)
+                    .setPositiveButton("Link", (dialog, which) -> {
+                        try {
+                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(link)));
+                        } catch (ActivityNotFoundException e) {
+                            Log.e(TAG, "onClick: " + link, e);
+                            Browser.sendString(this, link);
+                        }
+                    })
+                    .create();
 
-                aboutDialog.show();
+            aboutDialog.show();
 
-                /* button */
-                Button linkBtn = aboutDialog.getButton(DialogInterface.BUTTON_POSITIVE);
-                linkBtn.setAllCaps(false);
-                linkBtn.setTextColor(textColor);
-                linkBtn.setBackgroundColor(bgColor);
-                linkBtn.setTypeface(Typeface.DEFAULT_BOLD);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    linkBtn.setTooltipText(link);
-                }
+            /* button */
+            Button linkBtn = aboutDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+            linkBtn.setAllCaps(false);
+            linkBtn.setTextColor(textColor);
+            linkBtn.setBackgroundColor(bgColor);
+            linkBtn.setTypeface(Typeface.DEFAULT_BOLD);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                linkBtn.setTooltipText(link);
+            }
 
-                /* background */
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    Window w = aboutDialog.getWindow();
-                    if (w != null)
-                        w.getDecorView().setBackgroundResource(R.drawable.about_dialog_bg);
-                }
-                break;
-            default:
-                return false;
+            /* background */
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                Window w = aboutDialog.getWindow();
+                if (w != null)
+                    w.getDecorView().setBackgroundResource(R.drawable.about_dialog_bg);
+            }
+        } else {
+            return false;
         }
         return true;
     }

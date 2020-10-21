@@ -191,7 +191,6 @@ public class Utils {
 
     public static String getClassIntApiConstantString(@NonNull Class<?> clz, @NonNull String prefix, int value) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            // There's also flagToString().
             String ret = (String) ReflectionUtils.invokeStaticMethod(ReflectionUtils.findMethod(
                     DebugUtils.class, "valueToString", Class.class, String.class, Integer.TYPE),
                     clz, prefix, value);
@@ -199,6 +198,41 @@ public class Utils {
             DebugLog.d(TAG, "getClassIntApiConstantString: Use alternative solution. ret=" + ret);
         }
         return getClassIntApiConstant(clz, prefix).get(value, String.valueOf(value));
+    }
+
+    /**
+     * Use prefixed constants (static final values) on given class to turn flags
+     * into human-readable string.
+     *
+     * @see DebugUtils flagsToString(Class, String, int)
+     */
+    public static String flagsToString(Class<?> clazz, String prefix, int flags) {
+        final StringBuilder res = new StringBuilder();
+        boolean flagsWasZero = flags == 0;
+
+        for (Field field : clazz.getDeclaredFields()) {
+            final int modifiers = field.getModifiers();
+            if (Modifier.isStatic(modifiers) && Modifier.isFinal(modifiers)
+                    && field.getType().equals(int.class) && field.getName().startsWith(prefix)) {
+                try {
+                    final int value = field.getInt(null);
+                    if (value == 0 && flagsWasZero) {
+                        return field.getName();
+                    }
+                    if (value != 0 && (flags & value) == value) {
+                        flags &= ~value;
+                        res.append(field.getName()).append('|');
+                    }
+                } catch (IllegalAccessException ignored) {
+                }
+            }
+        }
+        if (flags != 0 || res.length() == 0) {
+            res.append(Integer.toHexString(flags));
+        } else {
+            res.deleteCharAt(res.length() - 1);
+        }
+        return res.toString();
     }
 
     @AnyThread
