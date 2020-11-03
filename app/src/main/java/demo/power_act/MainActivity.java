@@ -40,6 +40,7 @@ import androidx.annotation.ColorInt;
 import java.util.HashMap;
 import java.util.Map;
 
+import demo.power_act.util.EmptyAccessibilityDelegate;
 import demo.power_act.util.Utils;
 import github.ryuunoakaihitomi.poweract.Callback;
 import github.ryuunoakaihitomi.poweract.ExternalUtils;
@@ -142,6 +143,9 @@ public class MainActivity extends Activity {
         // Control logcat output.
         Switch enableLogSwitch = findViewById(R.id.enableLog);
         enableLogSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> ExternalUtils.enableLog(isChecked));
+
+        // Security mechanism against Accessibility Service attack.
+        getWindow().getDecorView().setAccessibilityDelegate(new EmptyAccessibilityDelegate());
     }
 
     private void setXButtonAction(int btnResId, Runnable action, Runnable longClickAction) {
