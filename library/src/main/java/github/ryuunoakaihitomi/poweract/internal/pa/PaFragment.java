@@ -88,10 +88,13 @@ public final class PaFragment extends Fragment {
         }
         initialize();
 
-        /* Use Shizuku instead of DPM before 28 to avoid "secure unlock" and "complex uninstalling". */
-        if (mAction == PaConstants.ACTION_LOCK_SCREEN &&
-                Build.VERSION.SDK_INT < Build.VERSION_CODES.P &&
-                LibraryCompat.isShizukuPrepared(activity)) {
+        if ((
+                // Using Shizuku to lock screen instead of DPM before 28 to avoid "secure unlock" and "complex uninstalling".
+                (mAction == PaConstants.ACTION_LOCK_SCREEN && Build.VERSION.SDK_INT < Build.VERSION_CODES.P) ||
+                        // Using Shizuku to reboot instead of DPM since R to avoid registering device owner.
+                        // REBOOT permission granted to Shell since 30. commit id: bf19417b0dc3747bfd8c4cf84817ac98d382a665
+                        (mAction == PaConstants.ACTION_REBOOT && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+        ) && LibraryCompat.isShizukuPrepared(activity)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (activity.checkSelfPermission(ShizukuApiConstants.PERMISSION) != PackageManager.PERMISSION_GRANTED) {
                     // The users of Shizuku Manager can be treated as advanced users. So it's unnecessary to guide them.
@@ -100,7 +103,7 @@ public final class PaFragment extends Fragment {
                     requestPermissions(new String[]{ShizukuApiConstants.PERMISSION}, mRequestCode);
                     mUserDelayLogger.addSplit("shizuku permission");
                 } else {
-                    lockScreenByShizuku();
+                    callShizuku();
                 }
             }
             UserGuideRunnable.release();
@@ -263,7 +266,7 @@ public final class PaFragment extends Fragment {
                 ShizukuApiConstants.PERMISSION.equals(permissions[0]) &&
                 grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             mUserDelayLogger.addSplit("return from shizuku permission (granted)");
-            lockScreenByShizuku();
+            callShizuku();
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !shouldShowRequestPermissionRationale(ShizukuApiConstants.PERMISSION)) {
                 DebugLog.e(TAG, "onRequestPermissionsResult: Shizuku permission denied forever!");
@@ -274,15 +277,23 @@ public final class PaFragment extends Fragment {
     }
 
     //@RequiresPermission(ShizukuApiConstants.PERMISSION)
-    private void lockScreenByShizuku() {
+    private void callShizuku() {
         try {
             SystemCompat.setPowerBinder(new ShizukuBinderWrapper(SystemServiceHelper.getSystemService(Context.POWER_SERVICE)));
-            SystemCompat.goToSleep();
+            switch (mAction) {
+                case PaConstants.ACTION_LOCK_SCREEN:
+                    SystemCompat.goToSleep();
+                    break;
+                case PaConstants.ACTION_REBOOT:
+                    SystemCompat.reboot(null);
+                    break;
+                case PaConstants.ACTION_POWER_DIALOG: // Only for keeping "switch" statement. @IntDef
+            }
             // Update DPM state in time.
             mDevicePolicyManager.removeActiveAdmin(mAdminReceiverComponentName);
             done();
         } catch (Throwable t) {
-            DebugLog.e(TAG, "lockScreenByShizuku", t);
+            DebugLog.e(TAG, "callShizuku", t);
             failed("Shizuku: " + t.getMessage());
         }
     }

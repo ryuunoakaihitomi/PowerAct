@@ -86,7 +86,7 @@ dependencies {
     androidTestImplementation "moe.shizuku.privilege:api:$shizuku_version"
     // https://stackoverflow.com/a/7878281
     testImplementation 'org.hamcrest:hamcrest:2.2'
-    testImplementation 'junit:junit:4.13'
+    testImplementation 'junit:junit:4.13.1'
     testImplementation "org.awaitility:awaitility:$awaitility_version"
 
     compileOnly 'androidx.annotation:annotation:1.1.0'
