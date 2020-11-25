@@ -95,7 +95,7 @@ public class PowerButtonTest extends BaseTest {
             attemptPowerDialogRequestUi();
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ShizukuService.pingBinder()) {
-                // Switched to com.android.permissioncontroller after 29.
+                // Switched to com.android.permissioncontroller since 29.
                 assertEquals(CommonUtils.PKG_NAME_PACKAGE_INSTALLER, mUiDevice.getCurrentPackageName());
                 final String deny = CommonUtils.getStringResource(targetContext, CommonUtils.PKG_NAME_PACKAGE_INSTALLER, "grant_dialog_button_deny");
                 mUiDevice.findObject(By.text(deny)).click();

@@ -1,9 +1,11 @@
 package github.ryuunoakaihitomi.poweract;
 
+import android.Manifest;
 import android.app.UiAutomation;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.RemoteException;
@@ -36,12 +38,14 @@ import github.ryuunoakaihitomi.poweract.internal.util.LibraryCompat;
 import github.ryuunoakaihitomi.poweract.test.BaseTest;
 import github.ryuunoakaihitomi.poweract.test.CommonUtils;
 import github.ryuunoakaihitomi.poweract.test.LockScreenTest;
+import moe.shizuku.api.ShizukuService;
 import poweract.test.res.PlaygroundActivity;
 
 import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR2;
 import static android.os.Build.VERSION_CODES.N;
 import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -144,11 +148,19 @@ public final class PowerActTest extends BaseTest {
     @Suppress   // It will cut off the entire test process. Be careful if you want to test reboot().
     @Test
     public void reboot() throws Throwable {
-        final String shell = "dpm set-device-owner " + new ComponentName(targetContext, PaReceiver.class).flattenToShortString();
-        InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand(shell).close();
-        TimeUnit.SECONDS.sleep(1);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && LibraryCompat.isShizukuPrepared(targetContext)) {
+            assertEquals("Expected behaviour. Should add automatic steps of granting shizuku permission.",
+                    PackageManager.PERMISSION_GRANTED, ShizukuService.checkPermission(Manifest.permission.REBOOT));
+            /* Why? */
+            Log.i(TAG, "reboot: reboot permission granted to me automatically.");
+        } else {
+            final String shell = "dpm set-device-owner " + new ComponentName(targetContext, PaReceiver.class).flattenToShortString();
+            InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand(shell).close();
+            TimeUnit.SECONDS.sleep(1);
+        }
         rule.getScenario().onActivity(activity -> {
             PowerAct.reboot(activity, () -> fail("reboot() callback"));
+            // Reboot is NOT stuck in Shizuku with 30.
             fail("reboot() doesn't work.");
         });
     }
