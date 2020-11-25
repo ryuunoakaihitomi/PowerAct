@@ -152,7 +152,7 @@ public final class PowerActTest extends BaseTest {
             assertEquals("Expected behaviour. Should add automatic steps of granting shizuku permission.",
                     PackageManager.PERMISSION_GRANTED, ShizukuService.checkPermission(Manifest.permission.REBOOT));
             /* Why? */
-            Log.i(TAG, "reboot: reboot permission granted to me automatically.");
+            Log.i(TAG, "reboot: shizuku permission granted to me automatically.");
         } else {
             final String shell = "dpm set-device-owner " + new ComponentName(targetContext, PaReceiver.class).flattenToShortString();
             InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand(shell).close();
