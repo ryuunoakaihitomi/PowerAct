@@ -78,7 +78,10 @@ public class MainActivity extends Activity {
             @Override
             public void failed() {
                 Log.e(TAG, "failed: PowerAct cb FAILED! *******");
-                Toast.makeText(getApplicationContext(), "Denied", Toast.LENGTH_SHORT).show();
+                // E/ContextImpl: java.lang.IllegalAccessException: Tried to access visual service WindowManager from a non-visual Context:
+                // Visual services, such as WindowManager, WallpaperService or LayoutInflater should be accessed from Activity or other visual Context.
+                // Use an Activity or a Context created with Context#createWindowContext(int, Bundle), which are adjusted to the configuration and visual bounds of an area on screen.
+                Toast.makeText(MainActivity.this, "Denied", Toast.LENGTH_SHORT).show();
             }
         };
 

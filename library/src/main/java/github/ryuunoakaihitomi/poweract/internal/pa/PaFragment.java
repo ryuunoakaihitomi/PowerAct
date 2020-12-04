@@ -2,6 +2,7 @@ package github.ryuunoakaihitomi.poweract.internal.pa;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.ApplicationExitInfo;
 import android.app.Fragment;
 import android.app.admin.DevicePolicyManager;
 import android.content.ActivityNotFoundException;
@@ -18,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
 
 import java.util.Arrays;
+import java.util.List;
 
 import github.ryuunoakaihitomi.poweract.BuildConfig;
 import github.ryuunoakaihitomi.poweract.Callback;
@@ -143,6 +145,17 @@ public final class PaFragment extends Fragment {
                  * @see DevicePolicyManager#setUninstallBlocked(ComponentName, String, boolean)
                  */
                 try {
+                    if (Build.VERSION.SDK_INT == Build.VERSION_CODES.R) {
+                        List<ApplicationExitInfo> historicalProcessExitReasons = activity.getSystemService(ActivityManager.class)
+                                .getHistoricalProcessExitReasons(activity.getPackageName(), 0, 1);
+                        if (historicalProcessExitReasons.size() > 0) {
+                            ApplicationExitInfo appExitInfo = historicalProcessExitReasons.get(0);
+                            if (appExitInfo.getReason() == ApplicationExitInfo.REASON_USER_REQUESTED) {
+                                DebugLog.i(TAG, "requestAction: " + appExitInfo.toString());
+                                DebugLog.w(TAG, "requestAction: On Android 11, force stop app may prevent accessibility service from being enabled next time.");
+                            }
+                        }
+                    }
                     // If you disabled PaService, and try to enable it.
                     // You cannot find it in Accessibility Settings instantly.
                     DebugLog.d(TAG, "requestAction: Try to enable Accessibility Service...");
