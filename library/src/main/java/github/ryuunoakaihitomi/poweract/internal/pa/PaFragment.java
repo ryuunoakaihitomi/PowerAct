@@ -137,6 +137,19 @@ public final class PaFragment extends Fragment {
                     failed("AccessibilityService disabled.");
                     return;
                 }
+                // On Android 11, force stop app may prevent accessibility service from being enabled next time.
+                // Warn developer about that.
+                if (Build.VERSION.SDK_INT == Build.VERSION_CODES.R) {
+                    List<ApplicationExitInfo> historicalProcessExitReasons = activity.getSystemService(ActivityManager.class)
+                            .getHistoricalProcessExitReasons(activity.getPackageName(), 0, 1);
+                    if (historicalProcessExitReasons.size() > 0) {
+                        ApplicationExitInfo appExitInfo = historicalProcessExitReasons.get(0);
+                        if (appExitInfo.getReason() == ApplicationExitInfo.REASON_USER_REQUESTED) {
+                            DebugLog.i(TAG, "requestAction: " + appExitInfo);
+                            DebugLog.w(TAG, "requestAction: On Android 11, force stop app may prevent accessibility service from being enabled next time.");
+                        }
+                    }
+                }
                 /*
                  * It's just a waste of time implementing some additional demands with these APIs.
                  *
@@ -145,17 +158,6 @@ public final class PaFragment extends Fragment {
                  * @see DevicePolicyManager#setUninstallBlocked(ComponentName, String, boolean)
                  */
                 try {
-                    if (Build.VERSION.SDK_INT == Build.VERSION_CODES.R) {
-                        List<ApplicationExitInfo> historicalProcessExitReasons = activity.getSystemService(ActivityManager.class)
-                                .getHistoricalProcessExitReasons(activity.getPackageName(), 0, 1);
-                        if (historicalProcessExitReasons.size() > 0) {
-                            ApplicationExitInfo appExitInfo = historicalProcessExitReasons.get(0);
-                            if (appExitInfo.getReason() == ApplicationExitInfo.REASON_USER_REQUESTED) {
-                                DebugLog.i(TAG, "requestAction: " + appExitInfo.toString());
-                                DebugLog.w(TAG, "requestAction: On Android 11, force stop app may prevent accessibility service from being enabled next time.");
-                            }
-                        }
-                    }
                     // If you disabled PaService, and try to enable it.
                     // You cannot find it in Accessibility Settings instantly.
                     DebugLog.d(TAG, "requestAction: Try to enable Accessibility Service...");
