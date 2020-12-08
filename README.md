@@ -19,11 +19,14 @@ repositories {
 
 
 dependencies {
+    // (Required)
     implementation 'github.ryuunoakaihitomi.poweract:poweract:<latest-version>'
-    /* Optional dependencies, we can use these to make PowerActX faster. */
+
+    // (Optional) Bring better performance to use root shell.
     // https://github.com/topjohnwu/libsu
     implementation "com.github.topjohnwu.libsu:core:3.0.2"
-    // Need more steps to integrate it.
+    // (Optional) A more elegant and direct way of using system API.
+    // NOTE: Need more steps to integrate it.
     // https://github.com/RikkaApps/Shizuku/blob/master/README.md
     implementation 'moe.shizuku.privilege:api:4.2.1'
 }

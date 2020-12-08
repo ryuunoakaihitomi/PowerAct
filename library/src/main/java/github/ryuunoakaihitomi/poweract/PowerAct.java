@@ -24,10 +24,11 @@ import github.ryuunoakaihitomi.poweract.internal.util.DebugLog;
 import github.ryuunoakaihitomi.poweract.internal.util.Utils;
 
 /**
- * Provide the main functions of the library.
+ * Provide basic functions of this library.
  * <p>
  * Hello! I am <b>PowerAct</b>.
  *
+ * @author ZQY
  * @since 1.0.0
  */
 @MainThread
