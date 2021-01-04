@@ -2,6 +2,7 @@ package demo.power_act;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.KeyguardManager;
 import android.app.UiModeManager;
 import android.app.WallpaperColors;
 import android.app.WallpaperManager;
@@ -14,9 +15,11 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Typeface;
+import android.hardware.biometrics.BiometricPrompt;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CancellationSignal;
 import android.os.PowerManager;
 import android.provider.Browser;
 import android.text.SpannableString;
@@ -59,6 +62,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        foolProof();
         setContentView(R.layout.activity_main);
 
         Button
@@ -187,6 +191,43 @@ public class MainActivity extends Activity {
     }
 
     //<editor-fold desc="This part is not important for showing the library's usage.">
+
+    /**
+     * Using the simplest and most effective way as a fool-proofing design.
+     * If the device does not have a screen lock login password,
+     * then it is assumed that it is a test device and these steps are skipped.
+     */
+    private void foolProof() {
+        final String
+                opHint = " Press back key to enter.",
+                caution = "Please save all your work before processing!";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                new BiometricPrompt.Builder(this)
+                        .setTitle(caution)
+                        .setSubtitle(opHint)
+                        .setDeviceCredentialAllowed(true)
+                        .build().authenticate(new CancellationSignal(), command -> {
+                }, new BiometricPrompt.AuthenticationCallback() {
+                });
+            } else {
+                KeyguardManager keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
+                Intent intent = keyguardManager.createConfirmDeviceCredentialIntent(caution, opHint);
+                if (intent != null) startActivityForResult(intent, 123);
+            }
+        } else {
+            // KeyguardManager#isDeviceSecure() 23+ ¯\_(ツ)_/¯
+            new AlertDialog.Builder(this)
+                    .setTitle(caution)
+                    .setMessage(opHint)
+                    .setCancelable(false)
+                    .setOnKeyListener((dialog, keyCode, event) -> {
+                        if (keyCode == KeyEvent.KEYCODE_BACK) dialog.cancel();
+                        return true;
+                    }).show();
+        }
+    }
+
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         /* Show which view is focused on Android TV. */

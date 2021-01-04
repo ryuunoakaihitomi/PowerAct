@@ -1,11 +1,11 @@
 Properties loadProperties(fileName) {
-    def localProperties = new File(rootDir, fileName + '.properties')
-    if (localProperties.exists()) {
+    def localPropertiesFile = new File(rootDir, fileName + '.properties')
+    if (localPropertiesFile.exists()) {
         Properties properties = new Properties()
-        localProperties.withInputStream { instr ->
-            properties.load(instr)
-        }
+        properties.load(new FileReader(localPropertiesFile))
         return properties
+    } else {
+        System.err.println "No such properties: $fileName"
     }
 }
 
