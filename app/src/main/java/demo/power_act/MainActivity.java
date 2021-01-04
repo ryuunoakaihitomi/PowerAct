@@ -201,6 +201,7 @@ public class MainActivity extends Activity {
         final String
                 opHint = " Press back key to enter.",
                 caution = "Please save all your work before processing!";
+        KeyguardManager keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 new BiometricPrompt.Builder(this)
@@ -211,20 +212,24 @@ public class MainActivity extends Activity {
                 }, new BiometricPrompt.AuthenticationCallback() {
                 });
             } else {
-                KeyguardManager keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
                 Intent intent = keyguardManager.createConfirmDeviceCredentialIntent(caution, opHint);
                 if (intent != null) startActivityForResult(intent, 123);
             }
         } else {
-            // KeyguardManager#isDeviceSecure() 23+ ¯\_(ツ)_/¯
-            new AlertDialog.Builder(this)
+            AlertDialog.Builder builder = new AlertDialog.Builder(this)
                     .setTitle(caution)
                     .setMessage(opHint)
                     .setCancelable(false)
                     .setOnKeyListener((dialog, keyCode, event) -> {
                         if (keyCode == KeyEvent.KEYCODE_BACK) dialog.cancel();
                         return true;
-                    }).show();
+                    });
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                if (keyguardManager.isKeyguardSecure()) builder.show();
+            } else {
+                // ¯\_(ツ)_/¯
+                builder.show();
+            }
         }
     }
 
