@@ -202,19 +202,17 @@ public class MainActivity extends Activity {
                 opHint = " Press back key to enter.",
                 caution = "Please save all your work before proceeding!";
         KeyguardManager keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                new BiometricPrompt.Builder(this)
-                        .setTitle(caution)
-                        .setSubtitle(opHint)
-                        .setDeviceCredentialAllowed(true)
-                        .build().authenticate(new CancellationSignal(), command -> {
-                }, new BiometricPrompt.AuthenticationCallback() {
-                });
-            } else {
-                Intent intent = keyguardManager.createConfirmDeviceCredentialIntent(caution, opHint);
-                if (intent != null) startActivityForResult(intent, 123);
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            new BiometricPrompt.Builder(this)
+                    .setTitle(caution)
+                    .setSubtitle(opHint)
+                    .setDeviceCredentialAllowed(true)
+                    .build().authenticate(new CancellationSignal(), command -> {
+            }, new BiometricPrompt.AuthenticationCallback() {
+            });
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Intent intent = keyguardManager.createConfirmDeviceCredentialIntent(caution, opHint);
+            if (intent != null) startActivityForResult(intent, 123);
         } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(this)
                     .setTitle(caution)
