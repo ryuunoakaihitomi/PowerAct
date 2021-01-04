@@ -200,7 +200,7 @@ public class MainActivity extends Activity {
     private void foolProof() {
         final String
                 opHint = " Press back key to enter.",
-                caution = "Please save all your work before processing!";
+                caution = "Please save all your work before proceeding!";
         KeyguardManager keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
