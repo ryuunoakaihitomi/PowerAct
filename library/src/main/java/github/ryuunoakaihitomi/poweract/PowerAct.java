@@ -4,29 +4,29 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
-import android.content.Context;
 import android.os.Build;
 
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
 import java.io.PrintWriter;
 
 import github.ryuunoakaihitomi.poweract.internal.Initializer;
 import github.ryuunoakaihitomi.poweract.internal.pa.PaConstants;
 import github.ryuunoakaihitomi.poweract.internal.pa.PaFragment;
-import github.ryuunoakaihitomi.poweract.internal.pa.PaReceiver;
 import github.ryuunoakaihitomi.poweract.internal.util.CallbackHelper;
 import github.ryuunoakaihitomi.poweract.internal.util.DebugLog;
 import github.ryuunoakaihitomi.poweract.internal.util.Utils;
 
 /**
- * Provide basic functions of this library.
- * <p>
  * Hello! I am <b>PowerAct</b>.
+ * <p>
+ * This class provides the basic functions of this library for most mediocre environment.
+ * If the environment has root privilege,
+ * please consider using {@link PowerActX} in order to get more functions and reduce inherent limitations.
  *
  * @author ZQY
  * @since 1.0.0
@@ -45,49 +45,52 @@ public class PowerAct {
     }
 
     /**
-     * Go to see {@link #lockScreen(Activity, Callback)}.
+     * {@link #lockScreen(Activity, Callback)}
      *
-     * @param activity As {@link #lockScreen(Activity, Callback)}'s <code>activity</code>.
+     * @param activity a
      */
     public static void lockScreen(@NonNull Activity activity) {
         lockScreen(activity, null);
     }
 
     /**
-     * Make the device lock immediately, as if the lock screen timeout has expired at the point of this call.
+     * Make the device lock immediately. Further manual operation by the user may be required.
      * <p>
-     * Use {@link android.app.admin.DevicePolicyManager} to lock before 28, Since 28 use
-     * {@link android.accessibilityservice.AccessibilityService} to lock in order to
-     * unlock by biometric sensors.
+     * <table border="1"><tr>
+     * <th>API level range</th><th>Principle</th>
+     * </tr><tr>
+     * <td>to 22</td><td>{@link android.app.admin.DevicePolicyManager#lockNow()}</td>
+     * </tr><tr>
+     * <td>23 - 27</td><td>{@link android.os.PowerManager}.goToSleep(). Call by Shizuku if available.</td>
+     * </tr><tr>
+     * <td>from 28</td><td>{@link android.accessibilityservice.AccessibilityService#GLOBAL_ACTION_LOCK_SCREEN}</td>
+     * </tr></table>
      *
      * @param activity Be used to open specific permission request UI and perform power operations.
-     *                 Should not be null.
-     * @param callback To return operation status.
-     *                 Can be null.
-     * @see android.app.admin.DevicePolicyManager#lockNow()
-     * @see android.accessibilityservice.AccessibilityService#GLOBAL_ACTION_LOCK_SCREEN
+     * @param callback {@link Callback}
      */
     public static void lockScreen(@NonNull Activity activity, @Nullable Callback callback) {
         requestAction(activity, callback, PaConstants.ACTION_LOCK_SCREEN);
     }
 
     /**
-     * Go to see {@link #showPowerDialog(Activity, Callback)}.
+     * {@link #showPowerDialog(Activity, Callback)}
      *
-     * @param activity As {@link #lockScreen(Activity, Callback)}'s <code>activity</code>.
+     * @param activity a
      */
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public static void showPowerDialog(@NonNull Activity activity) {
         showPowerDialog(activity, null);
     }
 
     /**
-     * To open the power long-press dialog.
-     * <b>The operation can only be available since 21.</b>
+     * To open the power long-press dialog. Further manual operation by the user may be required.
      *
-     * @param activity As {@link #lockScreen(Activity, Callback)}'s <code>activity</code>.
-     * @param callback As {@link #lockScreen(Activity, Callback)}'s <code>callback</code>.
+     * @param activity {@link #lockScreen(Activity, Callback)}
+     * @param callback {@link Callback}
      * @see android.accessibilityservice.AccessibilityService#GLOBAL_ACTION_POWER_DIALOG
      */
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public static void showPowerDialog(@NonNull Activity activity, @Nullable Callback callback) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             DebugLog.e(TAG, "showPowerDialog: Cannot show power dialog before API level 21!");
@@ -98,36 +101,32 @@ public class PowerAct {
     }
 
     /**
-     * Go to see {@link #reboot(Activity, Callback)}.
+     * {@link #reboot(Activity, Callback)}
      *
-     * @param activity As {@link #lockScreen(Activity, Callback)}'s <code>activity</code>.
+     * @param activity a
      * @since 1.0.18
      */
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public static void reboot(@NonNull Activity activity) {
         reboot(activity, null);
     }
 
     /**
-     * Reboot the device. Be available since 24.
+     * Reboot the device.
      * <p>
-     * <b>Using it is VERY DIFFICULT for general user.</b>
-     * We have to guide user to enable the {@link PaReceiver}(may be disabled by {@link ExternalUtils#disableExposedComponents(Context)})
-     * and the <i>device owner</i> for it.
-     * <p>
-     * Note that it will bring other restrictions.
-     * In some custom environments, <i>device owner</i> may not be available or bring some compatibility issues.
-     * <p>
-     * <b>BE CAREFUL TO USE IT!</b>
-     * Try to use {@link #showPowerDialog(Activity, Callback)} or {@link PowerActX#reboot(Callback)} instead of it if possible.
+     * <table border="1"><tr>
+     * <th>API level range</th><th>Principle</th>
+     * </tr><tr>
+     * <td>to 29</td><td>{@link android.app.admin.DevicePolicyManager#reboot(ComponentName)}</td>
+     * </tr><tr>
+     * <td>from 30</td><td>{@link android.os.PowerManager#reboot(String)} with null argument, call by Shizuku if available.</td>
+     * </tr></table>
      *
-     * @param activity As {@link #lockScreen(Activity, Callback)}'s <code>activity</code>.
-     * @param callback As {@link #lockScreen(Activity, Callback)}'s <code>callback</code>.
-     * @see DevicePolicyManager#reboot(ComponentName)
-     * @see <a href="https://source.android.com/devices/tech/admin/testing-setup#set_up_the_device_owner_for_testing">Set up device owner for testing</a>
-     * @see <a href="https://developer.android.com/work/dpc/device-management#remotely_reboot_an_android_device">Remotely reboot an Android device</a>
-     * @see <a href="https://stackoverflow.com/questions/21183328/how-to-make-my-app-a-device-owner">How to make my app a device owner?</a>
+     * @param activity {@link #lockScreen(Activity, Callback)}
+     * @param callback {@link Callback}
      * @since 1.0.18
      */
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public static void reboot(@NonNull Activity activity, @Nullable Callback callback) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             DebugLog.e(TAG, "reboot: Cannot reboot before API level 24!");

@@ -20,6 +20,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CancellationSignal;
+import android.os.Handler;
 import android.os.PowerManager;
 import android.provider.Browser;
 import android.text.SpannableString;
@@ -35,7 +36,9 @@ import android.view.View;
 import android.view.ViewDebug;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
@@ -97,12 +100,16 @@ public class MainActivity extends Activity {
             // Lock screen, without callback.
             PowerAct.lockScreen(activity);
         });
-        powerDialogBtn.setOnClickListener(v -> {
-            tipForAccessibilityService();
-            // Show system power dialog, with callback.
-            PowerAct.showPowerDialog(activity, callback);
-        });
-        rebootBtn.setOnClickListener(v -> PowerAct.reboot(activity));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            powerDialogBtn.setOnClickListener(v -> {
+                tipForAccessibilityService();
+                // Show system power dialog, with callback.
+                PowerAct.showPowerDialog(activity, callback);
+            });
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            rebootBtn.setOnClickListener(v -> PowerAct.reboot(activity));
+        }
 
         // An additional widget.
         PowerButton powerButton = findViewById(R.id.pwrBtn);
@@ -139,9 +146,12 @@ public class MainActivity extends Activity {
         setXButtonAction(R.id.sd_btn, () -> PowerActX.shutdown(callback), () -> PowerActX.shutdown(callback, true));
         setXButtonAction(R.id.rec_btn, () -> PowerActX.recovery(callback), () -> PowerActX.recovery(callback, true));
         setXButtonAction(R.id.bl_btn, () -> PowerActX.bootloader(callback), () -> PowerActX.bootloader(callback, true));
-        setXButtonAction(R.id.sm_btn, () -> PowerActX.safeMode(callback), () -> PowerActX.safeMode(callback, true));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            setXButtonAction(R.id.sm_btn, () -> PowerActX.safeMode(callback), () -> PowerActX.safeMode(callback, true));
+        }
         setXButtonAction(R.id.srb_btn, () -> PowerActX.softReboot(callback), null);
         setXButtonAction(R.id.rsu_btn, () -> PowerActX.restartSystemUi(callback), null);
+        setXButtonAction(R.id.cr_btn, () -> customRebootUi(false, callback), () -> customRebootUi(true, callback));
 
         findViewById(R.id.disComBtn).setOnClickListener(v ->
                 // Disable exposed components manually.
@@ -170,6 +180,27 @@ public class MainActivity extends Activity {
                 longClickAction.run();
                 return true;
             });
+        }
+    }
+
+    private void customRebootUi(boolean force, Callback callback) {
+        /* FIXME AlertDialog: setXXXButton() conflicts with setView() in Wear OS. */
+        if (Utils.isAndroidWearOS(this)) {
+            final String arg = "edl"; // Change ... in here.
+            Log.w(TAG, "customRebootUi: Work around for Wear OS. arg =" + arg);
+            Toast.makeText(this, "arg = " + arg, Toast.LENGTH_LONG).show();
+            new Handler().postDelayed(() -> {
+                Log.i(TAG, "run: customReboot action!");
+                PowerActX.customReboot(arg, callback, force);
+            }, 1000);
+        } else {
+            EditText inputView = new EditText(this);
+            new AlertDialog.Builder(this).setTitle("reason?" + (force ? " force" : ""))
+                    .setView(inputView)
+                    .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                        String arg = inputView.getText().toString();
+                        PowerActX.customReboot(arg, callback, force);
+                    }).show();
         }
     }
 
@@ -239,8 +270,8 @@ public class MainActivity extends Activity {
         if (uiModeManager != null && uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION) {
             View focusedView = findViewById(R.id.root_layout).findFocus();
             ViewDebug.dumpCapturedView(TAG, focusedView);
-            if (focusedView instanceof Button) {
-                Log.d(TAG, "onKeyUp: [" + ((Button) focusedView).getText() + "] focused.");
+            if (focusedView instanceof TextView) {
+                Log.d(TAG, "onKeyUp: [" + ((TextView) focusedView).getText() + "] focused.");
             }
         }
         return super.onKeyUp(keyCode, event);

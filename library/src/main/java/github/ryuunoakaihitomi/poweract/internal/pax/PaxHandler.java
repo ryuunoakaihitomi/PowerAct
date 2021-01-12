@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Process;
+import android.text.TextUtils;
 
 import androidx.annotation.VisibleForTesting;
 
@@ -47,29 +48,35 @@ final class PaxHandler implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) {
         final CallbackHelper callbackHelper = CallbackHelper.of((Callback) args[0]);
+        final boolean force = (boolean) Utils.arraySafeGet(args, 1, false);
         final Handler mainHandler = new Handler(Looper.getMainLooper());
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2 && !Utils.isMainThread()) {
-            DebugLog.e(TAG, "invoke: Must be called in main thread before 18! application = " + sApplication);
-            mainHandler.post(callbackHelper::failed);
-            return null;
-        }
-        boolean force = false;
-        if (args.length == 2) force = (boolean) args[1];
-        final String forceString = Boolean.toString(force);
-        PaxExecApi cmdList = method.getAnnotation(PaxExecApi.class);
-        // Should not happen!
+        final PaxExecApi cmdList = method.getAnnotation(PaxExecApi.class);
+        // Should not happen! Keep for NPE lint of cmdList.value().
         if (cmdList == null) {
             DebugLog.e(TAG, "invoke: annotation?");
             mainHandler.post(callbackHelper::failed);
             return null;
         }
-        final String cmd = cmdList.value();
-        final String enableLog = String.valueOf(DebugLog.enabled);
+        String cmd = cmdList.value();
+        // Special case for custom reboot.
+        if (PaxExecutor.TOKEN_CUSTOM_REBOOT.equals(cmd)) {
+            String rebootArg = (String) Utils.arraySafeGet(args, 2, null);
+            if (!TextUtils.isEmpty(rebootArg)) cmd += "_" + rebootArg;
+        }
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2 && !Utils.isMainThread()) {
+            DebugLog.e(TAG, "invoke: Must be called in main thread before 18! application = " + sApplication);
+            mainHandler.post(callbackHelper::failed);
+            return null;
+        }
         if (ActivityManager.isUserAMonkey() && !PaxExecutor.TOKEN_LOCK_SCREEN.equals(cmd)) {
             DebugLog.e(TAG, "invoke: Reject monkey except for lock screen.");
             mainHandler.post(callbackHelper::failed);
             return null;
         }
+
+        final String enableLog = String.valueOf(DebugLog.enabled);
+        final String forceString = Boolean.toString(force);
 
         boolean shizukuSuccess = false;
         int shizukuServiceUid = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ? Process.INVALID_UID : Integer.MIN_VALUE;
@@ -104,11 +111,12 @@ final class PaxHandler implements InvocationHandler {
         }
 
         DebugLog.w(TAG, "invoke: Use alternative solution without Shizuku. args = " + Arrays.asList(shizukuServiceUid, force, cmd, enableLog));
+        String finalCmd = cmd;
         Executors.newSingleThreadExecutor().execute(() -> {
             DebugLog.d(TAG, "invoke: cmd " + Arrays.asList(cmdList, forceString, enableLog));
             final ScheduledExecutorService guideExecutor = Executors.newSingleThreadScheduledExecutor();
             guideExecutor.schedule(UserGuideRunnable::run, USER_GUIDE_DELAY_TIME_MILLIS, TimeUnit.MILLISECONDS);
-            boolean returnValue = Utils.runSuJavaWithAppProcess(sApplication, PaxExecutor.class, cmd, forceString, enableLog);
+            boolean returnValue = Utils.runSuJavaWithAppProcess(sApplication, PaxExecutor.class, finalCmd, forceString, enableLog);
             if (returnValue) mainHandler.post(() -> {
                 cancelUserGuide(guideExecutor);
                 ExternalUtils.disableExposedComponents(sApplication);

@@ -23,7 +23,7 @@ import github.ryuunoakaihitomi.poweract.internal.util.UserGuideRunnable;
 import github.ryuunoakaihitomi.poweract.internal.util.Utils;
 
 /**
- * Public utilities.
+ * Public utility class of PowerAct library.
  *
  * @since 1.0.8
  */

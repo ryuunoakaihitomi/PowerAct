@@ -1,7 +1,7 @@
 package github.ryuunoakaihitomi.poweract;
 
 /**
- * Callback to notify the result of the operation.
+ * Callback to notify the result of the operation when {@link PowerAct} or {@link PowerActX} being called.
  *
  * @since 1.0.0
  */
@@ -9,18 +9,15 @@ package github.ryuunoakaihitomi.poweract;
 public interface Callback {
 
     /**
-     * Denote the operation completed without any <b>unexpected exception or permission denial</b>.
-     * <p>
-     * But does not mean that it is successfully, it's not sure.
+     * Denote the operation completed without any <b>{@link Exception} or permission denial</b>.
      */
     default void done() {
     }
 
     /**
-     * Denote the operation completed failed.
-     * We'd better tell user it.
+     * Denote the operation completed unsuccessfully.
      *
-     * @see #done()
+     * @see #done() to check the possible cause.
      */
     void failed();
 }

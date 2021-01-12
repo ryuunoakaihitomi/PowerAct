@@ -19,6 +19,9 @@ public interface PaxInterface {
     @PaxExecApi(PaxExecutor.TOKEN_BOOTLOADER)
     void bootloader(Callback callback, boolean force);
 
+    @PaxExecApi(PaxExecutor.TOKEN_CUSTOM_REBOOT)
+    void customReboot(Callback callback, boolean force, String arg);
+
     @PaxExecApi(PaxExecutor.TOKEN_SAFE_MODE)
     void safeMode(Callback callback, boolean force);
 

@@ -22,6 +22,7 @@ import android.view.accessibility.AccessibilityManager;
 
 import androidx.annotation.AnyThread;
 import androidx.annotation.ColorInt;
+import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.WorkerThread;
 
@@ -91,6 +92,7 @@ public class Utils {
         final String
                 shellExportClassPath = "export CLASSPATH=" + packageResourcePath,
                 shellExecAppProcess = "app_process " + cmdDir + " " + className + " " + argLine;
+        DebugLog.i(TAG, "runSuJavaWithAppProcess: commands " + Arrays.asList(shellExportClassPath, shellExecAppProcess));
         if (LibraryCompat.isLibsuAvailable()) {
             final Shell.Result result = Shell.su(shellExportClassPath, shellExecAppProcess).exec();
             final boolean success = result.isSuccess();
@@ -105,7 +107,6 @@ public class Utils {
         }
 
         DebugLog.w(TAG, "runSuJavaWithAppProcess: Use legacy solution. Please import libsu to get better performance.");
-        DebugLog.d(TAG, "runSuJavaWithAppProcess: commands: " + Arrays.asList(shellExportClassPath, shellExecAppProcess));
         Process suProcess = null;
         int exitCode = Integer.MIN_VALUE;
         try {
@@ -310,5 +311,12 @@ public class Utils {
             }
         }
         return false;
+    }
+
+    /**
+     * Avoid {@link ArrayIndexOutOfBoundsException}.
+     */
+    public static <T> T arraySafeGet(@NonNull T[] array, @IntRange(from = 0) final int index, T defaultValue) {
+        return array.length >= index + 1 ? array[index] : defaultValue;
     }
 }

@@ -13,7 +13,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.provider.Settings;
-import android.util.AndroidRuntimeException;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
@@ -150,29 +149,16 @@ public final class PaFragment extends Fragment {
                         }
                     }
                 }
-                /*
-                 * It's just a waste of time implementing some additional demands with these APIs.
-                 *
-                 * @see DevicePolicyManager#setSecureSetting(ComponentName, String, String)
-                 * @see DevicePolicyManager#setPermittedAccessibilityServices(ComponentName, List)
-                 * @see DevicePolicyManager#setUninstallBlocked(ComponentName, String, boolean)
-                 */
-                try {
-                    // If you disabled PaService, and try to enable it.
-                    // You cannot find it in Accessibility Settings instantly.
-                    DebugLog.d(TAG, "requestAction: Try to enable Accessibility Service...");
+
+                // If you disabled PaService, and try to enable it.
+                // You cannot find it in Accessibility Settings instantly.
+                DebugLog.d(TAG, "requestAction: Try to enable Accessibility Service...");
+                Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+                startActivitySafely(intent, false, () -> {
                     UserGuideRunnable.run();
-                    Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
-                    startActivity(intent);
                     mHasRequestedAccessibility = true;
                     mUserDelayLogger.addSplit("accessibility service");
-                } catch (ActivityNotFoundException e) {
-                    // ActivityNotFoundException: Settings.ACTION_ACCESSIBILITY_SETTINGS
-                    failed(e.getMessage());
-                } /* For some weird env. */ catch (SecurityException e) {
-                    DebugLog.e(TAG, "requestAction: ", e);
-                    failed("SecurityException");
-                }
+                });
             } else {
                 requireAccessibilityAction();
             }
@@ -215,19 +201,28 @@ public final class PaFragment extends Fragment {
             } else {
                 Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
                 intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, mAdminReceiverComponentName);
+                startActivitySafely(intent, true, () -> mUserDelayLogger.addSplit("device admin"));
+            }
+        }
+    }
+
+    private void startActivitySafely(@NonNull Intent intent, boolean hasResult, Runnable onSuccessCallback) {
+        try {
+            if (hasResult) {
                 mRequestCode = Utils.randomNaturalNumber();
-                try {
-                    startActivityForResult(intent, mRequestCode);
-                    mUserDelayLogger.addSplit("device admin");
-                } catch (ActivityNotFoundException e) {
-                    // ActivityNotFoundException: DevicePolicyManager.EXTRA_DEVICE_ADMIN
-                    failed(e.getMessage());
-                } catch (AndroidRuntimeException e) {
-                    // Special env: Xiaomi DuoKan E-reader (Allwinner EPD106)
-                    // Unknown error code -1 when starting Intent { act=android.app.action.ADD_DEVICE_ADMIN (has extras) }
-                    DebugLog.w(TAG, e);
-                    failed(e.getMessage());
-                }
+                startActivityForResult(intent, mRequestCode);
+            } else {
+                startActivity(intent);
+            }
+            onSuccessCallback.run();
+        } catch (Throwable t) {
+            // ANE is a expected exception. JavaDoc of Settings.ACTION_ACCESSIBILITY_SETTINGS:
+            // "In some cases, a matching Activity may not exist, so ensure you safeguard against this."
+            if (t instanceof ActivityNotFoundException) {
+                failed(intent.getAction() + " not found!");
+            } else {
+                DebugLog.e(TAG, "startActivitySafely: WEIRD. But we have avoided it.", t);
+                failed(t.getMessage());
             }
         }
     }

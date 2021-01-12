@@ -64,10 +64,12 @@ public class PowerButtonTest extends BaseTest {
         await().atMost(ONE_SECOND).until(() -> buttonAction.getAndSet(0) == onClick);
         attemptLockScreenRequestUi();
         // Test: Long click
+        powerButton.perform(longClick());
+        await().atMost(ONE_SECOND).until(() -> buttonAction.get() == onLongClick);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            powerButton.perform(longClick());
-            await().atMost(ONE_SECOND).until(() -> buttonAction.get() == onLongClick);
             attemptPowerDialogRequestUi();
+        } else {
+            attemptLockScreenRequestUi();
         }
     }
 

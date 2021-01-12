@@ -12,6 +12,10 @@ import static android.os.Build.VERSION_CODES.Q;
 @TargetApi(Q)
 public interface IPowerManager extends IInterface {
 
+    // 14- -> 16
+    // Has different reason code group.
+//    void goToSleepWithReason(long time, int reason);
+
     // 14- -> 16     jb-mr0-release
     @TargetApi(ICE_CREAM_SANDWICH)
     void goToSleep(long time);

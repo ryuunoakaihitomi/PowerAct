@@ -24,7 +24,7 @@ import github.ryuunoakaihitomi.poweract.internal.util.Utils;
 /**
  * A {@link Button} acts like a real power button.
  * <p>
- * Click to lock screen, and long click to show system power dialog.
+ * Click to lock screen, and long click to show system power dialog if available.
  * In order to prevent the behavior from being destroyed, the class cannot be inherited.
  *
  * @see PowerAct#lockScreen(Activity)
@@ -59,7 +59,14 @@ public final class PowerButton extends Button {
 
         /* Show power dialog by long click. */
         final OnLongClickListener showPowerDialogListener = v -> {
-            PowerAct.showPowerDialog(contextToActivityNoThrow(getContext()));
+            Activity activity = contextToActivityNoThrow(getContext());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                PowerAct.showPowerDialog(activity);
+            } else {
+                DebugLog.e(TAG, "PowerButton: Showing power dialog is not supported before 21!" +
+                        " downgrade to lockScreen()...");
+                PowerAct.lockScreen(activity);
+            }
             if (mOnLongClickListener != null) {
                 boolean ret = mOnLongClickListener.onLongClick(v);
                 DebugLog.d(TAG, "onLongClick: onLongClick(v) -> " + ret);

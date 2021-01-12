@@ -16,4 +16,5 @@
     <string name="safe_mode">Safe Mode</string>
     <string name="soft_reboot">Soft Reboot</string>
     <string name="restart_system_ui">Restart System UI</string>
+    <string name="custom_reboot">Custom Reboot</string>
 </resources>

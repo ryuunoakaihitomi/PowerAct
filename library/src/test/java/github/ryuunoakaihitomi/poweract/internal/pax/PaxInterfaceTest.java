@@ -43,6 +43,8 @@ public class PaxInterfaceTest extends BaseTest {
             final int count = method.getParameterCount();
             final Parameter[] parameters = method.getParameters();
             switch (count) {
+                case 3:
+                    assertEquals(String.class, parameters[2].getType());
                 case 2:
                     /* force */
                     assertEquals(boolean.class, parameters[1].getType());

@@ -1,7 +1,9 @@
 package github.ryuunoakaihitomi.poweract;
 
-import android.app.Activity;
 import android.os.Build;
+import android.text.TextUtils;
+
+import androidx.annotation.RequiresApi;
 
 import github.ryuunoakaihitomi.poweract.internal.Initializer;
 import github.ryuunoakaihitomi.poweract.internal.pax.PaxConsole;
@@ -10,12 +12,16 @@ import github.ryuunoakaihitomi.poweract.internal.util.CallbackHelper;
 import github.ryuunoakaihitomi.poweract.internal.util.DebugLog;
 
 /**
- * Advanced PowerAct to control the device's power state more directly,
- * and can be invoked everywhere without {@link Activity},
- * but requires <b>root</b> permission.
+ * This class provides advanced functions of this library.
  * <p>
- * Note: It will disable all the components that {@link PowerAct} depends on.
- * Once disabled, they cannot be enabled instantly.
+ * But it requires <b>root</b> privilege. We may have to use {@link PowerAct} instead in most general release environments.
+ * <p>
+ * <ul><li>
+ * It will automatically make all the components that {@link PowerAct} depends on invisible.
+ * {@link PowerAct} may not instantly be available after calling it.
+ * </li><li>
+ * It is recommend to integrate <a href="https://shizuku.rikka.app/">Shizuku</a> to make it transient.
+ * </li></ul>
  *
  * @since 1.0.6
  */
@@ -32,48 +38,50 @@ public class PowerActX {
         Initializer.notify(TAG);
     }
 
+    /* -------
+     LOCK SCREEN
+     ------- */
+
     /**
-     * Go to see {@link #lockScreen(Callback)}.
+     * {@link #lockScreen(Callback)}
      */
     public static void lockScreen() {
         lockScreen(null);
     }
 
     /**
-     * Lock the device without some {@link PowerAct#lockScreen(Activity, Callback)}'s restriction:
-     * the user can unlock by biometric sensors before 28.
-     * Since 28, We don't need to keep the {@link android.accessibilityservice.AccessibilityService} alive in the background.
-     * <p>
-     * Although it's very <b>slow</b> (In some environments, the user may need to wait a second or longer) in most cases,
-     * but we can integrate with <a href="https://shizuku.rikka.app/">Shizuku</a>
-     * to make it as fast as {@link PowerAct#lockScreen(Activity, Callback)}.
+     * Make the device lock immediately.
      *
-     * @param callback As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>callback</code>.
+     * @param callback {@link Callback}
      */
     public static void lockScreen(Callback callback) {
         PaxConsole.getInterface().lockScreen(callback);
     }
 
+    /* -------
+    SHUT DOWN
+     ------- */
+
     /**
-     * Go to see {@link #shutdown(Callback, boolean)}.
+     * {@link #shutdown(Callback, boolean)}
      */
     public static void shutdown() {
         shutdown(null);
     }
 
     /**
-     * Go to see {@link #shutdown(Callback, boolean)}.
+     * {@link #shutdown(Callback, boolean)}
      *
-     * @param callback As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>callback</code>.
+     * @param callback {@link Callback}
      */
     public static void shutdown(Callback callback) {
         shutdown(callback, false);
     }
 
     /**
-     * Go to see {@link #shutdown(Callback, boolean)}.
+     * {@link #shutdown(Callback, boolean)}
      *
-     * @param force As {@link #shutdown(Callback, boolean)}'s <code>force</code>.
+     * @param force f
      * @since 1.0.10
      */
     public static void shutdown(boolean force) {
@@ -81,14 +89,15 @@ public class PowerActX {
     }
 
     /**
-     * As its name.
-     * <b>Can only be forced before 17.</b>
+     * Shut down the device.
+     * <p>
+     * Can only be forced before 17 because of the lack of the appropriate system API.
      *
-     * @param callback As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>callback</code>.
-     * @param force    Be true for low-level and instant shutdown process.
-     *                 While it's faster than the normal way, there may be a <b>safety risk</b>.
+     * @param callback {@link Callback}
+     * @param force    Be true for low-level shutdown process.
+     *                 While it's the fastest way, there may be a <b>safety risk</b>
+     *                 that can corrupt data or even damage hardware.
      *                 <b>KEEP FALSE UNTIL YOU KNOW WHAT YOU DO.</b>
-     * @see <a href="https://en.wikipedia.org/wiki/Shutdown_(computing)">Shutdown (computing)</a>
      */
     public static void shutdown(Callback callback, boolean force) {
         PaxInterface pi = PaxConsole.getInterface();
@@ -100,26 +109,30 @@ public class PowerActX {
         }
     }
 
+    /* -------
+    REBOOT
+     ------- */
+
     /**
-     * Go to see {@link #reboot(Callback, boolean)}.
+     * {@link #reboot(Callback, boolean)}
      */
     public static void reboot() {
         reboot(null);
     }
 
     /**
-     * Go to see {@link #reboot(Callback, boolean)}.
+     * {@link #reboot(Callback, boolean)}
      *
-     * @param callback As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>callback</code>.
+     * @param callback {@link Callback}
      */
     public static void reboot(Callback callback) {
         reboot(callback, false);
     }
 
     /**
-     * Go to see {@link #reboot(Callback, boolean)}.
+     * {@link #reboot(Callback, boolean)}
      *
-     * @param force As {@link #shutdown(Callback, boolean)}'s <code>force</code>.
+     * @param force f
      * @since 1.0.10
      */
     public static void reboot(boolean force) {
@@ -129,33 +142,37 @@ public class PowerActX {
     /**
      * Reboot the device.
      *
-     * @param callback As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>callback</code>.
-     * @param force    As {@link #shutdown(Callback, boolean)}'s <code>force</code>.
+     * @param callback {@link Callback}
+     * @param force    {@link #shutdown(Callback, boolean)}
      */
     public static void reboot(Callback callback, boolean force) {
         PaxConsole.getInterface().reboot(callback, force);
     }
 
+    /* -------
+    RECOVERY
+     ------- */
+
     /**
-     * Go to see {@link #recovery(Callback, boolean)}.
+     * {@link #recovery(Callback, boolean)}
      */
     public static void recovery() {
         recovery(null);
     }
 
     /**
-     * Go to see {@link #recovery(Callback, boolean)}.
+     * {@link #recovery(Callback, boolean)}
      *
-     * @param callback As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>callback</code>.
+     * @param callback {@link Callback}
      */
     public static void recovery(Callback callback) {
         recovery(callback, false);
     }
 
     /**
-     * Go to see {@link #recovery(Callback, boolean)}.
+     * {@link #recovery(Callback, boolean)}
      *
-     * @param force As {@link #shutdown(Callback, boolean)}'s <code>force</code>.
+     * @param force f
      * @since 1.0.10
      */
     public static void recovery(boolean force) {
@@ -163,35 +180,40 @@ public class PowerActX {
     }
 
     /**
-     * Reboot the device to recovery.
+     * Reboot the device to recovery system.
      *
-     * @param callback As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>callback</code>.
-     * @param force    As {@link #shutdown(Callback, boolean)}'s <code>force</code>.
+     * @param callback {@link Callback}
+     * @param force    {@link #shutdown(Callback, boolean)}
+     * @see android.os.RecoverySystem
      */
     public static void recovery(Callback callback, boolean force) {
         PaxConsole.getInterface().recovery(callback, force);
     }
 
+    /* -------
+    BOOTLOADER
+     ------- */
+
     /**
-     * Go to see {@link #bootloader(Callback, boolean)}.
+     * {@link #bootloader(Callback, boolean)}
      */
     public static void bootloader() {
         bootloader(null);
     }
 
     /**
-     * Go to see {@link #bootloader(Callback, boolean)}.
+     * {@link #bootloader(Callback, boolean)}
      *
-     * @param callback As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>callback</code>.
+     * @param callback {@link Callback}
      */
     public static void bootloader(Callback callback) {
         bootloader(callback, false);
     }
 
     /**
-     * Go to see {@link #bootloader(Callback, boolean)}.
+     * {@link #bootloader(Callback, boolean)}
      *
-     * @param force As {@link #shutdown(Callback, boolean)}'s <code>force</code>.
+     * @param force f
      * @since 1.0.10
      */
     public static void bootloader(boolean force) {
@@ -200,50 +222,117 @@ public class PowerActX {
 
     /**
      * Reboot the device to bootloader.
+     * <p>
      * In this mode, we can control the device with <code>fastboot</code> command-line tool.
      *
-     * @param callback As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>callback</code>.
-     * @param force    As {@link #shutdown(Callback, boolean)}'s <code>force</code>.
+     * @param callback {@link Callback}
+     * @param force    {@link #safeMode(Callback, boolean)}
      */
     public static void bootloader(Callback callback, boolean force) {
         PaxConsole.getInterface().bootloader(callback, force);
     }
 
+    /* -------
+    CUSTOM REBOOT
+     ------- */
+
     /**
-     * Go to see {@link #safeMode(Callback, boolean)}.
+     * {@link #customReboot(String, Callback, boolean)}
+     *
+     * @param arg a
+     * @since 1.3.0
      */
+    public static void customReboot(String arg) {
+        customReboot(arg, false);
+    }
+
+    /**
+     * {@link #customReboot(String, Callback, boolean)}
+     *
+     * @param arg      a
+     * @param callback {@link Callback}
+     * @since 1.3.0
+     */
+    public static void customReboot(String arg, Callback callback) {
+        customReboot(arg, callback, false);
+    }
+
+    /**
+     * {@link #customReboot(String, Callback, boolean)}
+     *
+     * @param arg   a
+     * @param force f
+     * @since 1.3.0
+     */
+    public static void customReboot(String arg, boolean force) {
+        customReboot(arg, null, false);
+    }
+
+    /**
+     * {@link #reboot(Callback, boolean)} with a additional argument.
+     * It is used for some specific environment.
+     * <p>
+     * For example, devices with Qualcomm SoC have a special boot mode called <b>Emergency Download</b>
+     * that allows OEMs to force-flash firmware files.
+     * In this situation, we can enter this boot mode with <b>"edl"</b> argument.
+     *
+     * @param arg      Additional argument for reboot command in shell. <pre>reboot [option]</pre>
+     *                 If it is empty, just like {{@link #reboot(Callback, boolean)}}.
+     * @param callback {@link Callback}
+     * @param force    {@link #shutdown(Callback, boolean)}
+     * @since 1.3.0
+     */
+    public static void customReboot(String arg, Callback callback, boolean force) {
+        if (TextUtils.isEmpty(arg)) {
+            DebugLog.w(TAG, "customReboot: customReboot() with empty argument!" +
+                    " Please consider to use reboot() instead.");
+        }
+        PaxConsole.getInterface().customReboot(callback, force, arg);
+    }
+
+    /* -------
+    SAFE MODE
+     ------- */
+
+    /**
+     * {@link #safeMode(Callback, boolean)}
+     */
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public static void safeMode() {
         safeMode(null);
     }
 
     /**
-     * Go to see {@link #safeMode(Callback, boolean)}.
+     * {@link #safeMode(Callback, boolean)}
      *
-     * @param callback As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>callback</code>.
+     * @param callback {@link Callback}
      */
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public static void safeMode(Callback callback) {
         safeMode(callback, false);
     }
 
     /**
-     * Go to see {@link #safeMode(Callback, boolean)}.
+     * {@link #safeMode(Callback, boolean)}
      *
-     * @param force As {@link #shutdown(Callback, boolean)}'s <code>force</code>.
+     * @param force f
      * @since 1.0.10
      */
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public static void safeMode(boolean force) {
         safeMode(null, force);
     }
 
     /**
      * Reboot the device to safe mode.
-     * In this mode, all the third-part apps will be disabled.
-     * Useless before 16.
+     * <p>
+     * In this mode, all the third party apps will be disabled.
      *
-     * @param callback As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>callback</code>.
-     * @param force    As {@link #shutdown(Callback, boolean)}'s <code>force</code>.
+     * @param callback {@link Callback}
+     * @param force    {@link #shutdown(Callback, boolean)}
      * @see <a href="https://support.google.com/android/answer/7665064?hl=en">Find problem apps by rebooting to safe mode on Android</a>
      */
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public static void safeMode(Callback callback, boolean force) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             PaxConsole.getInterface().safeMode(callback, force);
@@ -254,8 +343,12 @@ public class PowerActX {
         }
     }
 
+    /* -------
+    SOFT REBOOT
+     ------- */
+
     /**
-     * Go to see {@link #softReboot(Callback)}.
+     * {@link #softReboot(Callback)}
      */
     public static void softReboot() {
         softReboot(null);
@@ -264,15 +357,18 @@ public class PowerActX {
     /**
      * Kill and restart the software system while the hardware parts are still running.
      *
-     * @param callback As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>callback</code>.
-     * @see <a href="https://developer.android.com/reference/android/os/PowerManager#isRebootingUserspaceSupported()">Rebooting userspace</a>
+     * @param callback {@link Callback}
      */
     public static void softReboot(Callback callback) {
         PaxConsole.getInterface().softReboot(callback);
     }
 
+    /* -------
+    RESTART SYSTEM UI
+     ------- */
+
     /**
-     * Go to see {@link #restartSystemUi(Callback)}.
+     * {@link #restartSystemUi(Callback)}
      *
      * @since 1.2.0
      */
@@ -285,7 +381,7 @@ public class PowerActX {
      * <p>
      * It was used to fix the bugs about ui misplaced or not ready in ancient times, but today's system ui rarely have such bugs.
      *
-     * @param callback As {@link PowerAct#lockScreen(Activity, Callback)}'s <code>callback</code>.
+     * @param callback {@link Callback}
      * @since 1.2.0
      */
     public static void restartSystemUi(Callback callback) {

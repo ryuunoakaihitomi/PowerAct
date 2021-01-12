@@ -2,13 +2,15 @@
 
 ## Introduction
 
+*Press power button, not by hand, but by code.*
+
 An Android library that can manipulate power-related actions with just few lines of code.
 
 (Using [`Shizuku`](https://shizuku.rikka.app/), `AccessibilityService`, `DevicePolicyManager`, and root)
 
 ## Usage
 
-### Download
+### Import
 
 [ ![If the badge is not shown, click here to check the latest version.](https://api.bintray.com/packages/ryuunoakaihitomi/maven/poweract/images/download.svg) ](https://bintray.com/ryuunoakaihitomi/maven/poweract/_latestVersion)
 
@@ -25,15 +27,13 @@ dependencies {
     // (Optional) Bring better performance to use root shell.
     // https://github.com/topjohnwu/libsu
     implementation "com.github.topjohnwu.libsu:core:3.0.2"
-    // (Optional) A more elegant and direct way of using system API.
+    // (Optional) A more elegant and direct way of using privileged system API.
     // NOTE: Need more steps to integrate it.
     // https://github.com/RikkaApps/Shizuku/blob/master/README.md
     implementation 'moe.shizuku.privilege:api:4.2.1'
 }
     
 ```
-
-### Configure
 
 [Use Java 8 language features and APIs](https://developer.android.com/studio/write/java8-support)
 
@@ -65,7 +65,7 @@ PowerAct.showPowerDialog(activity, callback);
             android:layout_height="wrap_content" />
 */
 PowerButton powerButton = findViewById(R.id.pwrBtn);
-// Guide user to grant the accessibility service permission.
+// Guide user to grant the accessibility service permission if necessary.
 ExternalUtils.setUserGuideRunnable(runnable);
 ```
 
@@ -86,38 +86,18 @@ Class `PowerActX` provides advanced power actions, but it only for **rooted** en
 Nevertheless, if you only use the library without `PowerAct` and `PowerButton` class, you don't need to create `poweract_config.xml`.
 Use `ExternalUtils.disableExposedComponents()` to make the exposed components for `PowerAct` invisible.
 
-If you want to know more...
-* Demo app's source code. For example, [MainActivity.java](app/src/main/java/demo/power_act/MainActivity.java).
-* Click the download badge, download the `*javadoc.jar` and decompress it. ~~(excluding the xml's config)~~
-
 ## Compatibility
 
 **In theory, the library should not throw an exception at any time.**
 
-### PowerAct
-
-API level|Lock screen|Show system power dialog
-:-|-|-
-14 ~ 20 |√|×
-21 ~ 22 |√|√
-23 ~ 27 |R|√
-28+|√+|√
-
-> √+ `Can be unlocked by fingerprint`
-> R `Like √+, but depends on Shizuku`
-
 ### PowerActX
 
-There are few compatibility issues in `PowerActX`. 
-
-> Safe mode cannot work before 16,
-> and shutdown before 17 can only be forced.
 > PowerActX class must be called in main thread before 18.
 
 ## License
 
 ```text
-   Copyright 2020 ZQY
+   Copyright 2020-2021 ZQY
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.

@@ -9,6 +9,8 @@
 
     <application>
 
+        <!-- Comment this block if you encountered
+         ClassNotFoundException: Didn't find class "moe.shizuku.api.ShizukuProvider" -->
         <provider
             android:name="moe.shizuku.api.ShizukuProvider"
             android:authorities="${applicationId}.shizuku"
@@ -17,7 +19,9 @@
             android:multiprocess="false"
             android:permission="android.permission.INTERACT_ACROSS_USERS_FULL" />
 
-        <activity android:name=".PlaygroundActivity" />
+        <activity
+            android:name=".PlaygroundActivity"
+            android:exported="true" />
 
         <meta-data
             android:name="xposedmodule"

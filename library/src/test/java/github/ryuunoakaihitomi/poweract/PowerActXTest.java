@@ -8,6 +8,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import github.ryuunoakaihitomi.poweract.test.BaseTest;
@@ -15,6 +16,7 @@ import github.ryuunoakaihitomi.poweract.test.BaseTest;
 import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -67,6 +69,11 @@ public class PowerActXTest extends BaseTest {
     }
 
     @Test
+    public void customReboot() {
+        checkAndCount("customReboot", true);
+    }
+
+    @Test
     public void safeMode() {
         checkAndCount("safeMode", true);
     }
@@ -95,9 +102,14 @@ public class PowerActXTest extends BaseTest {
                     i("null param");
                     break;
                 case 1:
-                    i("param: [Callback]");
-                    assertEquals(Callback.class, m.getParameters()[0].getType());
+                    final Class<?> type = m.getParameters()[0].getType();
+                    i("param: [Callback] or [arg] " + type.getSimpleName());
+                    assertThat(type, anyOf(is(Callback.class), is(String.class)));
                     break;
+                case 2:
+                    i("param: [arg, Callback]");
+                    assertEquals(Callback.class, m.getParameters()[0].getType());
+                    assertEquals(String.class, m.getParameters()[1].getType());
                 default:
                     fail("Incorrect parameter count in force method.");
             }
@@ -116,16 +128,29 @@ public class PowerActXTest extends BaseTest {
                     break;
                 case 1:
                     final Class<?> type = m.getParameters()[0].getType();
-                    i("param(boolean -> force): " + type.getSimpleName());
+                    i("param(boolean -> force, String -> arg, Callback): " + type.getSimpleName());
                     assertThat(true, anyOf(
                             equalTo(type.equals(boolean.class)),
-                            equalTo(type.equals(Callback.class))));
+                            equalTo(type.equals(Callback.class)),
+                            equalTo(type.equals(String.class)))
+                    );
                     break;
                 case 2:
-                    i("param: [Callback, force]");
+                    i("param: CB, SB, SC");
                     final Parameter[] parameters = m.getParameters();
-                    assertEquals(Callback.class, parameters[0].getType());
-                    assertEquals(boolean.class, parameters[1].getType());
+                    Class<?>[] types = new Class<?>[]{parameters[0].getType(), parameters[1].getType()};
+                    assertThat(types, anyOf(
+                            is(new Class<?>[]{Callback.class, boolean.class}),
+                            is(new Class<?>[]{String.class, boolean.class}),
+                            is(new Class<?>[]{String.class, Callback.class})));
+                    i("! REPORT: " + Arrays.toString(types));
+                    break;
+                case 3:
+                    i("param: [arg, Callback, force]");
+                    List<Class<?>> assertTypes = Arrays.asList(String.class, Callback.class, boolean.class);
+                    for (int j = 0; j < m.getParameterCount(); j++) {
+                        assertEquals(assertTypes.get(j), m.getParameters()[j].getType());
+                    }
                     break;
                 default:
                     fail("Incorrect parameter count in force method.");

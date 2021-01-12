@@ -13,6 +13,9 @@ import android.os.SystemService;
 import android.text.TextUtils;
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
@@ -33,6 +36,7 @@ class PaxExecutor {
             TOKEN_SHUTDOWN = "s",
             TOKEN_RECOVERY = "re",
             TOKEN_BOOTLOADER = "bl",
+            TOKEN_CUSTOM_REBOOT = "cr",
             TOKEN_SAFE_MODE = "sm",
             TOKEN_SOFT_REBOOT = "sr",
             TOKEN_KILL_SYSTEM_UI = "ksu";
@@ -59,7 +63,8 @@ class PaxExecutor {
         if (args != null && args.length == 3 && !TextUtils.isEmpty(args[0])) {
             String token = args[0];
             boolean force = Boolean.parseBoolean(args[1]);
-            if (Process.myUid() == Process.ROOT_UID) {
+            final int myUid = Process.myUid();
+            if (myUid == Process.ROOT_UID) {
                 DebugLog.enabled = Boolean.parseBoolean(args[2]);
                 DebugLog.i(TAG, "main0: Run in root env.");
                 SystemCompat.setPowerBinder(ServiceManager.getService(Context.POWER_SERVICE));
@@ -70,12 +75,9 @@ class PaxExecutor {
                     SystemCompat.goToSleep();
                     break;
 
+                case TOKEN_CUSTOM_REBOOT:
                 case TOKEN_REBOOT:
-                    if (force) {
-                        SystemCompat.execShell("reboot");
-                    } else {
-                        SystemCompat.reboot(null);
-                    }
+                    reboot(null, force);
                     break;
 
                 case TOKEN_SHUTDOWN:
@@ -96,19 +98,11 @@ class PaxExecutor {
                 // setprop sys.powerctl reboot,recovery ?
 
                 case TOKEN_RECOVERY:
-                    if (force) {
-                        SystemCompat.execShell("reboot recovery");
-                    } else {
-                        SystemCompat.reboot("recovery");
-                    }
+                    reboot("recovery", force);
                     break;
 
                 case TOKEN_BOOTLOADER:
-                    if (force) {
-                        SystemCompat.execShell("reboot bootloader");
-                    } else {
-                        SystemCompat.reboot("bootloader");
-                    }
+                    reboot("bootloader", force);
                     break;
 
                 case TOKEN_SAFE_MODE:
@@ -123,7 +117,7 @@ class PaxExecutor {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                             SystemCompat.rebootSafeMode();
                         } else {
-                            if (Process.myUid() != Process.ROOT_UID) {
+                            if (myUid != Process.ROOT_UID) {
                                 // Test: Shizuku?
                                 try {
                                     ShizukuSystemProperties.set(REBOOT_SAFEMODE_PROPERTY, one);
@@ -156,7 +150,7 @@ class PaxExecutor {
                     break;
 
                 case TOKEN_KILL_SYSTEM_UI:
-                    if (Process.myUid() != Process.ROOT_UID) {
+                    if (myUid != Process.ROOT_UID) {
                         throw new IllegalStateException("TOKEN_KILL_SYSTEM_UI must be called in root env!");
                     }
 
@@ -188,7 +182,6 @@ class PaxExecutor {
 
                             /* Show all process info, instead of ps */
                             if (BuildConfig.DEBUG) {
-                                DebugLog.d(TAG, "main: ---- RunningAppProcessInfo " + Arrays.asList(info.processName, info.pid));
                                 Map<String, Object> infoMap = new TreeMap<>();
                                 infoMap.put("uid", info.uid);
                                 infoMap.put("pkgList", Arrays.toString(info.pkgList));
@@ -200,8 +193,13 @@ class PaxExecutor {
                                 infoMap.put("lastTrimLevel", Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
                                         ? Utils.getClassIntApiConstantString(ComponentCallbacks2.class, "TRIM", info.lastTrimLevel)
                                         : "Unsupported before 16");
-                                for (Map.Entry<String, Object> entry : infoMap.entrySet()) {
-                                    DebugLog.d(TAG, "main0: " + entry.getKey() + " = " + entry.getValue());
+                                // Make output beautiful without parsing myself.
+                                JSONObject jsonOutput = new JSONObject(infoMap);
+                                try {
+                                    DebugLog.d(TAG, "main0: RunningAppProcessInfo " +
+                                            Arrays.asList(info.processName, info.pid) + "\n" +
+                                            jsonOutput.toString(1));
+                                } catch (JSONException ignore) {
                                 }
                             }
                         }
@@ -211,10 +209,25 @@ class PaxExecutor {
                     break;
 
                 default:
+                    if (token.startsWith(TOKEN_CUSTOM_REBOOT)) {
+                        String customRebootOption = token.split("_")[1];
+                        reboot(customRebootOption, force);
+                        return;
+                    }
                     throw new IllegalArgumentException("undefined token!");
             }
         } else {
             throw new IllegalArgumentException(args == null ? "null" : TextUtils.join(" ", args));
+        }
+    }
+
+    private static void reboot(String reason, boolean force) {
+        if (force) {
+            String command = "reboot" + (TextUtils.isEmpty(reason) ? null : (" " + reason));
+            DebugLog.i(TAG, "reboot: cmd = " + command);
+            SystemCompat.execShell(command);
+        } else {
+            SystemCompat.reboot(reason);
         }
     }
 }
