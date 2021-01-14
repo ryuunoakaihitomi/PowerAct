@@ -184,6 +184,8 @@ public final class PaService extends AccessibilityService {
         DebugLog.v(TAG, "onServiceConnected");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             IntentFilter intentFilter = new IntentFilter();
+            // Only for ordered broadcast.
+            //intentFilter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY - 1);
             intentFilter.addAction(LOCK_SCREEN_ACTION);
             intentFilter.addAction(POWER_DIALOG_ACTION);
             intentFilter.addAction(DISABLE_SERVICE_ACTION);
@@ -191,6 +193,9 @@ public final class PaService extends AccessibilityService {
             if (getResources().getBoolean(R.bool.poweract_accessibility_service_show_foreground_notification)) {
                 loadForegroundNotification();
             }
+            // I have no more other way to prevent it from being killed.
+            // So add this line just as masturbation.
+            Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
         } else {
             DebugLog.w(TAG, "onServiceConnected: Useless service enabled before 21.");
             Utils.setComponentEnabled(getApplicationContext(), this.getClass(), false);

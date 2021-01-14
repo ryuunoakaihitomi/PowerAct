@@ -50,7 +50,7 @@ public final class PaFragment extends Fragment {
 
     private Callback mCallback;
 
-    private DevicePolicyManager mDevicePolicyManager;
+    private DevicePolicyManager mDpm;
     private ComponentName mAdminReceiverComponentName;
     private Activity mAssociatedActivity;
 
@@ -69,8 +69,8 @@ public final class PaFragment extends Fragment {
 
     private void initialize() {
         mAssociatedActivity = getActivity();
-        if (mDevicePolicyManager == null) {
-            mDevicePolicyManager = (DevicePolicyManager) mAssociatedActivity.getSystemService(Context.DEVICE_POLICY_SERVICE);
+        if (mDpm == null) {
+            mDpm = (DevicePolicyManager) mAssociatedActivity.getSystemService(Context.DEVICE_POLICY_SERVICE);
         }
         if (mAdminReceiverComponentName == null) {
             Utils.setComponentEnabled(mAssociatedActivity, PaReceiver.class, true);
@@ -111,10 +111,10 @@ public final class PaFragment extends Fragment {
             return;
         }
 
-        boolean isAdminActive = mDevicePolicyManager.isAdminActive(mAdminReceiverComponentName);
+        boolean isAdminActive = mDpm.isAdminActive(mAdminReceiverComponentName);
         boolean isDeviceOwner = false;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            isDeviceOwner = mDevicePolicyManager.isDeviceOwnerApp(activity.getPackageName());
+            isDeviceOwner = mDpm.isDeviceOwnerApp(activity.getPackageName());
         }
         /* The action AccessibilityService must be used.
            Show power dialog and lock screen by it. (>=28) */
@@ -127,7 +127,7 @@ public final class PaFragment extends Fragment {
             // The device admin is no longer useful.
             if (isAdminActive && mAction == PaConstants.ACTION_LOCK_SCREEN) {
                 // lockScreen & adminActive, remove admin automatically.
-                mDevicePolicyManager.removeActiveAdmin(mAdminReceiverComponentName);
+                mDpm.removeActiveAdmin(mAdminReceiverComponentName);
             }
             if (!Utils.isAccessibilityServiceEnabled(activity, PaService.class)) {
                 if (!Utils.getComponentEnabled(activity, PaService.class)) {
@@ -180,7 +180,7 @@ public final class PaFragment extends Fragment {
                 if (isDeviceOwner) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         try {
-                            mDevicePolicyManager.reboot(mAdminReceiverComponentName);
+                            mDpm.reboot(mAdminReceiverComponentName);
                             done();
                         }
                         // No active admin ComponentInfo{..}
@@ -196,7 +196,7 @@ public final class PaFragment extends Fragment {
             }
             // lock screen by dpm.
             else if (isAdminActive) {
-                mDevicePolicyManager.lockNow();
+                mDpm.lockNow();
                 done();
             } else {
                 Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
@@ -251,8 +251,8 @@ public final class PaFragment extends Fragment {
         if (mRequestCode == requestCode) {
             mUserDelayLogger.addSplit("return from device admin");
             if (resultCode == Activity.RESULT_OK) {
-                if (mDevicePolicyManager.isAdminActive(mAdminReceiverComponentName)) {
-                    mDevicePolicyManager.lockNow();
+                if (mDpm.isAdminActive(mAdminReceiverComponentName)) {
+                    mDpm.lockNow();
                     done();
                 }
             } else {
@@ -300,7 +300,7 @@ public final class PaFragment extends Fragment {
                 case PaConstants.ACTION_POWER_DIALOG: // Only for keeping "switch" statement. @IntDef
             }
             // Update DPM state in time.
-            mDevicePolicyManager.removeActiveAdmin(mAdminReceiverComponentName);
+            mDpm.removeActiveAdmin(mAdminReceiverComponentName);
             done();
         } catch (Throwable t) {
             DebugLog.e(TAG, "callShizuku", t);
@@ -353,7 +353,7 @@ public final class PaFragment extends Fragment {
                     "Some unexpected behaviours may trigger!");
             /* Caused by low memory? */
             ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
-            ActivityManager am = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
+            ActivityManager am = (ActivityManager) mAssociatedActivity.getSystemService(Context.ACTIVITY_SERVICE);
             am.getMemoryInfo(memoryInfo);
             DebugLog.i(TAG, "onDetach: mem info: [" + memoryInfo.availMem +
                     (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN ? "/" + memoryInfo.totalMem : "") +
