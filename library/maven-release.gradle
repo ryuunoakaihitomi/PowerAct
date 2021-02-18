@@ -1,7 +1,6 @@
-// gradle task: bintrayUpload
+// gradle task: publish
 
 apply plugin: 'maven-publish'
-apply plugin: 'com.jfrog.bintray'
 
 group = PROJ_GROUP
 version = PROJ_VERSION
@@ -106,38 +105,6 @@ afterEvaluate {
                 }
             }
         }
-    }
-}
-
-bintray {
-
-    Properties properties = new Properties()
-    properties.load(project.rootProject.file('local.properties').newDataInputStream())
-    user = properties.getProperty('BINTRAY_USER')
-    key = properties.getProperty('BINTRAY_KEY')
-    publications = ['release']
-
-    dryRun = false
-    publish = true
-//    override = true
-
-    pkg {
-        repo = 'maven'
-        name = PROJ_NAME
-        licenses = ['Apache-2.0']
-        vcsUrl = PROJ_VCS_URL
-        websiteUrl = PROJ_WEBSITE_URL
-        issueTrackerUrl = PROJ_ISSUE_TRACKER_URL
-        publicDownloadNumbers = true
-        version {
-            name = PROJ_VERSION
-            desc = PROJ_DESCRIPTION
-            vcsTag = PROJ_VERSION
-            released = new Date()
-
-            gpg {
-                sign = true // *.asc
-            }
-        }
+        repositories { maven { url './../local-mvn-repo' } }
     }
 }

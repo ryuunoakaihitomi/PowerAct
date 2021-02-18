@@ -25,17 +25,19 @@ import github.ryuunoakaihitomi.poweract.Callback;
 import github.ryuunoakaihitomi.poweract.internal.util.CallbackHelper;
 import github.ryuunoakaihitomi.poweract.internal.util.DebugLog;
 import github.ryuunoakaihitomi.poweract.internal.util.LibraryCompat;
+import github.ryuunoakaihitomi.poweract.internal.util.ShizukuCompat;
 import github.ryuunoakaihitomi.poweract.internal.util.SystemCompat;
 import github.ryuunoakaihitomi.poweract.internal.util.UserGuideRunnable;
 import github.ryuunoakaihitomi.poweract.internal.util.Utils;
 import github.ryuunoakaihitomi.poweract.internal.util.VerboseTimingLogger;
-import moe.shizuku.api.ShizukuApiConstants;
-import moe.shizuku.api.ShizukuBinderWrapper;
-import moe.shizuku.api.SystemServiceHelper;
+import rikka.shizuku.Shizuku;
+import rikka.shizuku.ShizukuBinderWrapper;
+import rikka.shizuku.ShizukuProvider;
+import rikka.shizuku.SystemServiceHelper;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 @SuppressWarnings("deprecation")
-public final class PaFragment extends Fragment {
+public final class PaFragment extends Fragment implements Shizuku.OnRequestPermissionResultListener {
 
     private static final String TAG = "PaFragment";
 
@@ -95,13 +97,14 @@ public final class PaFragment extends Fragment {
                         // Using Shizuku to reboot instead of DPM since R to avoid registering device owner.
                         // REBOOT permission granted to Shell since 30. commit id: bf19417b0dc3747bfd8c4cf84817ac98d382a665
                         (mAction == PaConstants.ACTION_REBOOT && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
-        ) && LibraryCompat.isShizukuPrepared(activity)) {
+        ) && LibraryCompat.isShizukuPrepared()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (activity.checkSelfPermission(ShizukuApiConstants.PERMISSION) != PackageManager.PERMISSION_GRANTED) {
+                if (ShizukuCompat.checkSelfPermission(activity) != PackageManager.PERMISSION_GRANTED) {
                     // The users of Shizuku Manager can be treated as advanced users. So it's unnecessary to guide them.
                     //UserGuideRunnable.run();
                     mRequestCode = Utils.randomNaturalNumber();
-                    requestPermissions(new String[]{ShizukuApiConstants.PERMISSION}, mRequestCode);
+                    if (!Shizuku.isPreV11()) Shizuku.addRequestPermissionResultListener(this);
+                    ShizukuCompat.requestPermission(this, mRequestCode);
                     mUserDelayLogger.addSplit("shizuku permission");
                 } else {
                     callShizuku();
@@ -272,17 +275,29 @@ public final class PaFragment extends Fragment {
             failed("Empty permissions / grantResults.");
             return;
         }
+        if (ShizukuProvider.PERMISSION.equals(permissions[0])) {
+            onRequestPermissionResult(requestCode, grantResults[0]);
+        } else {
+            failed("Unknown permission: " + Arrays.asList(permissions));
+        }
+    }
+
+    /**
+     * @see Shizuku.OnRequestPermissionResultListener
+     * @see ShizukuProvider#PERMISSION
+     */
+    @Override
+    public void onRequestPermissionResult(int requestCode, int grantResult) {
         if (requestCode == mRequestCode &&
-                ShizukuApiConstants.PERMISSION.equals(permissions[0]) &&
-                grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                grantResult == PackageManager.PERMISSION_GRANTED) {
             mUserDelayLogger.addSplit("return from shizuku permission (granted)");
             callShizuku();
         } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !shouldShowRequestPermissionRationale(ShizukuApiConstants.PERMISSION)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !ShizukuCompat.shouldShowRequestPermissionRationale(this)) {
                 DebugLog.e(TAG, "onRequestPermissionsResult: Shizuku permission denied forever!");
             }
-            failed("requestCode(REQUEST_CODE_SHIZUKU_PERMISSION=" + mRequestCode + "),permissions,grantResults -> " +
-                    Arrays.asList(requestCode, Arrays.toString(permissions), Arrays.toString(grantResults)));
+            failed("requestCode(REQUEST_CODE_SHIZUKU_PERMISSION=" + mRequestCode + "),grantResults -> " +
+                    Arrays.asList(requestCode, grantResult));
         }
     }
 
@@ -341,6 +356,8 @@ public final class PaFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         DebugLog.v(TAG, "onDetach");
+        if (LibraryCompat.isShizukuPrepared() && !Shizuku.isPreV11())
+            Shizuku.removeRequestPermissionResultListener(this);
 
         /* Logging user delay */
         mUserDelayLogger.addSplit("detach");

@@ -8,6 +8,6 @@
 # Probe library: libsu
 -keepnames class com.topjohnwu.superuser.Shell
 # Probe library: Shizuku
--keepnames class moe.shizuku.api.ShizukuProvider
--keepnames class moe.shizuku.api.ShizukuBinderWrapper
--keepnames class moe.shizuku.api.SystemServiceHelper
+-keepnames class rikka.shizuku.ShizukuProvider
+-keepnames class rikka.shizuku.ShizukuBinderWrapper
+-keepnames class rikka.shizuku.SystemServiceHelper

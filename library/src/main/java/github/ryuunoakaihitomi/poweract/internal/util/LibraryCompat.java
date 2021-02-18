@@ -1,15 +1,10 @@
 package github.ryuunoakaihitomi.poweract.internal.util;
 
-import android.content.Context;
 import android.os.Build;
-import android.os.RemoteException;
-
-import androidx.annotation.NonNull;
 
 import github.ryuunoakaihitomi.poweract.BuildConfig;
-import moe.shizuku.api.ShizukuApiConstants;
-import moe.shizuku.api.ShizukuProvider;
-import moe.shizuku.api.ShizukuService;
+import rikka.shizuku.Shizuku;
+import rikka.shizuku.ShizukuApiConstants;
 
 /**
  * Developer Note:
@@ -23,8 +18,8 @@ public final class LibraryCompat {
         if (BuildConfig.DEBUG && isShizukuAvailable()) {
             int serverVersion = Integer.MIN_VALUE;
             try {
-                serverVersion = ShizukuService.getVersion();
-            } catch (RemoteException | IllegalStateException | SecurityException e) {
+                serverVersion = Shizuku.getVersion();
+            } catch (RuntimeException e) {
                 e.printStackTrace();
             }
             DebugLog.i(TAG, "static initializer: Shizuku version: " +
@@ -43,12 +38,12 @@ public final class LibraryCompat {
         // minSdkVersion: 23
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                 ReflectionUtils.allClassesExist(
-                        "moe.shizuku.api.ShizukuProvider",
-                        "moe.shizuku.api.ShizukuBinderWrapper",
-                        "moe.shizuku.api.SystemServiceHelper");
+                        "rikka.shizuku.ShizukuProvider",
+                        "rikka.shizuku.ShizukuBinderWrapper",
+                        "rikka.shizuku.SystemServiceHelper");
     }
 
-    public static boolean isShizukuPrepared(@NonNull Context context) {
-        return isShizukuAvailable() && ShizukuProvider.isShizukuInstalled(context) && ShizukuService.pingBinder();
+    public static boolean isShizukuPrepared() {
+        return isShizukuAvailable() && Shizuku.pingBinder();
     }
 }

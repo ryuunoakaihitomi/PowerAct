@@ -6,13 +6,12 @@ buildscript {
 
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.1'
+        classpath 'com.android.tools.build:gradle:4.1.2'
     }
 }
 
 plugins {
     id 'maven-publish'
-    id "com.jfrog.bintray" version "1.8.5"
 }
 
 allprojects {
@@ -43,5 +42,5 @@ ext {
     targetSdkVersion = compileSdkVersion
 
     libsu_version = '3.0.2'
-    shizuku_version = '4.2.1'
+    shizuku_version = '11.0.2'
 }

@@ -14,13 +14,16 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.hardware.biometrics.BiometricManager;
 import android.hardware.biometrics.BiometricPrompt;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.PowerManager;
 import android.provider.Browser;
 import android.text.SpannableString;
@@ -53,7 +56,8 @@ import github.ryuunoakaihitomi.poweract.ExternalUtils;
 import github.ryuunoakaihitomi.poweract.PowerAct;
 import github.ryuunoakaihitomi.poweract.PowerActX;
 import github.ryuunoakaihitomi.poweract.PowerButton;
-import moe.shizuku.api.ShizukuApiConstants;
+import rikka.shizuku.Shizuku;
+import rikka.shizuku.ShizukuProvider;
 
 
 public class MainActivity extends Activity {
@@ -120,9 +124,15 @@ public class MainActivity extends Activity {
         });
         /* Change the size of PowerButton. */
         powerButton.unlockSize();
-        Point p = new Point();
-        getWindowManager().getDefaultDisplay().getSize(p);
-        final int customSize = Math.min(p.x, p.y) >> 1;
+        final int customSize;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            Rect r = getWindowManager().getCurrentWindowMetrics().getBounds();
+            customSize = Math.min(r.bottom - r.top, r.right - r.left) / 2;
+        } else {
+            Point p = new Point();
+            getWindowManager().getDefaultDisplay().getSize(p);
+            customSize = Math.min(p.x, p.y) >> 1;
+        }
         Log.d(TAG, "onCreate: The size of PowerButton is " + customSize);
         powerButton.setHeight(customSize);
         powerButton.setWidth(customSize);
@@ -189,7 +199,7 @@ public class MainActivity extends Activity {
             final String arg = "edl"; // Change ... in here.
             Log.w(TAG, "customRebootUi: Work around for Wear OS. arg =" + arg);
             Toast.makeText(this, "arg = " + arg, Toast.LENGTH_LONG).show();
-            new Handler().postDelayed(() -> {
+            new Handler(Looper.myLooper()).postDelayed(() -> {
                 Log.i(TAG, "run: customReboot action!");
                 PowerActX.customReboot(arg, callback, force);
             }, 1000);
@@ -214,10 +224,16 @@ public class MainActivity extends Activity {
     }
 
     private void requestShizukuPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                checkSelfPermission(ShizukuApiConstants.PERMISSION)
-                        != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{ShizukuApiConstants.PERMISSION}, REQUEST_CODE_PERMISSION_SHIZUKU);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (Shizuku.isPreV11()) {
+                if (checkSelfPermission(ShizukuProvider.PERMISSION) != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(new String[]{ShizukuProvider.PERMISSION}, REQUEST_CODE_PERMISSION_SHIZUKU);
+                }
+            } else {
+                if (Shizuku.checkSelfPermission() != PackageManager.PERMISSION_GRANTED) {
+                    Shizuku.requestPermission(REQUEST_CODE_PERMISSION_SHIZUKU);
+                }
+            }
         }
     }
 
@@ -234,11 +250,15 @@ public class MainActivity extends Activity {
                 caution = "Please save all your work before proceeding!";
         KeyguardManager keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            new BiometricPrompt.Builder(this)
+            BiometricPrompt.Builder builder = new BiometricPrompt.Builder(this)
                     .setTitle(caution)
-                    .setSubtitle(opHint)
-                    .setDeviceCredentialAllowed(true)
-                    .build().authenticate(new CancellationSignal(), command -> {
+                    .setSubtitle(opHint);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                builder.setAllowedAuthenticators(BiometricManager.Authenticators.DEVICE_CREDENTIAL);
+            } else {
+                builder.setDeviceCredentialAllowed(true);
+            }
+            builder.build().authenticate(new CancellationSignal(), command -> {
             }, new BiometricPrompt.AuthenticationCallback() {
             });
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

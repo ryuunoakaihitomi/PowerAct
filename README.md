@@ -12,17 +12,17 @@ An Android library that can manipulate power-related actions with just few lines
 
 ### Import
 
-[ ![If the badge is not shown, click here to check the latest version.](https://api.bintray.com/packages/ryuunoakaihitomi/maven/poweract/images/download.svg) ](https://bintray.com/ryuunoakaihitomi/maven/poweract/_latestVersion)
-
 ```groovy
 repositories {
-    jcenter()
+    maven {
+        url 'https://raw.githubusercontent.com/ryuunoakaihitomi/maven-repository/master'
+    }
 }
 
 
 dependencies {
     // (Required)
-    implementation 'github.ryuunoakaihitomi.poweract:poweract:<latest-version>'
+    implementation 'github.ryuunoakaihitomi.poweract:poweract:latest.release'
 
     // (Optional) Bring better performance to use root shell.
     // https://github.com/topjohnwu/libsu
@@ -30,7 +30,8 @@ dependencies {
     // (Optional) A more elegant and direct way of using privileged system API.
     // NOTE: Need more steps to integrate it.
     // https://github.com/RikkaApps/Shizuku/blob/master/README.md
-    implementation 'moe.shizuku.privilege:api:4.2.1'
+    implementation "rikka.shizuku:api:11.0.2"
+    implementation "rikka.shizuku:provider:11.0.2"
 }
     
 ```

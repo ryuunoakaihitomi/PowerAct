@@ -48,7 +48,8 @@ dependencies {
 
     /* Optional dependencies, we can use these to make PowerActX faster. */
     implementation "com.github.topjohnwu.libsu:core:$libsu_version"
-    implementation "moe.shizuku.privilege:api:$shizuku_version"
+    implementation "rikka.shizuku:api:$shizuku_version"
+    implementation "rikka.shizuku:provider:$shizuku_version"
 }
 
 // Format APK filename

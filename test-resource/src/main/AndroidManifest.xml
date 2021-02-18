@@ -5,14 +5,14 @@
     <!-- BaseTest#requestUninstall() -->
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
 
-    <uses-sdk tools:overrideLibrary="moe.shizuku.shared" />
+    <uses-sdk tools:overrideLibrary="rikka.shizuku.shared" />
 
     <application>
 
         <!-- Comment this block if you encountered
          ClassNotFoundException: Didn't find class "moe.shizuku.api.ShizukuProvider" -->
         <provider
-            android:name="moe.shizuku.api.ShizukuProvider"
+            android:name="rikka.shizuku.ShizukuProvider"
             android:authorities="${applicationId}.shizuku"
             android:enabled="true"
             android:exported="true"

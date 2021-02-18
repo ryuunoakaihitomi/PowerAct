@@ -9,5 +9,6 @@ android {
 
 dependencies {
     compileOnly 'de.robv.android.xposed:api:82'
-    compileOnly "moe.shizuku.privilege:api:$shizuku_version"
+    compileOnly "rikka.shizuku:api:$shizuku_version"
+    compileOnly "rikka.shizuku:provider:$shizuku_version"
 }

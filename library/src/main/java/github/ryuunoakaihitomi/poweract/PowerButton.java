@@ -52,20 +52,19 @@ public final class PowerButton extends Button {
 
         /* Lock screen by click. */
         final OnClickListener lockScreenListener = v -> {
-            PowerAct.lockScreen(contextToActivityNoThrow(getContext()));
+            lockScreen();
             if (mOnClickListener != null) mOnClickListener.onClick(v);
         };
         setOnClickListener(lockScreenListener);
 
         /* Show power dialog by long click. */
         final OnLongClickListener showPowerDialogListener = v -> {
-            Activity activity = contextToActivityNoThrow(getContext());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                PowerAct.showPowerDialog(activity);
+                PowerAct.showPowerDialog(contextToActivityNoThrow(getContext()));
             } else {
                 DebugLog.e(TAG, "PowerButton: Showing power dialog is not supported before 21!" +
                         " downgrade to lockScreen()...");
-                PowerAct.lockScreen(activity);
+                lockScreen();
             }
             if (mOnLongClickListener != null) {
                 boolean ret = mOnLongClickListener.onLongClick(v);
@@ -76,6 +75,15 @@ public final class PowerButton extends Button {
         setOnLongClickListener(showPowerDialogListener);
 
         mPrepareToUse = true;
+    }
+
+    private void lockScreen() {
+        Activity activity = contextToActivityNoThrow(getContext());
+        if (ExternalUtils.isExposedComponentAvailable(activity)) {
+            PowerAct.lockScreen(activity);
+        } else {
+            PowerActX.lockScreen();
+        }
     }
 
     private void initNormalStyles() {

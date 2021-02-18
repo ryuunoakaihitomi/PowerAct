@@ -18,8 +18,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import github.ryuunoakaihitomi.poweract.test.BaseTest;
 import github.ryuunoakaihitomi.poweract.test.CommonUtils;
 import github.ryuunoakaihitomi.poweract.test.R;
-import moe.shizuku.api.ShizukuService;
 import poweract.test.res.PlaygroundActivity;
+import rikka.shizuku.Shizuku;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -96,7 +96,7 @@ public class PowerButtonTest extends BaseTest {
             // AccessibilityService
             attemptPowerDialogRequestUi();
         } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ShizukuService.pingBinder()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Shizuku.pingBinder()) {
                 // Switched to com.android.permissioncontroller since 29.
                 assertEquals(CommonUtils.PKG_NAME_PACKAGE_INSTALLER, mUiDevice.getCurrentPackageName());
                 final String deny = CommonUtils.getStringResource(targetContext, CommonUtils.PKG_NAME_PACKAGE_INSTALLER, "grant_dialog_button_deny");

@@ -25,7 +25,7 @@ import github.ryuunoakaihitomi.poweract.internal.util.DebugLog;
 import github.ryuunoakaihitomi.poweract.internal.util.LibraryCompat;
 import github.ryuunoakaihitomi.poweract.internal.util.SystemCompat;
 import github.ryuunoakaihitomi.poweract.internal.util.Utils;
-import moe.shizuku.api.ShizukuSystemProperties;
+import rikka.shizuku.ShizukuSystemProperties;
 
 class PaxExecutor {
 

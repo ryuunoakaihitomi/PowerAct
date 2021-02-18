@@ -12,6 +12,7 @@ public class VerboseTimingLogger {
     /**
      * Deprecated since 30.
      */
+    @SuppressWarnings("deprecation")
     private final TimingLogger mLogger;
 
     private boolean mDisabled;

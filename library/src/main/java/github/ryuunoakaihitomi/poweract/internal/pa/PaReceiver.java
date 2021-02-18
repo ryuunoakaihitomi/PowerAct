@@ -37,7 +37,7 @@ public final class PaReceiver extends DeviceAdminReceiver {
             // The result of isDeviceOwnerApp() is uncertain here,
             // and removeActiveAdmin() don't effect on the device owner, no need to judge.
             manager.removeActiveAdmin(who);
-        } else if (LibraryCompat.isShizukuPrepared(context)) {
+        } else if (LibraryCompat.isShizukuPrepared()) {
             DebugLog.w(TAG, "onEnabled: Shizuku ready. I'm not needed.");
             manager.removeActiveAdmin(who);
         }

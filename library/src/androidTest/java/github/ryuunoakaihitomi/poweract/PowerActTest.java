@@ -38,8 +38,8 @@ import github.ryuunoakaihitomi.poweract.internal.util.LibraryCompat;
 import github.ryuunoakaihitomi.poweract.test.BaseTest;
 import github.ryuunoakaihitomi.poweract.test.CommonUtils;
 import github.ryuunoakaihitomi.poweract.test.LockScreenTest;
-import moe.shizuku.api.ShizukuService;
 import poweract.test.res.PlaygroundActivity;
+import rikka.shizuku.Shizuku;
 
 import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR2;
 import static android.os.Build.VERSION_CODES.N;
@@ -77,7 +77,7 @@ public final class PowerActTest extends BaseTest {
         LockScreenTest test = new LockScreenTest(callback -> {
             rule.getScenario().onActivity(activity -> activity.runOnUiThread(() -> PowerAct.lockScreen(activity, callback)));
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-                if (LibraryCompat.isShizukuPrepared(targetContext)) {
+                if (LibraryCompat.isShizukuPrepared()) {
                     Log.d(TAG, "lockScreen: Shizuku running...");
                     final String allow = CommonUtils.getStringResource(targetContext, CommonUtils.PKG_NAME_PACKAGE_INSTALLER, "grant_dialog_button_allow");
                     mUiDevice.findObject(By.text(allow)).click();
@@ -148,9 +148,9 @@ public final class PowerActTest extends BaseTest {
     @Suppress   // It will cut off the entire test process. Be careful if you want to test reboot().
     @Test
     public void reboot() throws Throwable {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && LibraryCompat.isShizukuPrepared(targetContext)) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && LibraryCompat.isShizukuPrepared()) {
             assertEquals("Expected behaviour. Should add automatic steps of granting shizuku permission.",
-                    PackageManager.PERMISSION_GRANTED, ShizukuService.checkPermission(Manifest.permission.REBOOT));
+                    PackageManager.PERMISSION_GRANTED, Shizuku.checkRemotePermission(Manifest.permission.REBOOT));
             /* Why? */
             Log.i(TAG, "reboot: shizuku permission granted to me automatically.");
         } else {

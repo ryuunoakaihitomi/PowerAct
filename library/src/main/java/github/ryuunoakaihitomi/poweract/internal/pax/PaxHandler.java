@@ -27,9 +27,9 @@ import github.ryuunoakaihitomi.poweract.internal.util.LibraryCompat;
 import github.ryuunoakaihitomi.poweract.internal.util.SystemCompat;
 import github.ryuunoakaihitomi.poweract.internal.util.UserGuideRunnable;
 import github.ryuunoakaihitomi.poweract.internal.util.Utils;
-import moe.shizuku.api.ShizukuBinderWrapper;
-import moe.shizuku.api.ShizukuService;
-import moe.shizuku.api.SystemServiceHelper;
+import rikka.shizuku.Shizuku;
+import rikka.shizuku.ShizukuBinderWrapper;
+import rikka.shizuku.SystemServiceHelper;
 
 final class PaxHandler implements InvocationHandler {
 
@@ -80,9 +80,9 @@ final class PaxHandler implements InvocationHandler {
 
         boolean shizukuSuccess = false;
         int shizukuServiceUid = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ? Process.INVALID_UID : Integer.MIN_VALUE;
-        if (LibraryCompat.isShizukuPrepared(sApplication)) {
+        if (LibraryCompat.isShizukuPrepared()) {
             try {
-                shizukuServiceUid = ShizukuService.getUid();
+                shizukuServiceUid = Shizuku.getUid();
                 // Must be called in root env! Using adb can only lock screen, it doesn't make sense in PowerActX. (svc)
                 // Force mode uses shell, not PowerManager.
                 if (shizukuServiceUid == Process.ROOT_UID && !force) {
