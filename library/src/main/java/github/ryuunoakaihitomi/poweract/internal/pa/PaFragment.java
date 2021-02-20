@@ -148,7 +148,7 @@ public final class PaFragment extends Fragment {
                     return;
                 }
                 // On Android 11, force stop app may prevent accessibility service from being enabled next time.
-                // Warn developer about that.
+                // Warn developer about that. Fixed in Android 12 Developer Preview 1.
                 if (Build.VERSION.SDK_INT == Build.VERSION_CODES.R) {
                     List<ApplicationExitInfo> historicalProcessExitReasons = activity.getSystemService(ActivityManager.class)
                             .getHistoricalProcessExitReasons(activity.getPackageName(), 0, 1);
