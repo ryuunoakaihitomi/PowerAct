@@ -225,6 +225,10 @@ public class MainActivity extends Activity {
 
     private void requestShizukuPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!Shizuku.pingBinder()) {
+                Log.e(TAG, "requestShizukuPermission: Service not prepared!");
+                return;
+            }
             if (Shizuku.isPreV11()) {
                 if (checkSelfPermission(ShizukuProvider.PERMISSION) != PackageManager.PERMISSION_GRANTED) {
                     requestPermissions(new String[]{ShizukuProvider.PERMISSION}, REQUEST_CODE_PERMISSION_SHIZUKU);
