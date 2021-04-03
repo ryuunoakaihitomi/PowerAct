@@ -87,10 +87,10 @@ dependencies {
     androidTestImplementation "rikka.shizuku:provider:$shizuku_version"
     // https://stackoverflow.com/a/7878281
     testImplementation 'org.hamcrest:hamcrest:2.2'
-    testImplementation 'junit:junit:4.13.1'
+    testImplementation 'junit:junit:4.13.2'
     testImplementation "org.awaitility:awaitility:$awaitility_version"
 
-    compileOnly 'androidx.annotation:annotation:1.1.0'
+    compileOnly 'androidx.annotation:annotation:1.2.0'
     compileOnly project(':hidden-api')
 
     /* ------- OPTIONAL DEPENDENCIES ------- */

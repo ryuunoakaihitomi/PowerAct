@@ -17,7 +17,7 @@ dependencies {
     file("$buildDir\\libs").mkdirs()
     file("$buildDir\\libs\\${project.name}.jar").createNewFile()
 
-    compileOnly 'androidx.annotation:annotation:1.1.0'
+    compileOnly 'androidx.annotation:annotation:1.2.0'
     compileOnly files("${androidJarPath}")
 
     //  R8: Unsupported class file version: 56
