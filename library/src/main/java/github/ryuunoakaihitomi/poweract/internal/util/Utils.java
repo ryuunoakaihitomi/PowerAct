@@ -1,6 +1,7 @@
 package github.ryuunoakaihitomi.poweract.internal.util;
 
 import android.accessibilityservice.AccessibilityService;
+import android.accessibilityservice.AccessibilityServiceInfo;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -58,6 +59,8 @@ public class Utils {
      * <b>
      * DO NOT USE {@link AccessibilityManager#isEnabled()}!!!
      * It will return true when the other apps enable their {@link AccessibilityService}.
+     * DO NOT USE {@link AccessibilityManager#getEnabledAccessibilityServiceList(int)} AND {@link AccessibilityServiceInfo#FEEDBACK_ALL_MASK}!!!
+     * It will ignore the services with undefined feedback types.
      * </b>
      *
      * @param context              {@link Context}
