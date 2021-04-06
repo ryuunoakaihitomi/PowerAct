@@ -154,7 +154,7 @@ public final class PowerActTest extends BaseTest {
 
     @FlakyTest(detail = "The case will change the power state of the device.")
     @SdkSuppress(minSdkVersion = N)
-    // @Suppress   // It will cut off the entire test process. Be careful if you want to test reboot().
+    @Suppress   // It will cut off the entire test process. Be careful if you want to test reboot().
     @Test
     public void reboot() throws Throwable {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && LibraryCompat.isShizukuPrepared()) {
