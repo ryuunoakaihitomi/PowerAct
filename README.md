@@ -26,7 +26,7 @@ dependencies {
 
     // (Optional) Bring better performance to use root shell.
     // https://github.com/topjohnwu/libsu
-    implementation "com.github.topjohnwu.libsu:core:3.0.2"
+    implementation "com.github.topjohnwu.libsu:core:3.1.1"
     // (Optional) A more elegant and direct way of using privileged system API.
     // NOTE: Need more steps to integrate it.
     // https://github.com/RikkaApps/Shizuku/blob/master/README.md

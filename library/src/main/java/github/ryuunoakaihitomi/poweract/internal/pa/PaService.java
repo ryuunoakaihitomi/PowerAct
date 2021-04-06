@@ -14,12 +14,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
+import android.os.Process;
 import android.provider.Settings;
 import android.system.Os;
 import android.text.TextUtils;
 import android.util.SparseArray;
 import android.view.accessibility.AccessibilityEvent;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.StringDef;
@@ -128,7 +130,7 @@ public final class PaService extends AccessibilityService {
         sGlobalActionMap = globalActionMap;
     }
 
-    public static boolean sendAction(Context context, @Action String action, @Nullable Callback callback) {
+    public static boolean sendAction(@NonNull Context context, @NonNull @Action String action, @Nullable Callback callback) {
         if (sIsBroadcastRegistered) {
             Intent intent = new Intent(action);
             intent.setPackage(context.getPackageName());
@@ -194,7 +196,8 @@ public final class PaService extends AccessibilityService {
                 loadForegroundNotification();
             }
             // I have no more other way to prevent it from being killed.
-            // So add this line just as masturbation.
+            // So add these lines just as masturbation.
+            Process.setThreadPriority(Process.THREAD_PRIORITY_MORE_FAVORABLE);
             Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
         } else {
             DebugLog.w(TAG, "onServiceConnected: Useless service enabled before 21.");

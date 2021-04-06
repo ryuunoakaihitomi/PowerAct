@@ -46,6 +46,9 @@ import java.util.zip.Inflater;
 
 import github.ryuunoakaihitomi.poweract.BuildConfig;
 
+/**
+ * Internal unclassified utilities
+ */
 public class Utils {
 
     private static final String TAG = "Utils";

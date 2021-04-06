@@ -19,6 +19,7 @@ import androidx.test.filters.LargeTest;
 import androidx.test.filters.SdkSuppress;
 import androidx.test.filters.Suppress;
 import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.rule.GrantPermissionRule;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.Configurator;
 import androidx.test.uiautomator.UiDevice;
@@ -40,6 +41,7 @@ import github.ryuunoakaihitomi.poweract.test.CommonUtils;
 import github.ryuunoakaihitomi.poweract.test.LockScreenTest;
 import poweract.test.res.PlaygroundActivity;
 import rikka.shizuku.Shizuku;
+import rikka.shizuku.ShizukuProvider;
 
 import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR2;
 import static android.os.Build.VERSION_CODES.N;
@@ -60,6 +62,10 @@ public final class PowerActTest extends BaseTest {
     @Rule
     public final ActivityScenarioRule<PlaygroundActivity> rule = new ActivityScenarioRule<>(PlaygroundActivity.class);
 
+    // It doesn't work...
+    @Rule
+    public final GrantPermissionRule grantPermissionRule = GrantPermissionRule.grant(ShizukuProvider.PERMISSION);
+
     private UiDevice mUiDevice;
 
     @Before
@@ -79,8 +85,7 @@ public final class PowerActTest extends BaseTest {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
                 if (LibraryCompat.isShizukuPrepared()) {
                     Log.d(TAG, "lockScreen: Shizuku running...");
-                    final String allow = CommonUtils.getStringResource(targetContext, CommonUtils.PKG_NAME_PACKAGE_INSTALLER, "grant_dialog_button_allow");
-                    mUiDevice.findObject(By.text(allow)).click();
+                    grantShizukuPermission();
                 } else {
                     final String addDevAdminBtnText = CommonUtils.getStringResource(targetContext, CommonUtils.PKG_NAME_SETTINGS, "add_device_admin");
                     Log.i(TAG, "lockScreen: addDevAdminBtnText = " + addDevAdminBtnText);
@@ -121,10 +126,14 @@ public final class PowerActTest extends BaseTest {
         };
 
         rule.getScenario().onActivity(activity -> PowerAct.showPowerDialog(activity, callback));
-        try {
-            enableAccessibilityService();
-        } catch (UiObjectNotFoundException e) {
-            fail(e.getMessage());
+        if (LibraryCompat.isShizukuPrepared()) {
+            grantShizukuPermission();
+        } else {
+            try {
+                enableAccessibilityService();
+            } catch (UiObjectNotFoundException e) {
+                fail(e.getMessage());
+            }
         }
         countDownLatch.await();
 
@@ -145,14 +154,14 @@ public final class PowerActTest extends BaseTest {
 
     @FlakyTest(detail = "The case will change the power state of the device.")
     @SdkSuppress(minSdkVersion = N)
-    @Suppress   // It will cut off the entire test process. Be careful if you want to test reboot().
+    // @Suppress   // It will cut off the entire test process. Be careful if you want to test reboot().
     @Test
     public void reboot() throws Throwable {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && LibraryCompat.isShizukuPrepared()) {
-            assertEquals("Expected behaviour. Should add automatic steps of granting shizuku permission.",
+            Shizuku.requestPermission(1);
+            grantShizukuPermission();
+            assertEquals("Shell does not have REBOOT permission.",
                     PackageManager.PERMISSION_GRANTED, Shizuku.checkRemotePermission(Manifest.permission.REBOOT));
-            /* Why? */
-            Log.i(TAG, "reboot: shizuku permission granted to me automatically.");
         } else {
             final String shell = "dpm set-device-owner " + new ComponentName(targetContext, PaReceiver.class).flattenToShortString();
             InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand(shell).close();
@@ -197,5 +206,10 @@ public final class PowerActTest extends BaseTest {
         mUiDevice.findObject(allowButton).click();
         mUiDevice.pressBack();
         mUiDevice.pressBack();
+    }
+
+    public void grantShizukuPermission() {
+        // Unfortunately, Shizuku Manager's string resources are obfuscated.
+        mUiDevice.findObject(By.pkg(ShizukuProvider.MANAGER_APPLICATION_ID).clickable(true)).click();
     }
 }

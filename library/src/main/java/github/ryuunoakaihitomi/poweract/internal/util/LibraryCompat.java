@@ -20,7 +20,7 @@ public final class LibraryCompat {
             try {
                 serverVersion = Shizuku.getVersion();
             } catch (RuntimeException e) {
-                e.printStackTrace();
+                DebugLog.e(TAG, "static initializer", e);
             }
             DebugLog.i(TAG, "static initializer: Shizuku version: " +
                     "client = " + ShizukuApiConstants.SERVER_VERSION + ", server = " + serverVersion);

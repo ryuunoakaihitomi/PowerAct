@@ -9,17 +9,20 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.UiObjectNotFoundException;
+import androidx.test.uiautomator.UiSelector;
 
 import org.junit.Rule;
 import org.junit.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import github.ryuunoakaihitomi.poweract.internal.util.LibraryCompat;
 import github.ryuunoakaihitomi.poweract.test.BaseTest;
 import github.ryuunoakaihitomi.poweract.test.CommonUtils;
 import github.ryuunoakaihitomi.poweract.test.R;
 import poweract.test.res.PlaygroundActivity;
-import rikka.shizuku.Shizuku;
+import rikka.shizuku.ShizukuProvider;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -30,9 +33,9 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static org.awaitility.Awaitility.await;
 import static org.awaitility.Durations.ONE_SECOND;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class PowerButtonTest extends BaseTest {
 
@@ -92,25 +95,39 @@ public class PowerButtonTest extends BaseTest {
     }
 
     private void attemptLockScreenRequestUi() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            // AccessibilityService
-            attemptPowerDialogRequestUi();
-        } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Shizuku.pingBinder()) {
-                // Switched to com.android.permissioncontroller since 29.
-                assertEquals(CommonUtils.PKG_NAME_PACKAGE_INSTALLER, mUiDevice.getCurrentPackageName());
-                final String deny = CommonUtils.getStringResource(targetContext, CommonUtils.PKG_NAME_PACKAGE_INSTALLER, "grant_dialog_button_deny");
-                mUiDevice.findObject(By.text(deny)).click();
-            } else {
-                verifySettingsUiTitle("add_device_admin_msg");
-                mUiDevice.pressBack();
-            }
-        }
+        attemptRequestUi(true);
     }
 
     private void attemptPowerDialogRequestUi() {
+        attemptRequestUi(false);
+    }
+
+    private void attemptRequestUi(boolean isLockScreen) {
+        if (LibraryCompat.isShizukuPrepared()) {
+            Log.w(TAG, "attemptRequestUi: Cannot distinguish current action as " + (isLockScreen ? "lock screen" : "power dialog")
+                    + ". Please stop shizuku service and test again.");
+            assertTrue(mUiDevice.hasObject(By.pkg(ShizukuProvider.MANAGER_APPLICATION_ID)));
+            try {
+                mUiDevice.findObject(new UiSelector().packageName(ShizukuProvider.MANAGER_APPLICATION_ID).clickable(true).instance(1)).click();
+            } catch (UiObjectNotFoundException e) {
+                fail(Log.getStackTraceString(e));
+            }
+        } else {
+            if (isLockScreen) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    verifyAccessibilitySettings();
+                } else {
+                    verifySettingsUiTitle("add_device_admin_msg");
+                }
+            } else {
+                verifyAccessibilitySettings();
+            }
+            mUiDevice.pressBack();
+        }
+    }
+
+    private void verifyAccessibilitySettings() {
         verifySettingsUiTitle("accessibility_settings");
-        mUiDevice.pressBack();
     }
 
     private void verifySettingsUiTitle(String resName) {

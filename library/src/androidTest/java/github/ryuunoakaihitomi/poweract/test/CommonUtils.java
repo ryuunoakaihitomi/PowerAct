@@ -11,8 +11,6 @@ import static org.junit.Assert.fail;
 
 public final class CommonUtils {
 
-    @SuppressWarnings("SpellCheckingInspection")
-    public static final String PKG_NAME_PACKAGE_INSTALLER = "com.android.packageinstaller";
     public static final String PKG_NAME_SETTINGS = "com.android.settings";
     private static final String TAG = "CommonUtils";
 
