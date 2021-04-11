@@ -97,6 +97,8 @@ dependencies {
     compileOnly "com.github.topjohnwu.libsu:core:$libsu_version"
     compileOnly "rikka.shizuku:api:$shizuku_version"
     compileOnly "rikka.shizuku:provider:$shizuku_version"
+
+    implementation 'org.lsposed.hiddenapibypass:hiddenapibypass:1.1'
 }
 
 apply from: 'maven-release.gradle'
