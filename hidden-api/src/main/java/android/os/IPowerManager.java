@@ -25,6 +25,7 @@ public interface IPowerManager extends IInterface {
     void goToSleep(long time, int reason);
 
     // 21+           lollipop-dev
+    // grey list until R
     @TargetApi(LOLLIPOP)
     void goToSleep(long time, int reason, int flags);
 
@@ -32,6 +33,7 @@ public interface IPowerManager extends IInterface {
     void reboot(String reason);
 
     // 17+           jb-mr1-release
+    // grey list until R
     @TargetApi(JELLY_BEAN_MR1)
     void reboot(boolean confirm, String reason, boolean wait);
 

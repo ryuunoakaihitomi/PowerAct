@@ -1,13 +1,13 @@
 package github.ryuunoakaihitomi.poweract.internal.util;
 
+import android.content.pm.ApplicationInfo;
 import android.os.Build;
-
-import org.lsposed.hiddenapibypass.HiddenApiBypass;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Objects;
 
 import github.ryuunoakaihitomi.poweract.BuildConfig;
 
@@ -16,8 +16,8 @@ public class ReflectionUtils {
     private static final String TAG = "ReflectionUtils";
 
     static {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            HiddenApiBypass.setHiddenApiExemptions("L");
+        if (hasHiddenApiRestriction()) {
+            DebugLog.w(TAG, "ReflectionUtils: Has hidden api restriction!");
         }
     }
 
@@ -83,10 +83,6 @@ public class ReflectionUtils {
         }
     }
 
-    public static Method findMethod(String clazzName, String methodName, Class<?>... paramTypes) {
-        return findMethod(findClass(clazzName), methodName, paramTypes);
-    }
-
     public static Method findMethod(Class<?> clazz, String name, Class<?>... paramTypes) {
         if (clazz == null) return null;
         Method method;
@@ -116,6 +112,11 @@ public class ReflectionUtils {
         }
         DebugLog.w(TAG, "invokeMethod: " + method + " failed to invoke.");
         return null;
+    }
+
+    public static boolean hasHiddenApiRestriction() {
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O_MR1) return false;
+        return Objects.isNull(findMethod(ApplicationInfo.class, "getHiddenApiEnforcementPolicy"));
     }
 
     private static void setAccessible(AccessibleObject accessibleObject) {

@@ -17,12 +17,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import github.ryuunoakaihitomi.poweract.BuildConfig;
 import github.ryuunoakaihitomi.poweract.internal.util.DebugLog;
 import github.ryuunoakaihitomi.poweract.internal.util.LibraryCompat;
+import github.ryuunoakaihitomi.poweract.internal.util.ReflectionUtils;
 import github.ryuunoakaihitomi.poweract.internal.util.SystemCompat;
 import github.ryuunoakaihitomi.poweract.internal.util.Utils;
 import rikka.shizuku.ShizukuSystemProperties;
@@ -68,6 +70,13 @@ class PaxExecutor {
                 DebugLog.enabled = Boolean.parseBoolean(args[2]);
                 DebugLog.i(TAG, "main0: Run in root env.");
                 SystemCompat.setPowerBinder(ServiceManager.getService(Context.POWER_SERVICE));
+            } else {
+                boolean hasHiddenApiRestriction = ReflectionUtils.hasHiddenApiRestriction();
+                List<String> restrictedApiUsedTokenList = Arrays.asList(TOKEN_SHUTDOWN, TOKEN_SAFE_MODE, TOKEN_SOFT_REBOOT);
+                if (hasHiddenApiRestriction && restrictedApiUsedTokenList.contains(token)) {
+                    // Hidden Api Restriction
+                    throw new IllegalStateException("HAR");
+                }
             }
             switch (token) {
 

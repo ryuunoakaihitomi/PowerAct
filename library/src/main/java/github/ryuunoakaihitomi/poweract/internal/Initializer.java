@@ -21,7 +21,6 @@ import java.util.Map;
 
 import github.ryuunoakaihitomi.poweract.BuildConfig;
 import github.ryuunoakaihitomi.poweract.internal.util.DebugLog;
-import github.ryuunoakaihitomi.poweract.internal.util.ReflectionUtils;
 import github.ryuunoakaihitomi.poweract.internal.util.Utils;
 
 public final class Initializer {
@@ -31,8 +30,6 @@ public final class Initializer {
     static {
         // For copyright protection.
         new LogPrinter(Log.WARN, "PowerAct").println("http://www.apache.org/licenses/LICENSE-2.0.html");
-        // To load {@link ReflectionUtils#removeRestriction()} asap.
-        ReflectionUtils.findClass(null);
         /* Debug special models' environment. Must be disabled in release version to avoid flooding log without ExternalUtils#enableLog()'s control. */
         if (BuildConfig.DEBUG) {
             printAllPublicConstants("build:", Build.class);

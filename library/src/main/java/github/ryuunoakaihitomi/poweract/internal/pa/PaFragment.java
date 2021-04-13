@@ -27,6 +27,7 @@ import github.ryuunoakaihitomi.poweract.Callback;
 import github.ryuunoakaihitomi.poweract.internal.util.CallbackHelper;
 import github.ryuunoakaihitomi.poweract.internal.util.DebugLog;
 import github.ryuunoakaihitomi.poweract.internal.util.LibraryCompat;
+import github.ryuunoakaihitomi.poweract.internal.util.ReflectionUtils;
 import github.ryuunoakaihitomi.poweract.internal.util.ShizukuCompat;
 import github.ryuunoakaihitomi.poweract.internal.util.SystemCompat;
 import github.ryuunoakaihitomi.poweract.internal.util.UserGuideRunnable;
@@ -190,7 +191,10 @@ public final class PaFragment extends Fragment {
                         // Using Shizuku to reboot instead of DPM since R to avoid registering device owner.
                         // REBOOT permission granted to Shell since 30. commit id: bf19417b0dc3747bfd8c4cf84817ac98d382a665
                         // Using Shizuku to call system power dialog instead of AccessibilityService, the reason is as above. e0ab6b1aa19a952c1df4b95d167284bc6a542e1d
-                        ((mAction == PaConstants.ACTION_REBOOT || mAction == PaConstants.ACTION_POWER_DIALOG) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+                        ((mAction == PaConstants.ACTION_REBOOT ||
+                                // Landroid/view/IWindowManager;->showGlobalActions()V (blacklist
+                                (mAction == PaConstants.ACTION_POWER_DIALOG && !ReflectionUtils.hasHiddenApiRestriction())
+                        ) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
         ) && LibraryCompat.isShizukuPrepared()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (ShizukuCompat.checkSelfPermission(activity) != PackageManager.PERMISSION_GRANTED) {

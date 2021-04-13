@@ -40,12 +40,14 @@ import android.view.ViewDebug;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -71,6 +73,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         foolProof();
         setContentView(R.layout.activity_main);
+        fixGestureConflict();
 
         Button
                 lockScreenBtn = findViewById(R.id.lockScreenBtn),
@@ -242,6 +245,18 @@ public class MainActivity extends Activity {
     }
 
     //<editor-fold desc="This part is not important for showing the library's usage.">
+
+    private void fixGestureConflict() {
+        HorizontalScrollView scrollView = findViewById(R.id.scroll_view);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && scrollView != null) {
+            scrollView.post(() -> {
+                Rect globalVisibleRect = new Rect();
+                scrollView.getGlobalVisibleRect(globalVisibleRect);
+                Log.d(TAG, "fixGestureConflict: " + globalVisibleRect);
+                getWindow().setSystemGestureExclusionRects(Collections.singletonList(globalVisibleRect));
+            });
+        }
+    }
 
     /**
      * Using the simplest and most effective way as a fool-proofing design.

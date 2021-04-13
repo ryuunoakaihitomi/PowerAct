@@ -24,14 +24,18 @@ dependencies {
     // (Required)
     implementation 'github.ryuunoakaihitomi.poweract:poweract:latest.release'
 
-    // (Optional) Bring better performance to use root shell.
-    // https://github.com/topjohnwu/libsu
+    // (Optional but recommended) Bring better performance to use root shell.
+    // -> https://github.com/topjohnwu/libsu
     implementation "com.github.topjohnwu.libsu:core:3.1.1"
-    // (Optional) A more elegant and direct way of using privileged system API.
+    // (Optional but recommended) A more elegant and direct way of using privileged system API.
     // NOTE: Need more steps to integrate it.
-    // https://github.com/RikkaApps/Shizuku/blob/master/README.md
+    // -> https://github.com/RikkaApps/Shizuku
     implementation "rikka.shizuku:api:11.0.2"
     implementation "rikka.shizuku:provider:11.0.2"
+    // (Optional but recommended) Make Shizuku available in more situations.
+    // NOTE: Enable it on your own.
+    // -> https://github.com/LSPosed/AndroidHiddenApiBypass
+    implementation "org.lsposed.hiddenapibypass:hiddenapibypass:1.1"
 }
     
 ```
