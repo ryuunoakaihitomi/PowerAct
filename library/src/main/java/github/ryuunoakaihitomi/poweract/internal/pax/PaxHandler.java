@@ -15,6 +15,7 @@ import androidx.annotation.VisibleForTesting;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -112,7 +113,8 @@ final class PaxHandler implements InvocationHandler {
 
         DebugLog.w(TAG, "invoke: Use alternative solution without Shizuku. args = " + Arrays.asList(shizukuServiceUid, force, cmd, enableLog));
         String finalCmd = cmd;
-        Executors.newSingleThreadExecutor().execute(() -> {
+        final ExecutorService mainExecutor = Executors.newSingleThreadExecutor();
+        mainExecutor.execute(() -> {
             DebugLog.d(TAG, "invoke: cmd " + Arrays.asList(cmdList, forceString, enableLog));
             final ScheduledExecutorService guideExecutor = Executors.newSingleThreadScheduledExecutor();
             guideExecutor.schedule(UserGuideRunnable::run, USER_GUIDE_DELAY_TIME_MILLIS, TimeUnit.MILLISECONDS);
@@ -126,6 +128,7 @@ final class PaxHandler implements InvocationHandler {
                 cancelUserGuide(guideExecutor);
                 callbackHelper.failed();
             });
+            mainExecutor.shutdown();
         });
         // void
         return null;

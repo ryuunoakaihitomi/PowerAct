@@ -110,7 +110,7 @@ public final class ExternalUtils {
      * If the library thinks that we should guide user, the {@link Runnable} will be executed.
      * <p>
      * After setting up the {@link Runnable} is done, <b>we must use the library AS SOON AS POSSIBLE!</b>
-     * it will be null to recycle memory after 5 seconds.
+     * It will be null after 5 seconds in order to recycle memory.
      * <p>
      * It doesn't work in Shizuku permission request. We can treat users using Shizuku Manager as advanced users, so we don't have to guide them.
      *
@@ -127,6 +127,8 @@ public final class ExternalUtils {
      *
      * @param context {@link Utils#getComponentEnabled(Context, Class)}
      * @return Should be false after calling {{@link #disableExposedComponents(Context)}}
+     * @see PaService
+     * @see PaReceiver
      * @since 1.2.2
      */
     public static boolean isExposedComponentAvailable(@NonNull Context context) {

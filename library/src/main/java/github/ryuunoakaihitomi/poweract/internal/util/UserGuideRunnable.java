@@ -21,10 +21,12 @@ public class UserGuideRunnable {
 
     public static void set(@NonNull Runnable runnable) {
         sUserGuideRunnable = runnable;
-        new Timer().schedule(new TimerTask() {
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 release();
+                timer.cancel();
             }
         }, RELEASE_DELAY_TIME_MILLIS);
     }
