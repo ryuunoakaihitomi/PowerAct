@@ -336,7 +336,9 @@ public final class PaFragment extends Fragment {
                     break;
             }
             // Deactivate DPM in time.
-            mDpm.removeActiveAdmin(mAdminReceiverComponentName);
+            if (mDpm.isAdminActive(mAdminReceiverComponentName)) {
+                mDpm.removeActiveAdmin(mAdminReceiverComponentName);
+            }
             // No need to disable accessibility service. As an alternative when shizuku service is stopped.
             //PaService.sendAction(mAssociatedActivity, PaService.DISABLE_SERVICE_ACTION, null);
             done();

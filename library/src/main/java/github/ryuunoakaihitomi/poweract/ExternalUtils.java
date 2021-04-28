@@ -61,13 +61,13 @@ public final class ExternalUtils {
         if (receiverEnabled) {
             DevicePolicyManager dpm = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
             if (dpm != null) {
-                try {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        String myPkgName = context.getPackageName();
-                        if (dpm.isDeviceOwnerApp(myPkgName)) {
-                            dpm.clearDeviceOwnerApp(myPkgName);
-                        }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    String myPkgName = context.getPackageName();
+                    if (dpm.isDeviceOwnerApp(myPkgName)) {
+                        dpm.clearDeviceOwnerApp(myPkgName);
                     }
+                }
+                try {
                     // The operation is not supported on Wear.
                     dpm.removeActiveAdmin(new ComponentName(context, PaReceiver.class));
                 } catch (UnsupportedOperationException e) {
