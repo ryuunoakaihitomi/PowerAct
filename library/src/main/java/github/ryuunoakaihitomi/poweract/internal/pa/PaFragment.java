@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.view.IWindowManager;
 
 import androidx.annotation.NonNull;
@@ -103,7 +104,9 @@ public final class PaFragment extends Fragment {
                 failed(intent.getAction() + " not found!");
             } else {
                 DebugLog.e(TAG, "startActivitySafely: WEIRD. But we have avoided it.", t);
-                failed(t.getMessage());
+                String message = t.getMessage();
+                if (TextUtils.isEmpty(message)) message = "startActivitySafely()";
+                failed(message);
             }
         }
     }
@@ -229,7 +232,7 @@ public final class PaFragment extends Fragment {
            Show power dialog and lock screen by it. (>=28) */
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && mAction != PaConstants.ACTION_REBOOT || mAction == PaConstants.ACTION_POWER_DIALOG) {
             // Attempt to launch accessibility settings, the services in work profile are not shown. So we have no way to enable it.
-            if (Utils.isInWorkProfile(activity)) {
+            if (!Utils.isParentProfile(activity)) {
                 failed("Cannot enable accessibility service in work profile!");
                 return;
             }

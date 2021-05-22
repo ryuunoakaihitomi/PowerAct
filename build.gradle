@@ -3,10 +3,11 @@ buildscript {
     repositories {
         google()
         jcenter()
+        mavenCentral()
 
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.3'
+        classpath 'com.android.tools.build:gradle:4.2.1'
     }
 }
 
@@ -18,6 +19,7 @@ allprojects {
     repositories {
         google()
         jcenter()
+        mavenCentral()
 
         // For libsu
         maven { url 'https://jitpack.io' }
@@ -41,6 +43,6 @@ ext {
     compileSdkVersion = 30
     targetSdkVersion = compileSdkVersion
 
-    libsu_version = '3.1.1'
+    libsu_version = '3.1.2'
     shizuku_version = '11.0.2'
 }

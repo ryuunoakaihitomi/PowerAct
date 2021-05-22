@@ -2,7 +2,6 @@ package github.ryuunoakaihitomi.poweract.internal.util;
 
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
-import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -13,7 +12,9 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.os.Build;
 import android.os.Looper;
+import android.os.Process;
 import android.os.SystemClock;
+import android.os.UserHandle;
 import android.os.UserManager;
 import android.provider.Settings;
 import android.text.TextUtils;
@@ -110,7 +111,7 @@ public class Utils {
         }
 
         DebugLog.w(TAG, "runSuJavaWithAppProcess: Use legacy solution. Please import libsu to get better performance.");
-        Process suProcess = null;
+        java.lang.Process suProcess = null;
         int exitCode = Integer.MIN_VALUE;
         try {
             suProcess = Runtime.getRuntime().exec("su");
@@ -265,35 +266,18 @@ public class Utils {
         return outputBitmap;
     }
 
-    /**
-     * @param context {@link Context}
-     * @return Check if is running in the work profile.
-     * @author <a href="https://stackoverflow.com/a/33801131">earlypearl</a>
-     */
-    public static boolean isInWorkProfile(Context context) {
+    public static boolean isParentProfile(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            DevicePolicyManager dpm = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
-            List<ComponentName> activeAdmins = dpm.getActiveAdmins();
-            if (activeAdmins != null) {
-                for (ComponentName admin : activeAdmins) {
-                    String packageName = admin.getPackageName();
-                    if (dpm.isProfileOwnerApp(packageName)) {
-                        DebugLog.i(TAG, "isInWorkProfile: Managed by " + packageName);
-                        // It can be deceived by the other profile owners. (dpm set-profile-owner [component])
-                        //return true;
-                        // So we must ensure the current user is NOT system user.
-                        UserManager userManager = (UserManager) context.getSystemService(Context.USER_SERVICE);
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            return !userManager.isSystemUser();
-                        } else {
-                            // The owner cannot be changed or removed.
-                            return userManager.getSerialNumberForUser(android.os.Process.myUserHandle()) > 0;
-                        }
-                    }
-                }
-            }
+            UserManager userManager = (UserManager) context.getSystemService(Context.USER_SERVICE);
+            UserHandle myUserHandle = Process.myUserHandle();
+            List<UserHandle> userProfiles = userManager.getUserProfiles();
+//            DebugLog.d(TAG, "isParentProfile: me: " + myUserHandle);
+//            for (UserHandle user : userProfiles) {
+//                DebugLog.d(TAG, "isParentProfile: UP ... " + user);
+//            }
+            return userProfiles.get(0).equals(myUserHandle);
         }
-        return false;
+        return true;
     }
 
     /**

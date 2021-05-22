@@ -46,8 +46,8 @@ public final class UtilsTest extends BaseTest {
     }
 
     @Test
-    public void isInWorkProfile() {
-        // Keep it false in most cases.
-        assertFalse(Utils.isInWorkProfile(targetContext));
+    public void isParentProfile() {
+        // Keep it true in most cases.
+        assertTrue(Utils.isParentProfile(targetContext));
     }
 }
