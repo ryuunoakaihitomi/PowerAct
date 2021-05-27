@@ -59,7 +59,7 @@ import github.ryuunoakaihitomi.poweract.*;
 
 **In theory, the library should not throw an exception at any time.**
 
-* Additional setup for some functions depend on Accessibility Service.
+* Additional setup for some functions that depend on Accessibility Service.
 
 Create [`res/values/poweract_config.xml`](library/src/main/res/values/public.xml)
 
