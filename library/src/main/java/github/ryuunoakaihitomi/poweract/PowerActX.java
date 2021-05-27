@@ -22,6 +22,8 @@ import github.ryuunoakaihitomi.poweract.internal.util.DebugLog;
  * </li><li>
  * It is recommend to integrate <a href="https://shizuku.rikka.app/">Shizuku</a> to make it transient.
  * </li></ul>
+ * <p>
+ * This class must be called in main thread before {@link Build.VERSION_CODES#JELLY_BEAN_MR2}.
  *
  * @since 1.0.6
  */

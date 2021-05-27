@@ -55,19 +55,12 @@ public class PowerAct {
 
     /**
      * Make the device lock immediately. Further manual operation by the user may be required.
-     * <p>
-     * <table border="1"><tr>
-     * <th>API level range</th><th>Principle</th>
-     * </tr><tr>
-     * <td>to 22</td><td>{@link android.app.admin.DevicePolicyManager#lockNow()}</td>
-     * </tr><tr>
-     * <td>23 - 27</td><td>{@link android.os.PowerManager}.goToSleep(). Call by Shizuku if available.</td>
-     * </tr><tr>
-     * <td>from 28</td><td>{@link android.accessibilityservice.AccessibilityService#GLOBAL_ACTION_LOCK_SCREEN}</td>
-     * </tr></table>
      *
      * @param activity Be used to open specific permission request UI and perform power operations.
      * @param callback {@link Callback}
+     * @see android.app.admin.DevicePolicyManager#lockNow()
+     * @see android.accessibilityservice.AccessibilityService#GLOBAL_ACTION_LOCK_SCREEN
+     * @see android.os.PowerManager# goToSleep()
      */
     public static void lockScreen(@NonNull Activity activity, @Nullable Callback callback) {
         requestAction(activity, callback, PaConstants.ACTION_LOCK_SCREEN);
@@ -89,6 +82,7 @@ public class PowerAct {
      * @param activity {@link #lockScreen(Activity, Callback)}
      * @param callback {@link Callback}
      * @see android.accessibilityservice.AccessibilityService#GLOBAL_ACTION_POWER_DIALOG
+     * @see android.view.IWindowManager# showGlobalActions()
      */
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public static void showPowerDialog(@NonNull Activity activity, @Nullable Callback callback) {
@@ -113,17 +107,11 @@ public class PowerAct {
 
     /**
      * Reboot the device.
-     * <p>
-     * <table border="1"><tr>
-     * <th>API level range</th><th>Principle</th>
-     * </tr><tr>
-     * <td>to 29</td><td>{@link android.app.admin.DevicePolicyManager#reboot(ComponentName)}</td>
-     * </tr><tr>
-     * <td>from 30</td><td>{@link android.os.PowerManager#reboot(String)} with null argument, call by Shizuku if available.</td>
-     * </tr></table>
      *
      * @param activity {@link #lockScreen(Activity, Callback)}
      * @param callback {@link Callback}
+     * @see android.app.admin.DevicePolicyManager#reboot(ComponentName)
+     * @see android.os.PowerManager#reboot(String)
      * @since 1.0.18
      */
     @RequiresApi(api = Build.VERSION_CODES.N)

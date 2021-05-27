@@ -48,8 +48,8 @@ dependencies {
 
     /* Optional dependencies, we can use these to make PowerActX faster. */
     implementation "com.github.topjohnwu.libsu:core:$libsu_version"
-    implementation "rikka.shizuku:api:$shizuku_version"
-    implementation "rikka.shizuku:provider:$shizuku_version"
+    implementation "dev.rikka.shizuku:api:$shizuku_version"
+    implementation "dev.rikka.shizuku:provider:$shizuku_version"
     implementation 'org.lsposed.hiddenapibypass:hiddenapibypass:1.1'
 }
 

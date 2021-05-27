@@ -6,8 +6,6 @@
 
 An Android library that can manipulate power-related actions with just few lines of code.
 
-(Using [`Shizuku`](https://shizuku.rikka.app/), `AccessibilityService`, `DevicePolicyManager`, and root)
-
 ## Usage
 
 ### Import
@@ -30,8 +28,9 @@ dependencies {
     // (Optional but recommended) A more elegant and direct way of using privileged system API.
     // NOTE: Need more steps to integrate it.
     // -> https://github.com/RikkaApps/Shizuku
-    implementation "rikka.shizuku:api:11.0.2"
-    implementation "rikka.shizuku:provider:11.0.2"
+    def shizuku_version = '11.0.2'
+    implementation "dev.rikka.shizuku:api:$shizuku_version"
+    implementation "dev.rikka.shizuku:provider:$shizuku_version"
     // (Optional but recommended) Make Shizuku available in more situations.
     // NOTE: Enable it on your own.
     // -> https://github.com/LSPosed/AndroidHiddenApiBypass
@@ -40,39 +39,25 @@ dependencies {
     
 ```
 
-[Use Java 8 language features and APIs](https://developer.android.com/studio/write/java8-support)
+### Invoke
 
-```groovy
-android {
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-}
-```
-
-### Use
+* Package
 
 ```java
 import github.ryuunoakaihitomi.poweract.*;
-
-...
-
-// Lock screen.
-PowerAct.lockScreen(activity);
-// Show system power dialog.
-PowerAct.showPowerDialog(activity, callback);
-// An additional widget for Quick Integration.
-/*
-        <github.ryuunoakaihitomi.poweract.PowerButton
-            android:id="@+id/pwrBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-*/
-PowerButton powerButton = findViewById(R.id.pwrBtn);
-// Guide user to grant the accessibility service permission if necessary.
-ExternalUtils.setUserGuideRunnable(runnable);
 ```
+
+* API Endpoints
+`PowerAct`: For general environments.
+`PowerActX`: For rooted environments.
+`Callback`: Notify execution result.
+`PowerButton`: An widget for Quick Integration.
+`ExternalUtils`: As its name.
+
+* Behavior
+**In theory, the library should not throw an exception at any time.**
+
+* Additional setup for some functions depend on Accessibility Service.
 
 Create [`res/values/poweract_config.xml`](library/src/main/res/values/public.xml)
 
@@ -86,18 +71,6 @@ Create [`res/values/poweract_config.xml`](library/src/main/res/values/public.xml
     <bool name="poweract_accessibility_service_show_foreground_notification">true</bool>
 </resources>
 ```
-
-Class `PowerActX` provides advanced power actions, but it only for **rooted** environment.
-Nevertheless, if you only use the library without `PowerAct` and `PowerButton` class, you don't need to create `poweract_config.xml`.
-Use `ExternalUtils.disableExposedComponents()` to make the exposed components for `PowerAct` invisible.
-
-## Compatibility
-
-**In theory, the library should not throw an exception at any time.**
-
-### PowerActX
-
-> PowerActX class must be called in main thread before 18.
 
 ## License
 

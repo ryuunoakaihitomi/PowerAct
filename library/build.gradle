@@ -83,8 +83,8 @@ dependencies {
     }
     androidTestImplementation project(':test-resource')
     androidTestImplementation "com.github.topjohnwu.libsu:core:$libsu_version"
-    androidTestImplementation "rikka.shizuku:api:$shizuku_version"
-    androidTestImplementation "rikka.shizuku:provider:$shizuku_version"
+    androidTestImplementation "dev.rikka.shizuku:api:$shizuku_version"
+    androidTestImplementation "dev.rikka.shizuku:provider:$shizuku_version"
     // https://stackoverflow.com/a/7878281
     testImplementation 'org.hamcrest:hamcrest:2.2'
     testImplementation 'junit:junit:4.13.2'
@@ -95,8 +95,8 @@ dependencies {
 
     /* ------- OPTIONAL DEPENDENCIES ------- */
     compileOnly "com.github.topjohnwu.libsu:core:$libsu_version"
-    compileOnly "rikka.shizuku:api:$shizuku_version"
-    compileOnly "rikka.shizuku:provider:$shizuku_version"
+    compileOnly "dev.rikka.shizuku:api:$shizuku_version"
+    compileOnly "dev.rikka.shizuku:provider:$shizuku_version"
 }
 
 apply from: 'maven-release.gradle'

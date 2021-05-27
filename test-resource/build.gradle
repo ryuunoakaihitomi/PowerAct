@@ -1,4 +1,6 @@
-apply plugin: 'com.android.library'
+plugins {
+    id 'com.android.library'
+}
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -9,6 +11,6 @@ android {
 
 dependencies {
     compileOnly 'de.robv.android.xposed:api:82'
-    compileOnly "rikka.shizuku:api:$shizuku_version"
-    compileOnly "rikka.shizuku:provider:$shizuku_version"
+    compileOnly "dev.rikka.shizuku:api:$shizuku_version"
+    compileOnly "dev.rikka.shizuku:provider:$shizuku_version"
 }

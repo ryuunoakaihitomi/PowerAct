@@ -19,12 +19,13 @@ dependencies {
 
     compileOnly 'androidx.annotation:annotation:1.2.0'
     compileOnly files("${androidJarPath}")
-
-    //  R8: Unsupported class file version: 56
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
 }
 
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }

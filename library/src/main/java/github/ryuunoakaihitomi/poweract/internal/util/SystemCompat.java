@@ -66,7 +66,8 @@ public class SystemCompat {
     }
 
     public static void crash() {
-        if (power == null) return;
+        // Make a crash in system server thread will cause a soft reboot.
+        if (power == null) throw new NullPointerException("power binder");
         power.crash("Soft reboot.");
     }
 }
