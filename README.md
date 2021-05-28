@@ -24,7 +24,7 @@ dependencies {
 
     // (Optional but recommended) Bring better performance to use root shell.
     // -> https://github.com/topjohnwu/libsu
-    implementation "com.github.topjohnwu.libsu:core:3.1.1"
+    implementation "com.github.topjohnwu.libsu:core:3.1.2"
     // (Optional but recommended) A more elegant and direct way of using privileged system API.
     // NOTE: Need more steps to integrate it.
     // -> https://github.com/RikkaApps/Shizuku
@@ -34,7 +34,7 @@ dependencies {
     // (Optional but recommended) Make Shizuku available in more situations.
     // NOTE: Enable it on your own.
     // -> https://github.com/LSPosed/AndroidHiddenApiBypass
-    implementation "org.lsposed.hiddenapibypass:hiddenapibypass:1.1"
+    implementation "org.lsposed.hiddenapibypass:hiddenapibypass:2.0"
 }
     
 ```

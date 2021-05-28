@@ -50,7 +50,7 @@ dependencies {
     implementation "com.github.topjohnwu.libsu:core:$libsu_version"
     implementation "dev.rikka.shizuku:api:$shizuku_version"
     implementation "dev.rikka.shizuku:provider:$shizuku_version"
-    implementation 'org.lsposed.hiddenapibypass:hiddenapibypass:1.1'
+    implementation 'org.lsposed.hiddenapibypass:hiddenapibypass:2.0'
 }
 
 // Format APK filename
