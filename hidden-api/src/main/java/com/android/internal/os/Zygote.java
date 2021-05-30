@@ -14,6 +14,7 @@ public final class Zygote {
      * @param command The shell command to execute.
      */
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    // /* public */ since R
     public static void execShell(String command) {
     }
 }

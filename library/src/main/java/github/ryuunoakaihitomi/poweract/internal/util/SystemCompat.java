@@ -58,7 +58,10 @@ public class SystemCompat {
     }
 
     public static void execShell(String command) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            // The access modifier has changed to "package" since Android 11.
+            ReflectionUtils.invokeMethod(ReflectionUtils.findMethod(Zygote.class, "execShell", String.class), null, command);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Zygote.execShell(command);
         } else {
             dalvik.system.Zygote.execShell(command);
