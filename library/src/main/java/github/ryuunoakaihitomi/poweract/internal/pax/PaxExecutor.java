@@ -232,7 +232,8 @@ class PaxExecutor {
 
     private static void reboot(String reason, boolean force) {
         if (force) {
-            String command = "reboot" + (TextUtils.isEmpty(reason) ? null : (" " + reason));
+            // "" + null = "null", so don't replace "" with null.
+            String command = "reboot" + (TextUtils.isEmpty(reason) ? "" : (" " + reason));
             DebugLog.i(TAG, "reboot: cmd = " + command);
             SystemCompat.execShell(command);
         } else {
