@@ -2,7 +2,8 @@ apply from: 'loadProperties.gradle'
 
 ext {
     def fs = File.separator
-    def sdkDir = loadProps('local').getProperty('sdk.dir')
+    def localProp = loadProps('local')
+    def sdkDir = Objects.nonNull(localProp) ? localProp.getProperty('sdk.dir') : System.getenv("ANDROID_SDK_ROOT")
     androidJarPath =
             sdkDir + fs + "platforms" + fs + "android-" + rootProject.ext.compileSdkVersion + fs + "android.jar"
     println "androidJarPath: " + androidJarPath
