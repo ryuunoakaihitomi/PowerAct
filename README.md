@@ -1,5 +1,7 @@
 # PowerAct
 
+[![Library Release CI](https://github.com/ryuunoakaihitomi/PowerAct/actions/workflows/release.yml/badge.svg)](https://github.com/ryuunoakaihitomi/PowerAct/actions/workflows/release.yml)
+
 ## Introduction
 
 *Press power button, not by hand, but by code.*
