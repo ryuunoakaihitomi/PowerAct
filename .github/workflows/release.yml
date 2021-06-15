@@ -3,8 +3,14 @@ name: Library Release CI
 on:
   push:
     branches: [ master ]
+    paths-ignore:
+    - '*.md'
+    - 'NOTICE.txt'
+    - 'LICENSE'
   pull_request:
     branches: [ master ]
+    paths-ignore:
+    - '*.md'
 
 jobs:
   build:
@@ -19,7 +25,7 @@ jobs:
         java-version: '11'
         distribution: 'adopt'
 
-    - name: Build
+    - name: Publish
       run: |
         gradle wrapper --gradle-version 6.7.1
         ./gradlew :hidden-api:build
