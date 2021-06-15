@@ -7,10 +7,12 @@ on:
     - '*.md'
     - 'NOTICE.txt'
     - 'LICENSE'
+    - '.github/workflows/test.yml'
   pull_request:
     branches: [ master ]
     paths-ignore:
     - '*.md'
+    - '.github/workflows/test.yml'
 
 jobs:
   build:

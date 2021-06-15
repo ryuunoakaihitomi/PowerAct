@@ -5,10 +5,12 @@ on:
     branches: [ master ]
     paths:
     - 'library/**'
+    - '.github/workflows/test.yml'
   pull_request:
     branches: [ master ]
     paths:
     - 'library/**'
+    - '.github/workflows/test.yml'
 
 jobs:
   build:
