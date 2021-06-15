@@ -29,7 +29,6 @@ jobs:
       run: |
         gradle wrapper --gradle-version 6.7.1
         ./gradlew :hidden-api:build
-        ./gradlew assembleRelease
         ./gradlew :library:publish
         
     - name: Upload maven repo
