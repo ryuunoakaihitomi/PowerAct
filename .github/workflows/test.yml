@@ -1,0 +1,38 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Library Test CI
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+    - 'library/**'
+  pull_request:
+    branches: [ master ]
+    paths:
+    - 'library/**'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: set up JDK 11
+      uses: actions/setup-java@v2
+      with:
+        java-version: '11'
+        distribution: 'adopt'
+
+    - name: Execute unit test
+      run: |
+        gradle wrapper --gradle-version 6.7.1
+        ./gradlew :hidden-api:build
+        ./gradlew :library:testDebugUnitTest
+        
+    - name: Upload test report
+      uses: actions/upload-artifact@v2
+      with:
+        name: lib-unit-test-report
+        path: library/build/reports/tests/testDebugUnitTest
