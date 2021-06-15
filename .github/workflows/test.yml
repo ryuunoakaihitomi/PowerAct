@@ -30,6 +30,7 @@ jobs:
         ./gradlew :library:testDebugUnitTest
         
     - name: Upload test report
+      if: always()
       uses: actions/upload-artifact@v2
       with:
         name: lib-unit-test-report
