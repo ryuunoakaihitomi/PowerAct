@@ -26,7 +26,6 @@ public class XposedMain implements IXposedHookLoadPackage {
             protected void beforeHookedMethod(MethodHookParam param) {
                 Application application = (Application) param.thisObject;
                 application.registerActivityLifecycleCallbacks(DebugAlc.newInstance());
-                ToastBugFix.$();
             }
         });
     }
