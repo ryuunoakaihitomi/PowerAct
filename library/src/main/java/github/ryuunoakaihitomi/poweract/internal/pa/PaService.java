@@ -260,6 +260,14 @@ public final class PaService extends AccessibilityService {
             if (mode != AppOpsManager.MODE_ALLOWED) {
                 DebugLog.e(TAG, "loadForegroundNotification: The foreground service may be disabled by AppOps's restriction." +
                         " mode = " + Utils.getClassIntApiConstantString(AppOpsManager.class, "MODE", mode));
+                if (mode == AppOpsManager.MODE_ERRORED /*
+                On 28, "cmd appops set <package> START_FOREGROUND foreground"
+                will crash app that is trying to start foreground service, and app will not find it out before. (MODE_ALLOW)
+
+                || mode == AppOpsManager.MODE_FOREGROUND */) {
+                    DebugLog.e(TAG, "loadForegroundNotification: Explicitly denied. (crash)");
+                    return;
+                }
             }
         }
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -299,7 +307,11 @@ public final class PaService extends AccessibilityService {
             Notification foregroundNotification = builder.build();
             int id = Utils.randomNonZero();
             DebugLog.i(TAG, "onServiceConnected: notification id = " + id);
-            startForeground(id, foregroundNotification);
+            try {
+                startForeground(id, foregroundNotification);
+            } catch (SecurityException e) {
+                DebugLog.e(TAG, "loadForegroundNotification: MODE_FOREGROUND on P.", e);
+            }
         }
     }
 }
