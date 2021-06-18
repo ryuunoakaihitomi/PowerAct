@@ -273,10 +273,10 @@ public final class PaService extends AccessibilityService {
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (manager != null) {
             Notification.Builder builder;
+            final String channelId = TextUtils.join(".", new String[]{BuildConfig.LIBRARY_PACKAGE_NAME, TAG});
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                final String channelTag = TextUtils.join(".", new String[]{BuildConfig.LIBRARY_PACKAGE_NAME, TAG});
                 NotificationChannel channel =
-                        new NotificationChannel(channelTag,
+                        new NotificationChannel(channelId,
                                 getString(R.string.poweract_accessibility_service_label),
                                 NotificationManager.IMPORTANCE_MIN);
                 channel.enableLights(false);
@@ -285,7 +285,7 @@ public final class PaService extends AccessibilityService {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     channel.setAllowBubbles(false);
                 }
-                builder = new Notification.Builder(this, channelTag);
+                builder = new Notification.Builder(this, channelId);
                 manager.createNotificationChannel(channel);
             } else {
                 builder = new Notification.Builder(this);
@@ -310,6 +310,8 @@ public final class PaService extends AccessibilityService {
             try {
                 startForeground(id, foregroundNotification);
             } catch (SecurityException e) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                    manager.deleteNotificationChannel(channelId);
                 DebugLog.e(TAG, "loadForegroundNotification: MODE_FOREGROUND on P.", e);
             }
         }
