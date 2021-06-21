@@ -6,6 +6,7 @@ import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
+import github.ryuunoakaihitomi.retoast._Initializer;
 
 /**
  * Not for outside.
@@ -26,6 +27,7 @@ public class XposedMain implements IXposedHookLoadPackage {
             protected void beforeHookedMethod(MethodHookParam param) {
                 Application application = (Application) param.thisObject;
                 application.registerActivityLifecycleCallbacks(DebugAlc.newInstance());
+                _Initializer.main(null);
             }
         });
     }

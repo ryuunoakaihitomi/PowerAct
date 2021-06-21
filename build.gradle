@@ -23,6 +23,10 @@ allprojects {
 
         // For libsu
         maven { url 'https://jitpack.io' }
+        // For ReToast on test-resource
+        maven {
+            url 'https://raw.githubusercontent.com/ryuunoakaihitomi/maven-repository/master'
+        }
     }
 
     // javac param

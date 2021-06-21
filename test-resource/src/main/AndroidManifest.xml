@@ -5,7 +5,8 @@
     <!-- BaseTest#requestUninstall() -->
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
 
-    <uses-sdk tools:overrideLibrary="rikka.shizuku.shared" />
+    <!-- ReToast: minSdkVersion = 16 -->
+    <uses-sdk tools:overrideLibrary="rikka.shizuku.shared,github.ryuunoakaihitomi.retoast" />
 
     <application>
 
