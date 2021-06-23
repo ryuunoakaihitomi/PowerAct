@@ -7,10 +7,14 @@ android {
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
     }
+    lintOptions {
+        disable 'ReToastImportWay'
+        disable 'ReToastInitializerCalling'
+    }
 }
 
 dependencies {
-    implementation 'github.ryuunoakaihitomi.retoast:retoast:1.5.0'
+    implementation 'github.ryuunoakaihitomi.retoast:retoast:1.6.0'
     compileOnly 'de.robv.android.xposed:api:82'
     compileOnly "dev.rikka.shizuku:api:$shizuku_version"
     compileOnly "dev.rikka.shizuku:provider:$shizuku_version"
