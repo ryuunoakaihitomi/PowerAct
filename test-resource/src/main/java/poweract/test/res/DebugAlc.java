@@ -5,6 +5,7 @@ import android.app.Application;
 import android.util.Log;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
@@ -28,13 +29,13 @@ class DebugAlc {
     private static class Handler implements InvocationHandler {
 
         @Override
-        public Object invoke(Object proxy, Method method, Object[] args) {
+        public Object invoke(Object proxy, Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {
             Object firstArg = args[0];
             if (firstArg instanceof Activity) {
                 Activity activity = (Activity) firstArg;
                 Log.d(TAG, activity.getComponentName().getClassName() + " -> " + method.getName());
             }
-            return null;
+            return method.invoke(proxy, args);
         }
     }
 }

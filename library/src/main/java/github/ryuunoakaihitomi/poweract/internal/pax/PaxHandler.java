@@ -46,6 +46,7 @@ final class PaxHandler implements InvocationHandler {
         sApplication = ActivityThread.currentApplication();
     }
 
+    @SuppressWarnings("SuspiciousInvocationHandlerImplementation")
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) {
         final CallbackHelper callbackHelper = CallbackHelper.of((Callback) args[0]);
