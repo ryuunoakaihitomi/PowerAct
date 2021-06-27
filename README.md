@@ -1,6 +1,7 @@
 # PowerAct
 
 [![Library Release CI](https://github.com/ryuunoakaihitomi/PowerAct/actions/workflows/release.yml/badge.svg)](https://github.com/ryuunoakaihitomi/PowerAct/actions/workflows/release.yml)
+[![Maven metadata URL](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fraw.githubusercontent.com%2Fryuunoakaihitomi%2Fmaven-repository%2Fmain%2Fgithub%2Fryuunoakaihitomi%2Fpoweract%2Fpoweract%2Fmaven-metadata.xml)](https://github.com/ryuunoakaihitomi/maven-repository)
 
 ## Introduction
 
