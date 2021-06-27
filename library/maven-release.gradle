@@ -69,10 +69,9 @@ afterEvaluate {
                     url = PROJ_WEBSITE_URL
 
                     licenses {
-                        // ['Apache-2.0']
                         license {
-                            name = 'The Apache Software License, Version 2.0'
-                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                            name = LICENSE_NAME
+                            url = LICENSE_URL
                             distribution = 'repo'
                         }
                     }
