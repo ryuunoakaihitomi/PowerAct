@@ -6,7 +6,7 @@ buildscript {
 
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.1'
+        classpath 'com.android.tools.build:gradle:7.0.0'
     }
 }
 
@@ -18,7 +18,7 @@ allprojects {
     repositories {
         google()
         // Xposed -> https://github.com/rovo89/XposedBridge/wiki/Using-the-Xposed-Framework-API#android-studio-gradle-based
-        jcenter()
+        maven { url "https://api.xposed.info/" }
         mavenCentral()
 
         // For libsu
@@ -44,7 +44,7 @@ task clean(type: Delete) {
 
 ext {
     minSdkVersion = 14
-    compileSdkVersion = 30
+    compileSdkVersion = 31
     targetSdkVersion = compileSdkVersion
 
     libsu_version = '3.1.2'

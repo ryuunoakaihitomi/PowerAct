@@ -7,11 +7,9 @@ public class TestService extends AccessibilityService {
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-
     }
 
     @Override
     public void onInterrupt() {
-
     }
 }

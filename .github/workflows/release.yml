@@ -29,7 +29,7 @@ jobs:
 
     - name: Publish
       env:
-        GRADLE_VER: 6.7.1
+        GRADLE_VER: 7.0.2
       run: |
         gradle :wrapper --gradle-version $env:GRADLE_VER
         ./gradlew :hidden-api:build

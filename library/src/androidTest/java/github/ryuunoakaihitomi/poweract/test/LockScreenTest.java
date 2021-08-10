@@ -1,8 +1,14 @@
 package github.ryuunoakaihitomi.poweract.test;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import android.content.Context;
 import android.os.Build;
 import android.os.PowerManager;
+import android.os.SystemClock;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -10,11 +16,6 @@ import androidx.annotation.NonNull;
 import java.util.concurrent.CountDownLatch;
 
 import github.ryuunoakaihitomi.poweract.Callback;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 public final class LockScreenTest extends BaseTest {
 
@@ -35,6 +36,7 @@ public final class LockScreenTest extends BaseTest {
 
             @Override
             public void done() {
+                SystemClock.sleep(100);     // Wait for the complete completion of screen lock.
                 assertFalse("lockScreen() doesn't work.", isInteractive());
                 countDownLatch.countDown();
             }

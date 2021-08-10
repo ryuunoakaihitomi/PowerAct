@@ -1,5 +1,12 @@
 package github.ryuunoakaihitomi.poweract;
 
+import static org.hamcrest.CoreMatchers.anyOf;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -12,13 +19,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import github.ryuunoakaihitomi.poweract.test.BaseTest;
-
-import static org.hamcrest.CoreMatchers.anyOf;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 public class PowerActXTest extends BaseTest {
 
@@ -88,6 +88,11 @@ public class PowerActXTest extends BaseTest {
         checkAndCount("restartSystemUi", false);
     }
 
+    private void assertCustomReboot(String methodName) {
+        i("!!! Checking customReboot() as an exception");
+        assertEquals("customReboot", methodName);
+    }
+
     private void checkAndCount(final String methodName, final boolean force) {
         sMethodCount += force ? checkForceMethod(methodName) : checkMethod(methodName);
     }
@@ -105,6 +110,7 @@ public class PowerActXTest extends BaseTest {
                     final Class<?> type = m.getParameters()[0].getType();
                     i("param: [Callback] or [arg] " + type.getSimpleName());
                     assertThat(type, anyOf(is(Callback.class), is(String.class)));
+                    if (type.equals(String.class)) assertCustomReboot(name);
                     break;
                 case 2:
                     i("param: [arg, Callback]");
@@ -139,13 +145,16 @@ public class PowerActXTest extends BaseTest {
                     i("param: CB, SB, SC");
                     final Parameter[] parameters = m.getParameters();
                     Class<?>[] types = new Class<?>[]{parameters[0].getType(), parameters[1].getType()};
+                    Class<?>[] majority = new Class<?>[]{Callback.class, boolean.class};
                     assertThat(types, anyOf(
-                            is(new Class<?>[]{Callback.class, boolean.class}),
+                            is(majority),
                             is(new Class<?>[]{String.class, boolean.class}),
                             is(new Class<?>[]{String.class, Callback.class})));
                     i("! REPORT: " + Arrays.toString(types));
+                    if (!Arrays.equals(types, majority)) assertCustomReboot(name);
                     break;
                 case 3:
+                    assertCustomReboot(name);
                     i("param: [arg, Callback, force]");
                     List<Class<?>> assertTypes = Arrays.asList(String.class, Callback.class, boolean.class);
                     for (int j = 0; j < m.getParameterCount(); j++) {

@@ -34,7 +34,7 @@ public class MyApplication extends Application {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             Log.w(TAG, "onCreate: HiddenApiBypass is enabled. If you want to test PowerAct with hidden api restriction, you know what to do.");
-            HiddenApiBypass.setHiddenApiExemptions("L");
+            HiddenApiBypass.addHiddenApiExemptions("");
         }
     }
 }

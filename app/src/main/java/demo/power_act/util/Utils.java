@@ -27,13 +27,5 @@ public class Utils {
             return uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_WATCH;
         }
         return false;
-//        try {
-//            PackageManager pm = context.getPackageManager();
-//            PackageInfo info = pm.getPackageInfo("com.google.android.wearable.app", 0);
-//            Log.i(TAG, "isAndroidWearOS: App Version:" + info.versionName);
-//            return (info.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) > 0;
-//        } catch (PackageManager.NameNotFoundException ignored) {
-//            return false;
-//        }
     }
 }

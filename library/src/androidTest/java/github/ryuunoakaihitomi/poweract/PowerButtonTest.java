@@ -1,5 +1,19 @@
 package github.ryuunoakaihitomi.poweract;
 
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.longClick;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static org.awaitility.Awaitility.await;
+import static org.awaitility.Durations.ONE_SECOND;
+import static org.hamcrest.CoreMatchers.anyOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import android.os.Build;
 import android.util.Log;
 import android.util.TypedValue;
@@ -18,24 +32,12 @@ import org.junit.Test;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import github.ryuunoakaihitomi.poweract.internal.util.LibraryCompat;
+import github.ryuunoakaihitomi.poweract.internal.util.ReflectionUtils;
 import github.ryuunoakaihitomi.poweract.test.BaseTest;
 import github.ryuunoakaihitomi.poweract.test.CommonUtils;
 import github.ryuunoakaihitomi.poweract.test.R;
 import poweract.test.res.PlaygroundActivity;
 import rikka.shizuku.ShizukuProvider;
-
-import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.longClick;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static org.awaitility.Awaitility.await;
-import static org.awaitility.Durations.ONE_SECOND;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 public class PowerButtonTest extends BaseTest {
 
@@ -104,13 +106,13 @@ public class PowerButtonTest extends BaseTest {
 
     private void attemptRequestUi(boolean isLockScreen) {
         if (LibraryCompat.isShizukuPrepared()) {
-            Log.w(TAG, "attemptRequestUi: Cannot distinguish current action as " + (isLockScreen ? "lock screen" : "power dialog")
-                    + ". Please stop shizuku service and test again.");
-            assertTrue(mUiDevice.hasObject(By.pkg(ShizukuProvider.MANAGER_APPLICATION_ID)));
-            try {
-                mUiDevice.findObject(new UiSelector().packageName(ShizukuProvider.MANAGER_APPLICATION_ID).clickable(true).instance(1)).click();
-            } catch (UiObjectNotFoundException e) {
-                fail(Log.getStackTraceString(e));
+            if (isLockScreen || !ReflectionUtils.hasHiddenApiRestriction() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                assertTrue(mUiDevice.hasObject(By.pkg(ShizukuProvider.MANAGER_APPLICATION_ID)));
+                try {
+                    mUiDevice.findObject(new UiSelector().packageName(ShizukuProvider.MANAGER_APPLICATION_ID).clickable(true).instance(1)).click();
+                } catch (UiObjectNotFoundException e) {
+                    fail(Log.getStackTraceString(e));
+                }
             }
         } else {
             if (isLockScreen) {
@@ -131,10 +133,16 @@ public class PowerButtonTest extends BaseTest {
     }
 
     private void verifySettingsUiTitle(String resName) {
-        final String title = CommonUtils.getStringResource(targetContext, CommonUtils.PKG_NAME_SETTINGS, resName);
-        Log.i(TAG, "verifySettingsUi: title = " + title);
+        //noinspection deprecation
+        final String
+                title = CommonUtils.getStringResource(targetContext, CommonUtils.PKG_NAME_SETTINGS, resName),
+                activityTitle = mUiDevice.getCurrentActivityName();
+        Log.i(TAG, "verifySettingsUi: title = " + title + ", activityTitle = " + activityTitle);
         // Out of the app, doesn't work.
         //onView(withText(title)).check(matches(isDisplayed()));
-        assertTrue(mUiDevice.hasObject(By.text(title)));
+        // This line is for Android 12 and some custom 11 ROM that copied 12's UI directly (like dotOS).
+        assertThat(true, anyOf(is(mUiDevice.hasObject(By.text(title))), is(title.equals(activityTitle))));
+        // For pre-12 AOSP.
+        //assertTrue(mUiDevice.hasObject(By.text(title)));
     }
 }

@@ -1,13 +1,16 @@
 package github.ryuunoakaihitomi.poweract.test;
 
+import static org.junit.Assert.fail;
+
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.util.Log;
 
-import java.util.Arrays;
+import androidx.test.uiautomator.UiDevice;
 
-import static org.junit.Assert.fail;
+import java.io.IOException;
+import java.util.Arrays;
 
 public final class CommonUtils {
 
@@ -28,5 +31,12 @@ public final class CommonUtils {
             fail(e.getMessage());
         }
         return "";
+    }
+
+    public static void dumpWindowHierarchy2Stdout(UiDevice device) {
+        try {
+            device.dumpWindowHierarchy(System.out);
+        } catch (IOException ignore) {
+        }
     }
 }

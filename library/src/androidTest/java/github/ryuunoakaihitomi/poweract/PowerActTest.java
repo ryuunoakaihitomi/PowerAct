@@ -1,5 +1,15 @@
 package github.ryuunoakaihitomi.poweract;
 
+import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR2;
+import static android.os.Build.VERSION_CODES.N;
+import static org.hamcrest.CoreMatchers.anyOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import android.Manifest;
 import android.app.UiAutomation;
 import android.app.admin.DevicePolicyManager;
@@ -31,27 +41,19 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import github.ryuunoakaihitomi.poweract.internal.pa.PaReceiver;
 import github.ryuunoakaihitomi.poweract.internal.util.LibraryCompat;
+import github.ryuunoakaihitomi.poweract.internal.util.ReflectionUtils;
 import github.ryuunoakaihitomi.poweract.test.BaseTest;
 import github.ryuunoakaihitomi.poweract.test.CommonUtils;
 import github.ryuunoakaihitomi.poweract.test.LockScreenTest;
 import poweract.test.res.PlaygroundActivity;
 import rikka.shizuku.Shizuku;
 import rikka.shizuku.ShizukuProvider;
-
-import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR2;
-import static android.os.Build.VERSION_CODES.N;
-import static org.hamcrest.CoreMatchers.anyOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 @LargeTest
 @SdkSuppress(minSdkVersion = JELLY_BEAN_MR2)    // Ui automator required.
@@ -78,22 +80,29 @@ public final class PowerActTest extends BaseTest {
         mUiDevice.wakeUp();
     }
 
+    public static void callHiddenApiBypass() {
+        @SuppressWarnings("SpellCheckingInspection")
+        Class<?> habClz = ReflectionUtils.findClass("org.lsposed.hiddenapibypass.HiddenApiBypass");
+        Log.d(TAG, "call... " + habClz);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && Objects.nonNull(habClz)) {
+            ReflectionUtils.invokeStaticMethod(ReflectionUtils.findMethod(habClz, "addHiddenApiExemptions", String[].class), (Object) new String[]{""});
+        }
+    }
+
     @Test(timeout = LockScreenTest.WAIT_TIME_MILLIS)
     public void lockScreen() throws InterruptedException {
         LockScreenTest test = new LockScreenTest(callback -> {
             rule.getScenario().onActivity(activity -> activity.runOnUiThread(() -> PowerAct.lockScreen(activity, callback)));
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-                if (LibraryCompat.isShizukuPrepared()) {
-                    Log.d(TAG, "lockScreen: Shizuku running...");
-                    grantShizukuPermission();
-                } else {
-                    final String addDevAdminBtnText = CommonUtils.getStringResource(targetContext, CommonUtils.PKG_NAME_SETTINGS, "add_device_admin");
-                    Log.i(TAG, "lockScreen: addDevAdminBtnText = " + addDevAdminBtnText);
-                    final UiObject addAdminActionBtn = mUiDevice.findObject(new UiSelector().text(addDevAdminBtnText));
-                    if (addAdminActionBtn.exists()) {
-                        Log.d(TAG, "lockScreen: Click add device admin action button.");
-                        addAdminActionBtn.click();
-                    }
+            if (LibraryCompat.isShizukuPrepared()) {
+                Log.d(TAG, "lockScreen: Shizuku running...");
+                grantShizukuPermission();
+            } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+                final String addDevAdminBtnText = CommonUtils.getStringResource(targetContext, CommonUtils.PKG_NAME_SETTINGS, "add_device_admin");
+                Log.i(TAG, "lockScreen: addDevAdminBtnText = " + addDevAdminBtnText);
+                final UiObject addAdminActionBtn = mUiDevice.findObject(new UiSelector().text(addDevAdminBtnText));
+                if (addAdminActionBtn.exists()) {
+                    Log.d(TAG, "lockScreen: Click add device admin action button.");
+                    addAdminActionBtn.click();
                 }
             } else {
                 Log.d(TAG, "lockScreen: Enable accessibility service by uiautomator.");
@@ -106,50 +115,6 @@ public final class PowerActTest extends BaseTest {
         DevicePolicyManager devicePolicyManager = (DevicePolicyManager) targetContext.getSystemService(Context.DEVICE_POLICY_SERVICE);
         assert devicePolicyManager != null;
         devicePolicyManager.removeActiveAdmin(new ComponentName(targetContext, PaReceiver.class));
-    }
-
-    @SdkSuppress(minSdkVersion = N) // Cannot enable accessibility service before 24.
-    @Test
-    public void showPowerDialog() throws Throwable {
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
-        final Callback callback = new Callback() {
-
-            @Override
-            public void done() {
-                countDownLatch.countDown();
-            }
-
-            @Override
-            public void failed() {
-                fail("showPowerDialog");
-            }
-        };
-
-        rule.getScenario().onActivity(activity -> PowerAct.showPowerDialog(activity, callback));
-        if (LibraryCompat.isShizukuPrepared()) {
-            grantShizukuPermission();
-        } else {
-            try {
-                enableAccessibilityService();
-            } catch (UiObjectNotFoundException e) {
-                fail(e.getMessage());
-            }
-        }
-        countDownLatch.await();
-
-        /* Check if it's system ui. (The system power dialog) */
-        final String currentPackageName = mUiDevice.getCurrentPackageName();
-        Log.d(TAG, "showPowerDialog: Test end. currentPackageName = " + currentPackageName);
-        assertThat(currentPackageName, anyOf(is("android"), is("com.android.systemui")));
-        // Dump window hierarchy to logcat.
-        mUiDevice.dumpWindowHierarchy(System.out);
-        /* Check "Power Off" item. */
-        final Resources sysRes = Resources.getSystem();
-        final String powerOffText = sysRes.getString(sysRes.getIdentifier("power_off", "string", "android"));
-        Log.d(TAG, "showPowerDialog: powerOffText = " + powerOffText);
-        assertTrue(mUiDevice.hasObject(By.text(powerOffText)));
-        // Exit power dialog.
-        mUiDevice.pressBack();
     }
 
     @FlakyTest(detail = "The case will change the power state of the device.")
@@ -211,5 +176,50 @@ public final class PowerActTest extends BaseTest {
     public void grantShizukuPermission() {
         // Unfortunately, Shizuku Manager's string resources are obfuscated.
         mUiDevice.findObject(By.pkg(ShizukuProvider.MANAGER_APPLICATION_ID).clickable(true)).click();
+    }
+
+    @SdkSuppress(minSdkVersion = N) // Cannot enable accessibility service before 24.
+    @Test
+    public void showPowerDialog() throws Throwable {
+        callHiddenApiBypass();
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        final Callback callback = new Callback() {
+
+            @Override
+            public void done() {
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void failed() {
+                fail("showPowerDialog");
+            }
+        };
+
+        rule.getScenario().onActivity(activity -> PowerAct.showPowerDialog(activity, callback));
+        if (LibraryCompat.isShizukuPrepared() && !ReflectionUtils.hasHiddenApiRestriction()) {
+            grantShizukuPermission();
+        } else {
+            try {
+                enableAccessibilityService();
+            } catch (UiObjectNotFoundException e) {
+                fail(e.getMessage());
+            }
+        }
+        countDownLatch.await();
+
+        /* Check if it's system ui. (The system power dialog) */
+        final String currentPackageName = mUiDevice.getCurrentPackageName();
+        Log.d(TAG, "showPowerDialog: Test end. currentPackageName = " + currentPackageName);
+        assertThat(currentPackageName, anyOf(is("android"), is("com.android.systemui")));
+        // Dump window hierarchy to logcat.
+        CommonUtils.dumpWindowHierarchy2Stdout(mUiDevice);
+        /* Check "Power Off" item. */
+        final Resources sysRes = Resources.getSystem();
+        final String powerOffText = sysRes.getString(sysRes.getIdentifier("power_off", "string", "android"));
+        Log.d(TAG, "showPowerDialog: powerOffText = " + powerOffText);
+        assertTrue(mUiDevice.hasObject(By.text(powerOffText)));
+        // Exit power dialog.
+        mUiDevice.pressBack();
     }
 }
