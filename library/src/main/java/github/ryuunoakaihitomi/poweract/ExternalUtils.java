@@ -106,8 +106,11 @@ public final class ExternalUtils {
     /**
      * Sometimes we need to guide user to grant permission the library needs manually,
      * such as {@link AccessibilityService} or root permission.
+     * Especially {@link AccessibilityService},
+     * some custom systems deliberately put the associated option into a invisible place
+     * (for example, beyond the bottom of the visible range of the screen).
      * <p>
-     * If the library thinks that we should guide user, the {@link Runnable} will be executed.
+     * If the library thinks that we should guide user, the {@link Runnable} argument will be executed.
      * <p>
      * After setting up the {@link Runnable} is done, <b>we must use the library AS SOON AS POSSIBLE!</b>
      * It will be null after 5 seconds in order to recycle memory.

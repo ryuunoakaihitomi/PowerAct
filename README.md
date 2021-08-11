@@ -39,7 +39,6 @@ dependencies {
     // -> https://github.com/LSPosed/AndroidHiddenApiBypass
     implementation "org.lsposed.hiddenapibypass:hiddenapibypass:2.0"
 }
-    
 ```
 
 ### Invoke
@@ -60,7 +59,49 @@ import github.ryuunoakaihitomi.poweract.*;
 
 `PowerButton`: An widget for Quick Integration.
 
-`ExternalUtils`: As its name.
+`ExternalUtils`: External utility tools.
+
+* Examples
+
+Turn off the screen.
+```java
+PowerAct.lockScreen(activity);
+```
+
+Open a power menu, with callback.
+```java
+Callback callback = new Callback() {
+    @Override
+    public void done() {}
+    @Override
+    public void failed() {}
+};
+PowerAct.showPowerDialog(activity, callback);
+```
+
+Open system power menu, with callback.
+```java
+PowerAct.showPowerDialog(activity, callback);
+```
+
+...and guide user to enable the accessibility service.
+```java
+//... Continue the above section code.
+ExternalUtils.setUserGuideRunnable(() -> Toast.makeText(this, "Please enable the accessibility service.", Toast.LENGTH_LONG).show());
+```
+
+Reboot to recovery.
+```java
+PowerActX.recovery();
+```
+
+Add a power button in layout.xml
+```xml
+<github.ryuunoakaihitomi.poweract.PowerButton
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" 
+/>
+```
 
 * Behavior
 

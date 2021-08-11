@@ -26,6 +26,13 @@ import github.ryuunoakaihitomi.poweract.internal.util.Utils;
  * <p>
  * Click to lock screen, and long click to show system power dialog if available.
  * In order to prevent the behavior from being destroyed, the class cannot be inherited.
+ * <p>
+ * <b>NOTICE:</b>
+ * To develop a user-friendly app,
+ * it's not recommended to directly use this widget just for integrating the power related functions as soon as possible.
+ * It lacks some necessary user guides for enabling special setting item,
+ * user could be confused by suddenly jumping to a ui that he does not recognize.
+ * Consider {@link PowerAct}/{@link PowerActX} and design a more user-friendly guide logic on {@link ExternalUtils#setUserGuideRunnable(Runnable)}.
  *
  * @see PowerAct#lockScreen(Activity)
  * @see PowerAct#showPowerDialog(Activity)
