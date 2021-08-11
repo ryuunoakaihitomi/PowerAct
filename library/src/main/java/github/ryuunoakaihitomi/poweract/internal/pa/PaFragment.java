@@ -84,99 +84,6 @@ public final class PaFragment extends Fragment {
         }
     }
 
-    private static void preparePowerBinder() {
-        SystemCompat.setPowerBinder(new ShizukuBinderWrapper(SystemServiceHelper.getSystemService(Context.POWER_SERVICE)));
-    }
-
-    private void startActivitySafely(@NonNull Intent intent, boolean hasResult, Runnable onSuccessCallback) {
-        try {
-            if (hasResult) {
-                mRequestCode = Utils.randomNaturalNumber();
-                startActivityForResult(intent, mRequestCode);
-            } else {
-                startActivity(intent);
-            }
-            onSuccessCallback.run();
-        } catch (Throwable t) {
-            // ANE is a expected exception. JavaDoc of Settings.ACTION_ACCESSIBILITY_SETTINGS:
-            // "In some cases, a matching Activity may not exist, so ensure you safeguard against this."
-            if (t instanceof ActivityNotFoundException) {
-                failed(intent.getAction() + " not found!");
-            } else {
-                DebugLog.e(TAG, "startActivitySafely: WEIRD. But we have avoided it.", t);
-                String message = t.getMessage();
-                if (TextUtils.isEmpty(message)) message = "startActivitySafely()";
-                failed(message);
-            }
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        DebugLog.d(TAG, "onResume");
-        if (!mFirstRun) {
-            DebugLog.d(TAG, "onResume: First run. There's not accessibility settings ui now.");
-            mFirstRun = true;
-        } else if (mHasRequestedAccessibility) {
-            mHasRequestedAccessibility = false;
-            mUserDelayLogger.addSplit("return from accessibility service");
-            if (Utils.isAccessibilityServiceEnabled(mAssociatedActivity, PaService.class)) {
-                requireAccessibilityAction();
-            } else {
-                failed("Accessibility Service is still disabled.");
-            }
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        DebugLog.d(TAG, "onActivityResult");
-        if (mRequestCode == requestCode) {
-            mUserDelayLogger.addSplit("return from device admin");
-            if (resultCode == Activity.RESULT_OK) {
-                if (mDpm.isAdminActive(mAdminReceiverComponentName)) {
-                    mDpm.lockNow();
-                    done();
-                }
-            } else {
-                // resultCode != Activity.RESULT_OK
-                failed("resultCode(" + resultCode + ") != Activity.RESULT_OK(-1)");
-            }
-        } else {
-            // mRequestCode != requestCode
-            failed("mRequestCode != requestCode " + Arrays.asList(mRequestCode, requestCode));
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (permissions.length == 0 || grantResults.length == 0) {
-            // SHOULD NEVER HAPPEN! ( M I U I )
-            failed("Empty permissions / grantResults.");
-            return;
-        }
-        if (ShizukuProvider.PERMISSION.equals(permissions[0])) {
-            shizukuRequestPermissionResult(requestCode, grantResults[0]);
-        } else {
-            failed("Unknown permission: " + Arrays.asList(permissions));
-        }
-    }
-
-    private void shizukuRequestPermissionResult(int requestCode, int grantResult) {
-        if (requestCode == mRequestCode &&
-                grantResult == PackageManager.PERMISSION_GRANTED) {
-            mUserDelayLogger.addSplit("return from shizuku permission (granted)");
-            callShizuku();
-        } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !ShizukuCompat.shouldShowRequestPermissionRationale(this)) {
-                DebugLog.e(TAG, "shizukuRequestPermissionResult: Shizuku permission denied forever!");
-            }
-            failed("requestCode(REQUEST_CODE_SHIZUKU_PERMISSION=" + mRequestCode + "),grantResults -> " +
-                    Arrays.asList(requestCode, grantResult));
-        }
-    }
-
     public void requestAction(Callback callback, @PaConstants.ActionType int action) {
         mAction = action;
         Activity activity = getActivity();
@@ -315,6 +222,99 @@ public final class PaFragment extends Fragment {
                 intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, mAdminReceiverComponentName);
                 startActivitySafely(intent, true, () -> mUserDelayLogger.addSplit("device admin"));
             }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        DebugLog.d(TAG, "onResume");
+        if (!mFirstRun) {
+            DebugLog.d(TAG, "onResume: First run. There's not accessibility settings ui now.");
+            mFirstRun = true;
+        } else if (mHasRequestedAccessibility) {
+            mHasRequestedAccessibility = false;
+            mUserDelayLogger.addSplit("return from accessibility service");
+            if (Utils.isAccessibilityServiceEnabled(mAssociatedActivity, PaService.class)) {
+                requireAccessibilityAction();
+            } else {
+                failed("Accessibility Service is still disabled.");
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        DebugLog.d(TAG, "onActivityResult");
+        if (mRequestCode == requestCode) {
+            mUserDelayLogger.addSplit("return from device admin");
+            if (resultCode == Activity.RESULT_OK) {
+                if (mDpm.isAdminActive(mAdminReceiverComponentName)) {
+                    mDpm.lockNow();
+                    done();
+                }
+            } else {
+                // resultCode != Activity.RESULT_OK
+                failed("resultCode(" + resultCode + ") != Activity.RESULT_OK(-1)");
+            }
+        } else {
+            // mRequestCode != requestCode
+            failed("mRequestCode != requestCode " + Arrays.asList(mRequestCode, requestCode));
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (permissions.length == 0 || grantResults.length == 0) {
+            // SHOULD NEVER HAPPEN! ( M I U I )
+            failed("Empty permissions / grantResults.");
+            return;
+        }
+        if (ShizukuProvider.PERMISSION.equals(permissions[0])) {
+            shizukuRequestPermissionResult(requestCode, grantResults[0]);
+        } else {
+            failed("Unknown permission: " + Arrays.asList(permissions));
+        }
+    }
+
+    private static void preparePowerBinder() {
+        SystemCompat.setPowerBinder(new ShizukuBinderWrapper(SystemServiceHelper.getSystemService(Context.POWER_SERVICE)));
+    }
+
+    private void startActivitySafely(@NonNull Intent intent, boolean hasResult, Runnable onSuccessCallback) {
+        try {
+            if (hasResult) {
+                mRequestCode = Utils.randomNaturalNumber();
+                startActivityForResult(intent, mRequestCode);
+            } else {
+                startActivity(intent);
+            }
+            onSuccessCallback.run();
+        } catch (Throwable t) {
+            // ANE is a expected exception. JavaDoc of Settings.ACTION_ACCESSIBILITY_SETTINGS:
+            // "In some cases, a matching Activity may not exist, so ensure you safeguard against this."
+            if (t instanceof ActivityNotFoundException) {
+                failed(intent.getAction() + " not found!");
+            } else {
+                DebugLog.e(TAG, "startActivitySafely: WEIRD. But we have avoided it.", t);
+                String message = t.getMessage();
+                if (TextUtils.isEmpty(message)) message = "startActivitySafely()";
+                failed(message);
+            }
+        }
+    }
+
+    private void shizukuRequestPermissionResult(int requestCode, int grantResult) {
+        if (requestCode == mRequestCode &&
+                grantResult == PackageManager.PERMISSION_GRANTED) {
+            mUserDelayLogger.addSplit("return from shizuku permission (granted)");
+            callShizuku();
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !ShizukuCompat.shouldShowRequestPermissionRationale(this)) {
+                DebugLog.e(TAG, "shizukuRequestPermissionResult: Shizuku permission denied forever!");
+            }
+            failed("requestCode(REQUEST_CODE_SHIZUKU_PERMISSION=" + mRequestCode + "),grantResults -> " +
+                    Arrays.asList(requestCode, grantResult));
         }
     }
 

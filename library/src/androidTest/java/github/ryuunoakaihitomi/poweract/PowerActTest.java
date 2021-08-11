@@ -80,15 +80,6 @@ public final class PowerActTest extends BaseTest {
         mUiDevice.wakeUp();
     }
 
-    public static void callHiddenApiBypass() {
-        @SuppressWarnings("SpellCheckingInspection")
-        Class<?> habClz = ReflectionUtils.findClass("org.lsposed.hiddenapibypass.HiddenApiBypass");
-        Log.d(TAG, "call... " + habClz);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && Objects.nonNull(habClz)) {
-            ReflectionUtils.invokeStaticMethod(ReflectionUtils.findMethod(habClz, "addHiddenApiExemptions", String[].class), (Object) new String[]{""});
-        }
-    }
-
     @Test(timeout = LockScreenTest.WAIT_TIME_MILLIS)
     public void lockScreen() throws InterruptedException {
         LockScreenTest test = new LockScreenTest(callback -> {
@@ -115,6 +106,51 @@ public final class PowerActTest extends BaseTest {
         DevicePolicyManager devicePolicyManager = (DevicePolicyManager) targetContext.getSystemService(Context.DEVICE_POLICY_SERVICE);
         assert devicePolicyManager != null;
         devicePolicyManager.removeActiveAdmin(new ComponentName(targetContext, PaReceiver.class));
+    }
+
+    @SdkSuppress(minSdkVersion = N) // Cannot enable accessibility service before 24.
+    @Test
+    public void showPowerDialog() throws Throwable {
+        callHiddenApiBypass();
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        final Callback callback = new Callback() {
+
+            @Override
+            public void done() {
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void failed() {
+                fail("showPowerDialog");
+            }
+        };
+
+        rule.getScenario().onActivity(activity -> PowerAct.showPowerDialog(activity, callback));
+        if (LibraryCompat.isShizukuPrepared() && !ReflectionUtils.hasHiddenApiRestriction()) {
+            grantShizukuPermission();
+        } else {
+            try {
+                enableAccessibilityService();
+            } catch (UiObjectNotFoundException e) {
+                fail(e.getMessage());
+            }
+        }
+        countDownLatch.await();
+
+        /* Check if it's system ui. (The system power dialog) */
+        final String currentPackageName = mUiDevice.getCurrentPackageName();
+        Log.d(TAG, "showPowerDialog: Test end. currentPackageName = " + currentPackageName);
+        assertThat(currentPackageName, anyOf(is("android"), is("com.android.systemui")));
+        // Dump window hierarchy to logcat.
+        CommonUtils.dumpWindowHierarchy2Stdout(mUiDevice);
+        /* Check "Power Off" item. */
+        final Resources sysRes = Resources.getSystem();
+        final String powerOffText = sysRes.getString(sysRes.getIdentifier("power_off", "string", "android"));
+        Log.d(TAG, "showPowerDialog: powerOffText = " + powerOffText);
+        assertTrue(mUiDevice.hasObject(By.text(powerOffText)));
+        // Exit power dialog.
+        mUiDevice.pressBack();
     }
 
     @FlakyTest(detail = "The case will change the power state of the device.")
@@ -178,48 +214,12 @@ public final class PowerActTest extends BaseTest {
         mUiDevice.findObject(By.pkg(ShizukuProvider.MANAGER_APPLICATION_ID).clickable(true)).click();
     }
 
-    @SdkSuppress(minSdkVersion = N) // Cannot enable accessibility service before 24.
-    @Test
-    public void showPowerDialog() throws Throwable {
-        callHiddenApiBypass();
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
-        final Callback callback = new Callback() {
-
-            @Override
-            public void done() {
-                countDownLatch.countDown();
-            }
-
-            @Override
-            public void failed() {
-                fail("showPowerDialog");
-            }
-        };
-
-        rule.getScenario().onActivity(activity -> PowerAct.showPowerDialog(activity, callback));
-        if (LibraryCompat.isShizukuPrepared() && !ReflectionUtils.hasHiddenApiRestriction()) {
-            grantShizukuPermission();
-        } else {
-            try {
-                enableAccessibilityService();
-            } catch (UiObjectNotFoundException e) {
-                fail(e.getMessage());
-            }
+    public static void callHiddenApiBypass() {
+        @SuppressWarnings("SpellCheckingInspection")
+        Class<?> habClz = ReflectionUtils.findClass("org.lsposed.hiddenapibypass.HiddenApiBypass");
+        Log.d(TAG, "call... " + habClz);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && Objects.nonNull(habClz)) {
+            ReflectionUtils.invokeStaticMethod(ReflectionUtils.findMethod(habClz, "addHiddenApiExemptions", String[].class), (Object) new String[]{""});
         }
-        countDownLatch.await();
-
-        /* Check if it's system ui. (The system power dialog) */
-        final String currentPackageName = mUiDevice.getCurrentPackageName();
-        Log.d(TAG, "showPowerDialog: Test end. currentPackageName = " + currentPackageName);
-        assertThat(currentPackageName, anyOf(is("android"), is("com.android.systemui")));
-        // Dump window hierarchy to logcat.
-        CommonUtils.dumpWindowHierarchy2Stdout(mUiDevice);
-        /* Check "Power Off" item. */
-        final Resources sysRes = Resources.getSystem();
-        final String powerOffText = sysRes.getString(sysRes.getIdentifier("power_off", "string", "android"));
-        Log.d(TAG, "showPowerDialog: powerOffText = " + powerOffText);
-        assertTrue(mUiDevice.hasObject(By.text(powerOffText)));
-        // Exit power dialog.
-        mUiDevice.pressBack();
     }
 }
