@@ -51,15 +51,13 @@ import github.ryuunoakaihitomi.poweract.*;
 
 * API Endpoints
 
-`PowerAct`: For general environments.
-
-`PowerActX`: For rooted environments.
-
-`Callback`: Notify execution result.
-
-`PowerButton`: An widget for Quick Integration.
-
-`ExternalUtils`: External utility tools.
+| Class Name      | Brief                         |
+|-----------------|-------------------------------|
+| `PowerAct`      | For general environments.     |
+| `PowerActX`     | For rooted environments.      |
+| `Callback`      | Notify execution result.      |
+| `ExternalUtils` | External utility tools.       |
+| `PowerButton`   | Widget for quick integration. |
 
 * Examples
 
