@@ -68,7 +68,7 @@ Turn off the screen.
 PowerAct.lockScreen(activity);
 ```
 
-Open a power menu, with callback.
+Open system power menu, with callback,
 ```java
 Callback callback = new Callback() {
     @Override
@@ -76,11 +76,6 @@ Callback callback = new Callback() {
     @Override
     public void failed() {}
 };
-PowerAct.showPowerDialog(activity, callback);
-```
-
-Open system power menu, with callback.
-```java
 PowerAct.showPowerDialog(activity, callback);
 ```
 
