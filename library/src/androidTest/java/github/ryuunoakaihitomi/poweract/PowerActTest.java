@@ -41,7 +41,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -111,7 +110,6 @@ public final class PowerActTest extends BaseTest {
     @SdkSuppress(minSdkVersion = N) // Cannot enable accessibility service before 24.
     @Test
     public void showPowerDialog() throws Throwable {
-        callHiddenApiBypass();
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         final Callback callback = new Callback() {
 
@@ -212,14 +210,5 @@ public final class PowerActTest extends BaseTest {
     public void grantShizukuPermission() {
         // Unfortunately, Shizuku Manager's string resources are obfuscated.
         mUiDevice.findObject(By.pkg(ShizukuProvider.MANAGER_APPLICATION_ID).clickable(true)).click();
-    }
-
-    public static void callHiddenApiBypass() {
-        @SuppressWarnings("SpellCheckingInspection")
-        Class<?> habClz = ReflectionUtils.findClass("org.lsposed.hiddenapibypass.HiddenApiBypass");
-        Log.d(TAG, "call... " + habClz);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && Objects.nonNull(habClz)) {
-            ReflectionUtils.invokeStaticMethod(ReflectionUtils.findMethod(habClz, "addHiddenApiExemptions", String[].class), (Object) new String[]{""});
-        }
     }
 }

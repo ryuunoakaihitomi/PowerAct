@@ -8,7 +8,7 @@
     <!-- ReToast: minSdkVersion = 16 -->
     <uses-sdk tools:overrideLibrary="rikka.shizuku.shared,github.ryuunoakaihitomi.retoast" />
 
-    <application>
+    <application android:name=".App">
 
         <!-- Comment this block if you encountered
          ClassNotFoundException: Didn't find class "moe.shizuku.api.ShizukuProvider" -->
