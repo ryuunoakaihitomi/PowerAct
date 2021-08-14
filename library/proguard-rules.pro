@@ -79,4 +79,11 @@
 -keepclassmembers class * {
     public static void main(java.lang.String[]);
 }
+
+# This so-called Initializer has never had any practical effect.
+# But for the convenience of debuging, we don't delete it from the source code.
+-assumenosideeffects class github.ryuunoakaihitomi.poweract.internal.Initializer {
+    static <clinit>();
+    public static void notify(java.lang.String);
+ }
 # -----------------------------------------------------------------------------

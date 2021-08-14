@@ -11,6 +11,3 @@
 -keepnames class rikka.shizuku.ShizukuProvider
 -keepnames class rikka.shizuku.ShizukuBinderWrapper
 -keepnames class rikka.shizuku.SystemServiceHelper
-# This so-called Initializer has never had any practical effect.
-# But for the convenience of debuging, we don't delete it from the source code.
--assumenosideeffects class github.ryuunoakaihitomi.poweract.internal.Initializer
