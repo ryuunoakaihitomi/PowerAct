@@ -6,7 +6,6 @@ import android.os.Build;
 import android.util.Log;
 
 import java.lang.reflect.Method;
-import java.util.Objects;
 
 public class App extends Application {
 
@@ -32,12 +31,10 @@ public class App extends Application {
     public static void callHiddenApiBypass() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             try {
-                @SuppressWarnings("SpellCheckingInspection")
-                Class<?> habClz = Class.forName("org.lsposed.hiddenapibypass.HiddenApiBypass");
-                if (Objects.nonNull(habClz)) {
-                    habClz.getMethod("addHiddenApiExemptions", String[].class)
-                            .invoke(null, (Object) new String[]{""});
-                }
+                //noinspection SpellCheckingInspection
+                Class.forName("org.lsposed.hiddenapibypass.HiddenApiBypass")
+                        .getMethod("addHiddenApiExemptions", String[].class)
+                        .invoke(null, (Object) new String[]{""});
             } catch (ReflectiveOperationException e) {
                 Log.v(TAG, "callHiddenApiBypass: " + e);
             }

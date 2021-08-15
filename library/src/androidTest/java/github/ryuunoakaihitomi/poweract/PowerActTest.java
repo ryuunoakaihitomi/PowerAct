@@ -29,7 +29,6 @@ import androidx.test.filters.LargeTest;
 import androidx.test.filters.SdkSuppress;
 import androidx.test.filters.Suppress;
 import androidx.test.platform.app.InstrumentationRegistry;
-import androidx.test.rule.GrantPermissionRule;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.Configurator;
 import androidx.test.uiautomator.UiDevice;
@@ -63,9 +62,10 @@ public final class PowerActTest extends BaseTest {
     @Rule
     public final ActivityScenarioRule<PlaygroundActivity> rule = new ActivityScenarioRule<>(PlaygroundActivity.class);
 
-    // It doesn't work...
+    /* It doesn't work...
     @Rule
     public final GrantPermissionRule grantPermissionRule = GrantPermissionRule.grant(ShizukuProvider.PERMISSION);
+    */
 
     private UiDevice mUiDevice;
 
