@@ -31,7 +31,7 @@ dependencies {
     // (Optional but recommended) A more elegant and direct way of using privileged system API.
     // NOTE: Need more steps to integrate it.
     // -> https://github.com/RikkaApps/Shizuku
-    def shizuku_version = '11.0.2'
+    def shizuku_version = '11.0.3'
     implementation "dev.rikka.shizuku:api:$shizuku_version"
     implementation "dev.rikka.shizuku:provider:$shizuku_version"
     // (Optional but recommended) Make Shizuku available in more situations.

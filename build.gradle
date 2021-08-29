@@ -6,7 +6,7 @@ buildscript {
 
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.0'
+        classpath 'com.android.tools.build:gradle:7.0.1'
     }
 }
 
@@ -48,5 +48,5 @@ ext {
     targetSdkVersion = compileSdkVersion
 
     libsu_version = '3.1.2'
-    shizuku_version = '11.0.2'
+    shizuku_version = '11.0.3'
 }
