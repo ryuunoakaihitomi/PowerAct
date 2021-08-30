@@ -26,6 +26,7 @@
         android:banner="@android:drawable/ic_lock_power_off"
         android:icon="@android:drawable/ic_lock_power_off"
         android:label="@string/app_name"
+        tools:replace="android:name"
         tools:targetApi="lollipop">
         <activity
             android:name=".MainActivity"

@@ -7,6 +7,9 @@ import android.util.Log;
 
 import java.lang.reflect.Method;
 
+/**
+ * Just for <pre>androidTest</pre>, not for demo app.
+ */
 public class App extends Application {
 
     private static final String TAG = "App";
