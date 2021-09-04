@@ -293,7 +293,8 @@ public final class PaService extends AccessibilityService {
             if (BuildConfig.DEBUG) {
                 PendingIntent pendingIntent =
                         PendingIntent.getActivity(this, 0,
-                                new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS), 0);
+                                new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS),
+                                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? PendingIntent.FLAG_IMMUTABLE : 0);
                 builder.setContentIntent(pendingIntent);
             }
             builder.setSmallIcon(android.R.drawable.ic_lock_power_off)

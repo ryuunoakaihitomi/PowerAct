@@ -91,6 +91,7 @@ dependencies {
 
     compileOnly 'androidx.annotation:annotation:1.2.0'
     compileOnly project(':hidden-api')
+    androidTestCompileOnly project(':hidden-api')
 
     /* ------- OPTIONAL DEPENDENCIES ------- */
     compileOnly "com.github.topjohnwu.libsu:core:$libsu_version"

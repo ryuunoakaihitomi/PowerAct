@@ -97,7 +97,10 @@ public final class PaFragment extends Fragment {
 
         if ((
                 // Using Shizuku to lock screen instead of DPM to avoid "secure unlock" and "complex uninstalling" or AccessibilityService to avoid the bug on Android 11.
-                mAction == PaConstants.ACTION_LOCK_SCREEN ||
+                // Android 12 beta 4.1: Landroid/os/IPowerManager;->goToSleep(JII)V (max-target-r
+                (mAction == PaConstants.ACTION_LOCK_SCREEN &&
+                        (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || !ReflectionUtils.hasHiddenApiRestriction()))
+                        ||
                         // Using Shizuku to reboot instead of DPM since R to avoid registering device owner.
                         // REBOOT permission granted to Shell since 30. commit id: bf19417b0dc3747bfd8c4cf84817ac98d382a665
                         // Using Shizuku to call system power dialog instead of AccessibilityService, the reason is as above. e0ab6b1aa19a952c1df4b95d167284bc6a542e1d
