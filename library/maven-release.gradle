@@ -7,10 +7,11 @@ version = PROJ_VERSION
 project.archivesBaseName = PROJ_ARTIFACT_ID
 
 
-task javadoc(type: Javadoc) {
+task javadoc(type: Javadoc, dependsOn: 'createFullJarDebug') {
     delete(destinationDir)
     options {
-        locale 'en_US'
+        locale 'en_US'  // Just <html lang="***">
+        jFlags '-Duser.region=US'   // Localize keywords
         encoding 'UTF-8'
         charSet 'UTF-8'
         author true
@@ -30,6 +31,8 @@ task javadoc(type: Javadoc) {
     // https://stackoverflow.com/a/49172753
     configurations.implementation.setCanBeResolved(true)
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator)) + configurations.implementation
+
+    classpath += files('build/intermediates/full_jar/debug/full.jar')
 
     exclude '**/internal/**'
 
