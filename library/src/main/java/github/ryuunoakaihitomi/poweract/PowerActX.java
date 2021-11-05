@@ -20,7 +20,7 @@ import github.ryuunoakaihitomi.poweract.internal.util.DebugLog;
  * It will automatically make all the components that {@link PowerAct} depends on invisible.
  * {@link PowerAct} may not instantly be available after calling it.
  * </li><li>
- * It is recommend to integrate <a href="https://shizuku.rikka.app/">Shizuku</a> to make it transient.
+ * It is recommended to integrate <a href="https://shizuku.rikka.app/">Shizuku</a> to make it transient.
  * </li></ul>
  * <p>
  * This class must be called in main thread before {@link Build.VERSION_CODES#JELLY_BEAN_MR2}.
