@@ -19,7 +19,9 @@ import github.ryuunoakaihitomi.poweract.Callback;
 
 public final class LockScreenTest extends BaseTest {
 
-    public static final int WAIT_TIME_MILLIS = 20_000;
+    public static final int WAIT_TIME_MILLIS = 17_000;
+    private static final int CHECK_SCREEN_CLOSE_DELAY_MILLIS = 1_500;
+
     private static final String TAG = "LockScreenTest";
     private final Execution mExecution;
     private final PowerManager mPowerManager;
@@ -36,7 +38,7 @@ public final class LockScreenTest extends BaseTest {
 
             @Override
             public void done() {
-                SystemClock.sleep(100);     // Wait for the complete completion of screen lock.
+                SystemClock.sleep(CHECK_SCREEN_CLOSE_DELAY_MILLIS);     // Wait for the complete completion of screen lock.
                 assertFalse("lockScreen() doesn't work.", isInteractive());
                 countDownLatch.countDown();
             }

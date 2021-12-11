@@ -16,7 +16,7 @@ android {
 dependencies {
     // Test without https://developer.android.com/guide/app-compatibility/restrictions-non-sdk-interfaces
     //implementation 'org.lsposed.hiddenapibypass:hiddenapibypass:2.0'
-    implementation 'github.ryuunoakaihitomi.retoast:retoast:1.7.4'
+    implementation 'github.ryuunoakaihitomi.retoast:retoast:2.0.0'
     compileOnly 'de.robv.android.xposed:api:82'
     compileOnly "dev.rikka.shizuku:api:$shizuku_version"
     compileOnly "dev.rikka.shizuku:provider:$shizuku_version"

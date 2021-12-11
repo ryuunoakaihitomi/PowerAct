@@ -26,8 +26,9 @@ public class BaseTest {
     private static final String TAG = "BaseTest";
 
     @BeforeClass
-    public static void prepareTargetContext() {
+    public static void initialize() {
         targetContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        targetContext.sendBroadcast(new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
     }
 
     @AfterClass
