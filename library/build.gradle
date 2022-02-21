@@ -40,7 +40,7 @@ android {
     def aarReleaseFilename = libraryModuleName + '-release.aar'
     def aarReleaseFile = rootProject.file('/library/build/outputs/aar/' + aarReleaseFilename)
 
-    task unzipAar(type: Copy) {
+    task unzipAar(type: Copy,dependsOn: 'bundleReleaseAar') {
         delete(outputAarUnzippedDir)
         from zipTree(aarReleaseFile)
         into outputAarUnzippedDir
@@ -89,7 +89,7 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     testImplementation "org.awaitility:awaitility:$awaitility_version"
 
-    compileOnly 'androidx.annotation:annotation:1.2.0'
+    compileOnly 'androidx.annotation:annotation:1.3.0'
     compileOnly project(':hidden-api')
     androidTestCompileOnly project(':hidden-api')
 

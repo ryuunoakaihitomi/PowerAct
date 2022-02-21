@@ -154,7 +154,13 @@ public class PowerAct {
             final Fragment invisibleFragment = new PaFragment();
             final FragmentTransaction transaction = manager.beginTransaction().add(invisibleFragment, TAG);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                transaction.commitNow();
+                try {
+                    transaction.commitNow();
+                } catch (IllegalStateException e) {
+                    DebugLog.w(TAG, "requestAction: FragmentManager is already executing transactions. Backport to commit()");
+                    transaction.commit();
+                    manager.executePendingTransactions();
+                }
             } else {
                 transaction.commit();
                 manager.executePendingTransactions();
