@@ -118,7 +118,7 @@ Create [`res/values/poweract_config.xml`](library/src/main/res/values/public.xml
 ## License
 
 ```text
-   Copyright 2020-2021 ZQY
+   Copyright 2020-2022 ZQY
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.

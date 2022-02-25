@@ -394,7 +394,7 @@ public final class PaFragment extends Fragment {
         mUserDelayLogger.dumpToLog();
 
         // Enable "Don't keep activities" in Developer options to debug this case.
-        if (isAdded() && !mAssociatedActivity.isFinishing()) {
+        if (isAdded() && mAssociatedActivity != null && !mAssociatedActivity.isFinishing()) {
             DebugLog.w(TAG, "onDetach: The associated activity was recycled by system. " +
                     "Some unexpected behaviours may trigger!");
             /* Caused by low memory? */

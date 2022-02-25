@@ -157,9 +157,10 @@ public class PowerAct {
                 try {
                     transaction.commitNow();
                 } catch (IllegalStateException e) {
-                    DebugLog.w(TAG, "requestAction: FragmentManager is already executing transactions. Backport to commit()");
-                    transaction.commit();
-                    manager.executePendingTransactions();
+                    // There's no guarantee that commit() will prevent this case...
+                    DebugLog.e(TAG, "requestAction: Cannot commit fragment! FragmentManager is already executing transactions.", e);
+                    CallbackHelper.of(callback).failed();
+                    return;
                 }
             } else {
                 transaction.commit();
