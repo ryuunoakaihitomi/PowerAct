@@ -13,16 +13,13 @@ An Android library that can manipulate power-related actions with just few lines
 
 ### Import
 
+Check [this](https://github.com/ryuunoakaihitomi/maven-repository#usage).
+
+### Depend
+
 ```groovy
-repositories {
-    maven {
-        url 'https://raw.githubusercontent.com/ryuunoakaihitomi/maven-repository/master'
-    }
-}
-
-
 dependencies {
-    // (Required)
+    // (Required import statement)
     implementation 'github.ryuunoakaihitomi.poweract:poweract:latest.release'
 
     // (Optional but recommended) Bring better performance to use root shell.
