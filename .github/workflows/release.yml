@@ -30,6 +30,8 @@ jobs:
     - name: Publish
       env:
         GRADLE_VER: 7.2
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PUBLISH_GP: ${{ startsWith(github.event.head_commit.message, '[publish to github packages]') }}
       run: |
         gradle :wrapper --gradle-version $env:GRADLE_VER
         ./gradlew :hidden-api:build
