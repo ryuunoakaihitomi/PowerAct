@@ -74,6 +74,11 @@ public final class ExternalUtils {
                     DebugLog.e(TAG, "disableExposedComponents: [removeActiveAdmin] " +
                             e.getMessage());
                 }
+                // Admin ComponentInfo{**PaReceiver} does not exist or is not owned by uid ***
+                // motorola/nio_retcn/nio:11/RRN31.Q3-1-11-6/f81cc:user/release-keys
+                catch (SecurityException e) {
+                    DebugLog.e(TAG, "[removeActiveAdmin] Outrageous behavior from Motorola Edge S", e);
+                }
             }
             Utils.setComponentEnabled(context, PaReceiver.class, false);
         }
