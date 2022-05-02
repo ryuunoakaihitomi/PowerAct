@@ -205,6 +205,7 @@ class PaxExecutor {
                                 .debuggable(BuildConfig.DEBUG)
                                 .processNameSuffix("pax_service");
                         Shizuku.bindUserService(serviceArgs, connection);
+                        return;
                     } else if (myUid != Process.ROOT_UID) {
                         throw new IllegalStateException("TOKEN_KILL_SYSTEM_UI must be called in root env!");
                     }
