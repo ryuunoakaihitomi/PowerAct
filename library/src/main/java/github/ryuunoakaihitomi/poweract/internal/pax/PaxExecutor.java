@@ -4,9 +4,15 @@ import android.app.ActivityManager;
 import android.app.ActivityManagerNative;
 import android.app.IActivityManager;
 import android.content.ComponentCallbacks2;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.ServiceConnection;
+import android.content.pm.IPackageManager;
+import android.os.Binder;
 import android.os.Build;
+import android.os.IBinder;
 import android.os.Process;
+import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.SystemProperties;
 import android.os.SystemService;
@@ -27,7 +33,10 @@ import github.ryuunoakaihitomi.poweract.internal.util.LibraryCompat;
 import github.ryuunoakaihitomi.poweract.internal.util.ReflectionUtils;
 import github.ryuunoakaihitomi.poweract.internal.util.SystemCompat;
 import github.ryuunoakaihitomi.poweract.internal.util.Utils;
+import rikka.shizuku.Shizuku;
 import rikka.shizuku.ShizukuSystemProperties;
+import rikka.shizuku.SystemServiceHelper;
+import rikka.sui.Sui;
 
 class PaxExecutor {
 
@@ -159,62 +168,48 @@ class PaxExecutor {
                     break;
 
                 case TOKEN_KILL_SYSTEM_UI:
-                    if (myUid != Process.ROOT_UID) {
+                    if (LibraryCompat.isShizukuAvailable() && Sui.isSui()) {
+                        DebugLog.i(TAG, "main0: TOKEN_KILL_SYSTEM_UI with Sui");
+                        ServiceConnection connection = new ServiceConnection() {
+                            @Override
+                            public void onServiceConnected(ComponentName name, IBinder binder) {
+                                if (binder != null && binder.pingBinder()) {
+                                    Log.d(TAG, "onServiceConnected: " + name);
+                                    IPaxService service = IPaxService.Stub.asInterface(binder);
+                                    try {
+                                        service.killSystemUi();
+                                    } catch (RemoteException e) {
+                                        DebugLog.e(TAG, "onServiceConnected: ", e);
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onServiceDisconnected(ComponentName name) {
+                                if (BuildConfig.DEBUG) {
+                                    DebugLog.d(TAG, "onServiceDisconnected: " + name);
+                                }
+                            }
+
+                            @Override
+                            public void onBindingDied(ComponentName name) {
+                                if (BuildConfig.DEBUG) {
+                                    DebugLog.d(TAG, "onBindingDied: " + name);
+                                }
+                            }
+                        };
+                        IPackageManager pm = IPackageManager.Stub.asInterface(SystemServiceHelper.getSystemService("package"));
+                        Shizuku.UserServiceArgs serviceArgs = new Shizuku.UserServiceArgs(
+                                new ComponentName(pm.getNameForUid(Binder.getCallingUid()), PaxService.class.getName()))
+                                .daemon(false)
+                                .debuggable(BuildConfig.DEBUG)
+                                .processNameSuffix("pax_service");
+                        Shizuku.bindUserService(serviceArgs, connection);
+                    } else if (myUid != Process.ROOT_UID) {
                         throw new IllegalStateException("TOKEN_KILL_SYSTEM_UI must be called in root env!");
                     }
 
-                    @SuppressWarnings("SpellCheckingInspection") final String sysUiPkgName = "com.android.systemui";
-
-                    /* Provide IActivityManager */
-                    IActivityManager am = null;
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        try {
-                            //noinspection JavaReflectionMemberAccess
-                            am = (IActivityManager) ActivityManager.class.getMethod("getService").invoke(null);
-                        } catch (Exception e) {
-                            // IllegalAccessException | InvocationTargetException | NoSuchMethodException
-                            DebugLog.e(TAG, "main0: TOKEN_KILL_SYSTEM_UI", e);
-                        }
-                    } else {
-                        am = ActivityManagerNative.getDefault();
-                    }
-
-                    /* Kill system ui */
-                    if (am != null) {
-                        for (ActivityManager.RunningAppProcessInfo info : am.getRunningAppProcesses()) {
-                            if (info.processName.equals(sysUiPkgName)) {
-                                final int pid = info.pid;
-                                DebugLog.i(TAG, "main0: Kill system ui. The process id is " + pid);
-                                Process.killProcess(pid);
-                                if (!BuildConfig.DEBUG) break;
-                            }
-
-                            /* Show all process info, instead of ps */
-                            if (BuildConfig.DEBUG) {
-                                Map<String, Object> infoMap = new TreeMap<>();
-                                infoMap.put("uid", info.uid);
-                                infoMap.put("pkgList", Arrays.toString(info.pkgList));
-                                infoMap.put("importance", Utils.getClassIntApiConstantString(info.getClass(), "IMPORTANCE", info.importance));
-                                infoMap.put("importanceReasonCode", Utils.getClassIntApiConstantString(info.getClass(), "REASON", info.importanceReasonCode));
-                                infoMap.put("importanceReasonPid", info.importanceReasonPid);
-                                infoMap.put("importanceReasonComponent", info.importanceReasonComponent != null ? info.importanceReasonComponent : "none");
-                                infoMap.put("lru", info.lru);
-                                infoMap.put("lastTrimLevel", Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
-                                        ? Utils.getClassIntApiConstantString(ComponentCallbacks2.class, "TRIM", info.lastTrimLevel)
-                                        : "Unsupported before 16");
-                                // Make output beautiful without parsing myself.
-                                JSONObject jsonOutput = new JSONObject(infoMap);
-                                try {
-                                    DebugLog.d(TAG, "main0: RunningAppProcessInfo " +
-                                            Arrays.asList(info.processName, info.pid) + "\n" +
-                                            jsonOutput.toString(1));
-                                } catch (JSONException ignore) {
-                                }
-                            }
-                        }
-                    } else {
-                        throw new NullPointerException("am");
-                    }
+                    killSystemUi();
                     break;
 
                 default:
@@ -227,6 +222,61 @@ class PaxExecutor {
             }
         } else {
             throw new IllegalArgumentException(args == null ? "null" : TextUtils.join(" ", args));
+        }
+    }
+
+    public static void killSystemUi() {
+        @SuppressWarnings("SpellCheckingInspection") final String sysUiPkgName = "com.android.systemui";
+
+        /* Provide IActivityManager */
+        IActivityManager am = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            try {
+                //noinspection JavaReflectionMemberAccess
+                am = (IActivityManager) ActivityManager.class.getMethod("getService").invoke(null);
+            } catch (Exception e) {
+                // IllegalAccessException | InvocationTargetException | NoSuchMethodException
+                DebugLog.e(TAG, "main0: TOKEN_KILL_SYSTEM_UI", e);
+            }
+        } else {
+            am = ActivityManagerNative.getDefault();
+        }
+
+        /* Kill system ui */
+        if (am != null) {
+            for (ActivityManager.RunningAppProcessInfo info : am.getRunningAppProcesses()) {
+                if (info.processName.equals(sysUiPkgName)) {
+                    final int pid = info.pid;
+                    DebugLog.i(TAG, "main0: Kill system ui. The process id is " + pid);
+                    Process.killProcess(pid);
+                    if (!BuildConfig.DEBUG) break;
+                }
+
+                /* Show all process info, instead of ps */
+                if (BuildConfig.DEBUG) {
+                    Map<String, Object> infoMap = new TreeMap<>();
+                    infoMap.put("uid", info.uid);
+                    infoMap.put("pkgList", Arrays.toString(info.pkgList));
+                    infoMap.put("importance", Utils.getClassIntApiConstantString(info.getClass(), "IMPORTANCE", info.importance));
+                    infoMap.put("importanceReasonCode", Utils.getClassIntApiConstantString(info.getClass(), "REASON", info.importanceReasonCode));
+                    infoMap.put("importanceReasonPid", info.importanceReasonPid);
+                    infoMap.put("importanceReasonComponent", info.importanceReasonComponent != null ? info.importanceReasonComponent : "none");
+                    infoMap.put("lru", info.lru);
+                    infoMap.put("lastTrimLevel", Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
+                            ? Utils.getClassIntApiConstantString(ComponentCallbacks2.class, "TRIM", info.lastTrimLevel)
+                            : "Unsupported before 16");
+                    // Make output beautiful without parsing myself.
+                    JSONObject jsonOutput = new JSONObject(infoMap);
+                    try {
+                        DebugLog.d(TAG, "main0: RunningAppProcessInfo " +
+                                Arrays.asList(info.processName, info.pid) + "\n" +
+                                jsonOutput.toString(1));
+                    } catch (JSONException ignore) {
+                    }
+                }
+            }
+        } else {
+            throw new NullPointerException("am");
         }
     }
 

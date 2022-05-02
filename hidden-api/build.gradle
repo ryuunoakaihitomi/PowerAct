@@ -17,8 +17,11 @@ dependencies {
     file("$buildDir\\libs").mkdirs()
     file("$buildDir\\libs\\${project.name}.jar").createNewFile()
 
-    compileOnly 'androidx.annotation:annotation:1.2.0'
+    compileOnly 'androidx.annotation:annotation:1.3.0'
     compileOnly files("${androidJarPath}")
+
+//    annotationProcessor "dev.rikka.tools.refine:annotation-processor:$harp_version"
+//    compileOnly "dev.rikka.tools.refine:annotation:$harp_version"
 }
 
 tasks.withType(JavaCompile) {

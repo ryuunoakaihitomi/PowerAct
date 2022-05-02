@@ -2,6 +2,7 @@ package github.ryuunoakaihitomi.poweract.internal.util;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.content.ServiceConnection;
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
@@ -46,5 +47,12 @@ public final class ShizukuCompat {
         } else {
             return Shizuku.shouldShowRequestPermissionRationale();
         }
+    }
+
+    /**
+     * @see Shizuku#bindUserService(Shizuku.UserServiceArgs, ServiceConnection)
+     */
+    public static boolean hasUserServiceSupport() {
+        return Shizuku.getVersion() >= 10;
     }
 }

@@ -98,7 +98,7 @@ public class Utils {
                 shellExecAppProcess = "app_process " + cmdDir + " " + className + " " + argLine;
         DebugLog.i(TAG, "runSuJavaWithAppProcess: commands " + Arrays.asList(shellExportClassPath, shellExecAppProcess));
         if (LibraryCompat.isLibsuAvailable()) {
-            final Shell.Result result = Shell.su(shellExportClassPath, shellExecAppProcess).exec();
+            final Shell.Result result = Shell.cmd(shellExportClassPath, shellExecAppProcess).exec();
             final boolean success = result.isSuccess();
             if (BuildConfig.DEBUG) {
                 // It's weird, can't get stderr.

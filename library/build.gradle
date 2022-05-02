@@ -40,7 +40,7 @@ android {
     def aarReleaseFilename = libraryModuleName + '-release.aar'
     def aarReleaseFile = rootProject.file('/library/build/outputs/aar/' + aarReleaseFilename)
 
-    task unzipAar(type: Copy,dependsOn: 'bundleReleaseAar') {
+    task unzipAar(type: Copy, dependsOn: 'bundleReleaseAar') {
         delete(outputAarUnzippedDir)
         from zipTree(aarReleaseFile)
         into outputAarUnzippedDir

@@ -44,9 +44,10 @@ task clean(type: Delete) {
 
 ext {
     minSdkVersion = 14
-    compileSdkVersion = 31
+    compileSdkVersion = 32
     targetSdkVersion = compileSdkVersion
 
-    libsu_version = '3.2.1'
+//    harp_version = "3.0.3"
+    libsu_version = '4.0.3'
     shizuku_version = '12.1.0'
 }

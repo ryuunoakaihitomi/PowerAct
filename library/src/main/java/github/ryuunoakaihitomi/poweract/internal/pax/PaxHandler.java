@@ -10,6 +10,7 @@ import android.os.Looper;
 import android.os.Process;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 
 import java.lang.reflect.InvocationHandler;
@@ -25,6 +26,7 @@ import github.ryuunoakaihitomi.poweract.ExternalUtils;
 import github.ryuunoakaihitomi.poweract.internal.util.CallbackHelper;
 import github.ryuunoakaihitomi.poweract.internal.util.DebugLog;
 import github.ryuunoakaihitomi.poweract.internal.util.LibraryCompat;
+import github.ryuunoakaihitomi.poweract.internal.util.ShizukuCompat;
 import github.ryuunoakaihitomi.poweract.internal.util.SystemCompat;
 import github.ryuunoakaihitomi.poweract.internal.util.UserGuideRunnable;
 import github.ryuunoakaihitomi.poweract.internal.util.Utils;
@@ -36,13 +38,15 @@ final class PaxHandler implements InvocationHandler {
 
     private static final String TAG = "PaxHandler";
 
-    private static final Application sApplication;
+    private static final @NonNull
+    Application sApplication;
 
     @VisibleForTesting
     public static final int USER_GUIDE_DELAY_TIME_MILLIS = 3000;
 
     static {
         DebugLog.d(TAG, "static initializer");
+        //noinspection ConstantConditions
         sApplication = ActivityThread.currentApplication();
     }
 
@@ -90,8 +94,8 @@ final class PaxHandler implements InvocationHandler {
                 if (shizukuServiceUid == Process.ROOT_UID && !force) {
                     SystemCompat.setPowerBinder(new ShizukuBinderWrapper(SystemServiceHelper.getSystemService(Context.POWER_SERVICE)));
                     // Exception: kill sys ui.
-                    if (PaxExecutor.TOKEN_KILL_SYSTEM_UI.equals(cmd)) {
-                        DebugLog.i(TAG, "invoke: Cannot kill SysUi without root shell!");
+                    if (PaxExecutor.TOKEN_KILL_SYSTEM_UI.equals(cmd) && !ShizukuCompat.hasUserServiceSupport()) {
+                        DebugLog.i(TAG, "invoke: Cannot kill SysUi without root shell or sui!");
                     } else {
                         // "enableLog" is useless here, only as a placeholder.
                         PaxExecutor.main(new String[]{cmd, forceString, enableLog});
